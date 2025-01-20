@@ -614,23 +614,23 @@ variable "ssh_public_key" {
 }
 
 variable "script_storage_account_name" {
-  description = "(Required) Specifies the name of the storage account that contains the custom script."
+  description = "(Optional) Specifies the name of the storage account that contains the custom script."
   type        = string
 }
 
 variable "script_storage_account_key" {
-  description = "(Required) Specifies the name of the storage account that contains the custom script."
+  description = "(Optional) Specifies the name of the storage account that contains the custom script."
   type        = string
 }
 
 variable "container_name" {
-  description = "(Required) Specifies the name of the container that contains the custom script."
+  description = "(Optional) Specifies the name of the container that contains the custom script."
   type        = string
   default     = "scripts"
 }
 
 variable "script_name" {
-  description = "(Required) Specifies the name of the custom script."
+  description = "(Optional) Specifies the name of the custom script."
   type        = string
   default     = "configure-jumpbox-vm.sh"
 }

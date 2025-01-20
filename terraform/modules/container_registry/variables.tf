@@ -41,3 +41,8 @@ variable "georeplication_locations" {
   type        = list(string)
   default     = []
 }
+
+variable "log_analytics_workspace_id" {
+  description = "Specifies the log analytics workspace id"
+  type        = string
+}

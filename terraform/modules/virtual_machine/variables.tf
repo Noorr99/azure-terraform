@@ -72,8 +72,8 @@ variable "admin_password" {
 }
 
 variable "boot_diagnostics_storage_account" {
-  description = "(Optional) The Primary/Secondary Endpoint for the Azure Storage Account (general purpose) used to store Boot Diagnostics."
-  default     = null
+  description = "(Optional) The primary/secondary endpoint for the Azure Storage Account used to store Boot Diagnostics."
+  default     = ""
 }
 
 variable "tags" {

@@ -2,7 +2,7 @@
 variable "resource_group_name" {
   description = "Specifies the name of the resource group."
   type        = string
-  default     = "BaboRG"
+  default     = "VMRG"
 }
 
 variable "location" {
@@ -23,7 +23,7 @@ variable "tags" {
 variable "aks_vnet_name" {
   description = "Specifies the name of the Azure virtual network."
   type        = string
-  default     = "AksVNet"
+  default     = "VMVNet"
 }
 
 variable "aks_vnet_address_space" {
@@ -89,7 +89,7 @@ variable "vm_os_disk_image" {
 variable "domain_name_label" {
   description = "Specifies the domain name label for the virtual machine."
   type        = string
-  default     = "babotestvm"
+  default     = "windowsnpcvmtrial"
 }
 
 variable "vm_os_disk_storage_account_type" {

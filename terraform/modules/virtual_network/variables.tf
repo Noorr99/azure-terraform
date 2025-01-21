@@ -21,19 +21,14 @@ variable "address_space" {
 variable "subnets" {
   description = "Subnets configuration"
   type = list(object({
-    name                                           = string
-    address_prefixes                               = list(string)
-    private_endpoint_network_policies_enabled      = bool
-    private_link_service_network_policies_enabled  = bool
+    name                                          = string
+    address_prefixes                              = list(string)
+    private_endpoint_network_policies_enabled     = bool
+    private_link_service_network_policies_enabled = bool
   }))
 }
 
 variable "tags" {
-  description = "(Optional) Specifies the tags of the storage account"
+  description = "(Optional) Specifies tags for the virtual network"
   default     = {}
-}
-
-variable "log_analytics_workspace_id" {
-  description = "Specifies the log analytics workspace id"
-  type        = string
 }

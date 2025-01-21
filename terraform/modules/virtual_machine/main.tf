@@ -20,7 +20,7 @@ resource "azurerm_public_ip" "public_ip" {
   tags                = var.tags
 
   lifecycle {
-    ignore_changes = [ tags ]
+    ignore_changes = [tags]
   }
 }
 
@@ -46,7 +46,7 @@ resource "azurerm_network_security_group" "nsg" {
   }
 
   lifecycle {
-    ignore_changes = [ tags ]
+    ignore_changes = [tags]
   }
 }
 
@@ -67,14 +67,21 @@ resource "azurerm_network_interface" "nic" {
   }
 
   lifecycle {
-    ignore_changes = [ tags ]
+    ignore_changes = [tags]
   }
 }
 
+#############################
+# NSG Association for the NIC
+#############################
 resource "azurerm_network_interface_security_group_association" "nsg_association" {
   network_interface_id      = azurerm_network_interface.nic.id
   network_security_group_id = azurerm_network_security_group.nsg.id
-  depends_on                = [azurerm_network_security_group.nsg]
+  
+  depends_on = [
+    azurerm_network_interface.nic,
+    azurerm_network_security_group.nsg
+  ]
 }
 
 #############################
@@ -105,7 +112,7 @@ resource "azurerm_windows_virtual_machine" "virtual_machine" {
   }
 
   lifecycle {
-    ignore_changes = [ tags ]
+    ignore_changes = [tags]
   }
 
   depends_on = [

@@ -104,10 +104,6 @@ resource "azurerm_windows_virtual_machine" "virtual_machine" {
     version   = lookup(var.os_disk_image, "version", null)
   }
 
-  # Set boot diagnostics as top-level arguments
-  boot_diagnostics_enabled     = true
-  boot_diagnostics_storage_uri = var.boot_diagnostics_storage_account == "" ? null : var.boot_diagnostics_storage_account
-
   lifecycle {
     ignore_changes = [ tags ]
   }

@@ -42,6 +42,7 @@ module "vnet" {
 module "virtual_machine" {
   count               = var.vm_count
   source              = "./modules/virtual_machine"
+
   # Prepend the count index to the base name for uniqueness.
   name                = "${count.index}-${var.vm_name}"
   size                = var.vm_size

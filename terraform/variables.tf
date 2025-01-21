@@ -1,4 +1,48 @@
-// Existing resource group and network variables remain here...
+// Resource Group Variables
+variable "resource_group_name" {
+  description = "Specifies the name of the resource group."
+  type        = string
+  default     = "VMCountRG"
+}
+
+variable "location" {
+  description = "Specifies the Azure region where resources will be created."
+  type        = string
+  default     = "northeurope"
+}
+
+variable "tags" {
+  description = "Specifies tags to apply to all resources."
+  type        = map(string)
+  default     = {
+    createdWith = "Terraform"
+  }
+}
+
+// Virtual Network (VNet) Variables
+variable "aks_vnet_name" {
+  description = "Specifies the name of the Azure virtual network."
+  type        = string
+  default     = "VMVNet"
+}
+
+variable "aks_vnet_address_space" {
+  description = "Specifies the address space for the Azure virtual network."
+  type        = list(string)
+  default     = ["10.0.0.0/16"]
+}
+
+variable "vm_subnet_name" {
+  description = "Specifies the name of the subnet for the virtual machine."
+  type        = string
+  default     = "VmSubnet"
+}
+
+variable "vm_subnet_address_prefix" {
+  description = "Specifies the address prefix for the VM subnet."
+  type        = list(string)
+  default     = ["10.0.48.0/20"]
+}
 
 // Virtual Machine (VM) Variables
 variable "vm_name" {

@@ -1,35 +1,34 @@
 variable "workspace_name" {
+  description = "Name of the Databricks workspace."
   type        = string
-  description = "Name of Databricks workspace"
 }
 
 variable "resource_group_name" {
+  description = "Name of the resource group."
   type        = string
-  description = "Name of resource group into which Databricks will be deployed"
 }
 
 variable "location" {
+  description = "Azure region for deployment."
   type        = string
-  description = "Location in which Databricks will be deployed"
 }
 
 variable "vnet_id" {
+  description = "ID of the existing virtual network."
   type        = string
-  description = "ID of existing virtual network into which Databricks will be deployed"
 }
 
-variable "private_subnet_name" {
+variable "public_subnet_id" {
+  description = "ID of the public subnet for Databricks."
   type        = string
-  description = "Name of the private subnet"
 }
 
-variable "public_subnet_name" {
+variable "private_subnet_id" {
+  description = "ID of the private subnet for Databricks."
   type        = string
-  description = "Name of the public subnet"
 }
 
 variable "tags" {
+  description = "Tags to apply to resources."
   type        = map(string)
-  description = "Map of tags to attach to Databricks workspace"
-  default     = {}
 }

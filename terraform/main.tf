@@ -22,7 +22,7 @@ resource "azurerm_resource_group" "rg" {
 }
 
 //
-// Virtual Network Module – includes two subnets: one for VMs and one for private endpoints.
+// Virtual Network Module – includes subnets for VMs, Private Endpoints, and Databricks.
 //
 module "vnet" {
   source              = "./modules/virtual_network"
@@ -31,7 +31,7 @@ module "vnet" {
   vnet_name           = var.aks_vnet_name
   address_space       = var.aks_vnet_address_space
 
-  # Two subnets are provided to the vnet module.
+  # Updated list of subnets including Databricks subnets.
   subnets = [
     {
       name                                          = var.vm_subnet_name
@@ -42,10 +42,20 @@ module "vnet" {
     {
       name                                          = var.pe_subnet_name
       address_prefixes                              = var.pe_subnet_address_prefix
-      # For private endpoints, network policies must be disabled.
       private_endpoint_network_policies_enabled     = false
-      # Enable private link service network policies if needed.
       private_link_service_network_policies_enabled = true
+    },
+    {
+      name                                          = var.databricks_public_subnet_name
+      address_prefixes                              = var.databricks_public_subnet_address_prefix
+      private_endpoint_network_policies_enabled     = false
+      private_link_service_network_policies_enabled = false
+    },
+    {
+      name                                          = var.databricks_private_subnet_name
+      address_prefixes                              = var.databricks_private_subnet_address_prefix
+      private_endpoint_network_policies_enabled     = false
+      private_link_service_network_policies_enabled = false
     }
   ]
 }
@@ -90,11 +100,10 @@ module "key_vault" {
   purge_protection_enabled        = var.key_vault_purge_protection_enabled
   soft_delete_retention_days      = var.key_vault_soft_delete_retention_days
 
-  bypass                        = var.key_vault_bypass
-  default_action                = var.key_vault_default_action
-  ip_rules                      = var.key_vault_ip_rules
-  # With private endpoints in use, leave virtual_network_subnet_ids empty
-  virtual_network_subnet_ids    = []
+  bypass                     = var.key_vault_bypass
+  default_action             = var.key_vault_default_action
+  ip_rules                   = var.key_vault_ip_rules
+  virtual_network_subnet_ids = []
 }
 
 //
@@ -148,30 +157,37 @@ resource "azurerm_private_endpoint" "acr_pe" {
   }
 }
 
-
-// Create the Databricks workspace
+//
+// Create the Databricks Workspace
+//
 module "databricks-workspace" {
   source              = "./modules/azure-databricks-workspace"
   workspace_name      = var.workspace_name
   resource_group_name = azurerm_resource_group.rg.name
   location            = var.location
 
-  // Pass the VNet ID from the VNet module
+  # Pass the VNet ID from the VNet module
   vnet_id             = module.vnet.vnet_id
 
-  private_subnet_name = var.private_subnet_name
-  public_subnet_name  = var.public_subnet_name
+  # Pass the specific subnet IDs from the VNet module based on subnet names
+  public_subnet_id    = module.vnet.subnet_ids[var.databricks_public_subnet_name]
+  private_subnet_id   = module.vnet.subnet_ids[var.databricks_private_subnet_name]
 
   tags                = var.tags
 }
 
-// Create the security groups for the subnets
+//
+// Create the Security Groups for the Subnets
+//
 module "security-groups" {
   source                     = "./modules/azure-databricks-security-groups"
   security_group_name_prefix = var.workspace_name
   location                   = var.location
-  vnet_resource_group_name   = var.resource_group_name
-  private_subnet_id          = var.private_subnet_id
-  public_subnet_id           = var.public_subnet_id
+  vnet_resource_group_name   = azurerm_resource_group.rg.name
+
+  # Reference subnet IDs from the VNet module
+  private_subnet_id          = module.vnet.subnet_ids[var.databricks_private_subnet_name]
+  public_subnet_id           = module.vnet.subnet_ids[var.databricks_public_subnet_name]
+
   tags                       = var.tags
 }

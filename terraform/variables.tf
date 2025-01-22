@@ -37,7 +37,7 @@ variable "aks_vnet_address_space" {
 }
 
 //
-// Subnet Variables for VMs and Private Endpoints
+// Subnet Variables for VMs, Private Endpoints, and Databricks
 //
 variable "vm_subnet_name" {
   description = "Specifies the name of the subnet for virtual machines."
@@ -61,6 +61,33 @@ variable "pe_subnet_address_prefix" {
   description = "Specifies the address prefix for the private endpoint subnet."
   type        = list(string)
   default     = ["10.0.1.0/24"]
+}
+
+//
+// Databricks Subnet Variables
+//
+variable "databricks_public_subnet_name" {
+  description = "Specifies the name of the public subnet for Databricks."
+  type        = string
+  default     = "DatabricksPublicSubnet"
+}
+
+variable "databricks_public_subnet_address_prefix" {
+  description = "Specifies the address prefix for the Databricks public subnet."
+  type        = list(string)
+  default     = ["10.0.2.0/24"]
+}
+
+variable "databricks_private_subnet_name" {
+  description = "Specifies the name of the private subnet for Databricks."
+  type        = string
+  default     = "DatabricksPrivateSubnet"
+}
+
+variable "databricks_private_subnet_address_prefix" {
+  description = "Specifies the address prefix for the Databricks private subnet."
+  type        = list(string)
+  default     = ["10.0.3.0/24"]
 }
 
 //
@@ -234,31 +261,22 @@ variable "acr_georeplication_locations" {
   default     = []
 }
 
-
-
-//databricks
-
+//
+// Databricks Variables
+//
 variable "workspace_name" {
   type        = string
-  description = "Name of Databricks workspace"
+  description = "Name of the Databricks workspace"
 }
 
-variable "private_subnet_name" {
+variable "databricks_public_subnet_name" {
+  description = "Name of the public subnet for Databricks."
   type        = string
-  description = "Name of the private subnet"
+  default     = "DatabricksPublicSubnet"
 }
 
-variable "public_subnet_name" {
+variable "databricks_private_subnet_name" {
+  description = "Name of the private subnet for Databricks."
   type        = string
-  description = "Name of the public subnet"
-}
-
-variable "private_subnet_id" {
-  type        = string
-  description = "ID of the private subnet"
-}
-
-variable "public_subnet_id" {
-  type        = string
-  description = "ID of the public subnet"
+  default     = "DatabricksPrivateSubnet"
 }

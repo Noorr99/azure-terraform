@@ -52,7 +52,7 @@ resource "azurerm_user_assigned_identity" "acr_identity" {
     ]
   }
 }
-
+/*
 resource "azurerm_monitor_diagnostic_setting" "settings" {
   name                       = "DiagnosticsSettings"
   target_resource_id         = azurerm_container_registry.acr.id
@@ -70,3 +70,4 @@ resource "azurerm_monitor_diagnostic_setting" "settings" {
     category = "AllMetrics"
   }
 }
+*/

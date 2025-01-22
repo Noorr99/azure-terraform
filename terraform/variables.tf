@@ -272,7 +272,7 @@ variable "acr_georeplication_locations" {
 variable "databricks_workspace_name" {
   description = "The name of the Databricks workspace."
   type        = string
-  default     = "DatabricksWorkspaceTest"
+  default     = "DatabricksWorkspaceNPCTest"
 }
 
 variable "databricks_workspace_sku" {

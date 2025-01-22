@@ -139,7 +139,7 @@ variable "vm_os_disk_storage_account_type" {
 variable "key_vault_name" {
   description = "Specifies the name of the Key Vault."
   type        = string
-  default     = "myKeyVault"
+  default     = "KeyVaultNpcTest"
 }
 
 variable "tenant_id" {
@@ -213,7 +213,7 @@ variable "key_vault_ip_rules" {
 variable "acr_name" {
   description = "Specifies the name of the Container Registry."
   type        = string
-  default     = "myACR"
+  default     = "ACRNPCTest"
 }
 
 variable "acr_admin_enabled" {

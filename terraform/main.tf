@@ -147,3 +147,31 @@ resource "azurerm_private_endpoint" "acr_pe" {
     is_manual_connection           = false
   }
 }
+
+
+// Create the Databricks workspace
+module "databricks-workspace" {
+  source              = "./modules/azure-databricks-workspace"
+  workspace_name      = var.workspace_name
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = var.location
+
+  // Pass the VNet ID from the VNet module
+  vnet_id             = module.vnet.vnet_id
+
+  private_subnet_name = var.private_subnet_name
+  public_subnet_name  = var.public_subnet_name
+
+  tags                = var.tags
+}
+
+// Create the security groups for the subnets
+module "security-groups" {
+  source                     = "./modules/azure-databricks-security-groups"
+  security_group_name_prefix = var.workspace_name
+  location                   = var.location
+  vnet_resource_group_name   = var.resource_group_name
+  private_subnet_id          = var.private_subnet_id
+  public_subnet_id           = var.public_subnet_id
+  tags                       = var.tags
+}

@@ -233,3 +233,32 @@ variable "acr_georeplication_locations" {
   type        = list(string)
   default     = []
 }
+
+
+
+//databricks
+
+variable "workspace_name" {
+  type        = string
+  description = "Name of Databricks workspace"
+}
+
+variable "private_subnet_name" {
+  type        = string
+  description = "Name of the private subnet"
+}
+
+variable "public_subnet_name" {
+  type        = string
+  description = "Name of the public subnet"
+}
+
+variable "private_subnet_id" {
+  type        = string
+  description = "ID of the private subnet"
+}
+
+variable "public_subnet_id" {
+  type        = string
+  description = "ID of the public subnet"
+}

@@ -22,7 +22,9 @@ resource "azurerm_resource_group" "rg" {
 }
 
 //
-// Virtual Network Module – includes two subnets: one for VMs and one for private endpoints.
+// Virtual Network Module – expanded to include four subnets:
+// - one for VMs, one for private endpoints,
+// - one public subnet for Databricks, and one private subnet for Databricks.
 //
 module "vnet" {
   source              = "./modules/virtual_network"
@@ -31,7 +33,6 @@ module "vnet" {
   vnet_name           = var.aks_vnet_name
   address_space       = var.aks_vnet_address_space
 
-  # Two subnets are provided to the vnet module.
   subnets = [
     {
       name                                          = var.vm_subnet_name
@@ -42,10 +43,21 @@ module "vnet" {
     {
       name                                          = var.pe_subnet_name
       address_prefixes                              = var.pe_subnet_address_prefix
-      # For private endpoints, network policies must be disabled.
       private_endpoint_network_policies_enabled     = false
-      # Enable private link service network policies if needed.
       private_link_service_network_policies_enabled = true
+    },
+    {
+      name                 = var.databricks_public_subnet_name
+      address_prefixes     = var.databricks_public_subnet_address_prefix
+      // Adjust these settings as required for Databricks public subnet
+      private_endpoint_network_policies_enabled     = false
+      private_link_service_network_policies_enabled = false
+    },
+    {
+      name                 = var.databricks_private_subnet_name
+      address_prefixes     = var.databricks_private_subnet_address_prefix
+      private_endpoint_network_policies_enabled     = false
+      private_link_service_network_policies_enabled = false
     }
   ]
 }
@@ -90,15 +102,15 @@ module "key_vault" {
   purge_protection_enabled        = var.key_vault_purge_protection_enabled
   soft_delete_retention_days      = var.key_vault_soft_delete_retention_days
 
-  bypass                        = var.key_vault_bypass
-  default_action                = var.key_vault_default_action
-  ip_rules                      = var.key_vault_ip_rules
-  # With private endpoints in use, leave virtual_network_subnet_ids empty
-  virtual_network_subnet_ids    = []
+  bypass                     = var.key_vault_bypass
+  default_action             = var.key_vault_default_action
+  ip_rules                   = var.key_vault_ip_rules
+  // With private endpoints in use, leave virtual_network_subnet_ids empty.
+  virtual_network_subnet_ids = []
 }
 
 //
-// ACR Module Deployment
+// ACR Module Deployment (using the container_registry module)
 //
 module "acr" {
   source              = "./modules/container_registry"
@@ -146,4 +158,20 @@ resource "azurerm_private_endpoint" "acr_pe" {
     subresource_names              = ["registry"]
     is_manual_connection           = false
   }
+}
+
+//
+// Databricks Module Deployment
+//
+module "databricks" {
+  source                      = "./modules/databricks"
+  name                        = var.databricks_workspace_name
+  resource_group_name         = azurerm_resource_group.rg.name
+  location                    = var.location
+  sku                         = var.databricks_workspace_sku
+  managed_resource_group_name = var.databricks_managed_rg
+  virtual_network_id          = module.vnet.id
+  public_subnet_name          = var.databricks_public_subnet_name
+  private_subnet_name         = var.databricks_private_subnet_name
+  tags                        = var.tags
 }

@@ -37,7 +37,7 @@ variable "aks_vnet_address_space" {
 }
 
 //
-// Subnet Variables for VMs and Private Endpoints
+// Subnet Variables for VMs, Private Endpoints, and Databricks
 //
 variable "vm_subnet_name" {
   description = "Specifies the name of the subnet for virtual machines."
@@ -61,6 +61,30 @@ variable "pe_subnet_address_prefix" {
   description = "Specifies the address prefix for the private endpoint subnet."
   type        = list(string)
   default     = ["10.0.1.0/24"]
+}
+
+variable "databricks_public_subnet_name" {
+  description = "Specifies the name of the public subnet for Databricks."
+  type        = string
+  default     = "DatabricksPublicSubnet"
+}
+
+variable "databricks_public_subnet_address_prefix" {
+  description = "Specifies the address prefix for the Databricks public subnet."
+  type        = list(string)
+  default     = ["10.0.64.0/24"]
+}
+
+variable "databricks_private_subnet_name" {
+  description = "Specifies the name of the private subnet for Databricks."
+  type        = string
+  default     = "DatabricksPrivateSubnet"
+}
+
+variable "databricks_private_subnet_address_prefix" {
+  description = "Specifies the address prefix for the Databricks private subnet."
+  type        = list(string)
+  default     = ["10.0.65.0/24"]
 }
 
 //
@@ -232,4 +256,25 @@ variable "acr_georeplication_locations" {
   description = "A list of Azure locations where the container registry should be geo-replicated."
   type        = list(string)
   default     = []
+}
+
+//
+// Databricks Variables
+//
+variable "databricks_workspace_name" {
+  description = "The name of the Databricks workspace."
+  type        = string
+  default     = "DatabricksWorkspaceTest"
+}
+
+variable "databricks_workspace_sku" {
+  description = "The SKU of the Databricks workspace (e.g., standard or premium)."
+  type        = string
+  default     = "standard"
+}
+
+variable "databricks_managed_rg" {
+  description = "The name of the managed resource group for the Databricks workspace."
+  type        = string
+  default     = "databricks-managed-rg"
 }

@@ -19,11 +19,6 @@ variable "sku" {
   default     = "standard"
 }
 
-variable "managed_resource_group_name" {
-  description = "The name of the managed resource group for the Databricks workspace."
-  type        = string
-}
-
 variable "virtual_network_id" {
   description = "The ID of the virtual network where Databricks will be injected."
   type        = string

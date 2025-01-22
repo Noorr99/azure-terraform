@@ -47,15 +47,15 @@ module "vnet" {
       private_link_service_network_policies_enabled = true
     },
     {
-      name                 = var.databricks_public_subnet_name
-      address_prefixes     = var.databricks_public_subnet_address_prefix
-      // Adjust these settings as required for Databricks public subnet
+      name             = var.databricks_public_subnet_name
+      address_prefixes = var.databricks_public_subnet_address_prefix
+      // Adjust these settings as required for the Databricks public subnet.
       private_endpoint_network_policies_enabled     = false
       private_link_service_network_policies_enabled = false
     },
     {
-      name                 = var.databricks_private_subnet_name
-      address_prefixes     = var.databricks_private_subnet_address_prefix
+      name             = var.databricks_private_subnet_name
+      address_prefixes = var.databricks_private_subnet_address_prefix
       private_endpoint_network_policies_enabled     = false
       private_link_service_network_policies_enabled = false
     }
@@ -164,14 +164,13 @@ resource "azurerm_private_endpoint" "acr_pe" {
 // Databricks Module Deployment
 //
 module "databricks" {
-  source                      = "./modules/databricks"
-  name                        = var.databricks_workspace_name
-  resource_group_name         = azurerm_resource_group.rg.name
-  location                    = var.location
-  sku                         = var.databricks_workspace_sku
-  managed_resource_group_name = var.databricks_managed_rg
-  virtual_network_id          = module.vnet.id
-  public_subnet_name          = var.databricks_public_subnet_name
-  private_subnet_name         = var.databricks_private_subnet_name
-  tags                        = var.tags
+  source              = "./modules/databricks"
+  name                = var.databricks_workspace_name
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = var.location
+  sku                 = var.databricks_workspace_sku
+  virtual_network_id  = module.vnet.id
+  public_subnet_name  = var.databricks_public_subnet_name
+  private_subnet_name = var.databricks_private_subnet_name
+  tags                = var.tags
 }

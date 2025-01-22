@@ -44,3 +44,8 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "managed_resource_group_name" {
+  description = "The name of the managed resource group for the Databricks workspace. This must be different from the application's resource group."
+  type        = string
+}

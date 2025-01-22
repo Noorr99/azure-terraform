@@ -29,24 +29,6 @@ resource "azurerm_subnet" "subnet" {
   virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes     = each.value.address_prefixes
   
-  private_endpoint_network_policies_enabled     = each.value.private_endpoint_network_policies_enabled
-  private_link_service_network_policies_enabled = each.value.private_link_service_network_policies_enabled
-
-  # Conditionally add delegation for Databricks subnets.
-  dynamic "delegation" {
-    for_each = contains(
-      [var.databricks_public_subnet_name, var.databricks_private_subnet_name],
-      each.key
-    ) ? [each.key] : []
-    content {
-      name = "delegation"
-      service_delegation {
-        name    = "Microsoft.Databricks/workspaces"
-        actions = [
-          "Microsoft.Network/virtualNetworks/subnets/join/action",
-          "Microsoft.Network/virtualNetworks/subnets/prepareNetworkPolicies/action"
-        ]
-      }
-    }
-  }
+  private_endpoint_network_policies_enabled      = each.value.private_endpoint_network_policies_enabled
+  private_link_service_network_policies_enabled  = each.value.private_link_service_network_policies_enabled
 }

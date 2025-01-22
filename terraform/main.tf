@@ -173,4 +173,7 @@ module "databricks" {
   public_subnet_name  = var.databricks_public_subnet_name
   private_subnet_name = var.databricks_private_subnet_name
   tags                = var.tags
+
+  public_subnet_network_security_group_association_id  = var.databricks_public_subnet_nsg_association_id
+  private_subnet_network_security_group_association_id = var.databricks_private_subnet_nsg_association_id
 }

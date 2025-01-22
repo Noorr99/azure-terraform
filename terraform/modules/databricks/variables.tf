@@ -34,6 +34,16 @@ variable "private_subnet_name" {
   type        = string
 }
 
+variable "public_subnet_network_security_group_association_id" {
+  description = "The network security group association ID for the public subnet where Databricks is injected."
+  type        = string
+}
+
+variable "private_subnet_network_security_group_association_id" {
+  description = "The network security group association ID for the private subnet where Databricks is injected."
+  type        = string
+}
+
 variable "tags" {
   description = "Tags for the Databricks workspace."
   type        = map(string)

@@ -272,3 +272,14 @@ variable "databricks_workspace_sku" {
   type        = string
   default     = "standard"
 }
+
+// New variables to capture the NSG association IDs for both subnets
+variable "databricks_public_subnet_nsg_association_id" {
+  description = "The network security group association ID for the Databricks public subnet."
+  type        = string
+}
+
+variable "databricks_private_subnet_nsg_association_id" {
+  description = "The network security group association ID for the Databricks private subnet."
+  type        = string
+}

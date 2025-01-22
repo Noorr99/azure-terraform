@@ -4,28 +4,25 @@ terraform {
       source  = "hashicorp/azurerm"
     }
   }
-
   required_version = ">= 0.14.9"
 }
 
 resource "azurerm_container_registry" "acr" {
-  name                     = var.name
-  resource_group_name      = var.resource_group_name
-  location                 = var.location
-  sku                      = var.sku  
-  admin_enabled            = var.admin_enabled
-  tags                     = var.tags
+  name                           = var.name
+  resource_group_name            = var.resource_group_name
+  location                       = var.location
+  sku                            = var.sku
+  admin_enabled                  = false                           // Force admin to be disabled
+  public_network_access_enabled  = false                           // Disable public access
+  tags                           = var.tags
 
   identity {
-    type = "UserAssigned"
-    identity_ids = [
-      azurerm_user_assigned_identity.acr_identity.id
-    ]
+    type         = "UserAssigned"
+    identity_ids = [ azurerm_user_assigned_identity.acr_identity.id ]
   }
 
   dynamic "georeplications" {
     for_each = var.georeplication_locations
-
     content {
       location = georeplications.value
       tags     = var.tags
@@ -33,9 +30,9 @@ resource "azurerm_container_registry" "acr" {
   }
 
   lifecycle {
-      ignore_changes = [
-          tags
-      ]
+    ignore_changes = [
+      tags
+    ]
   }
 }
 
@@ -52,6 +49,7 @@ resource "azurerm_user_assigned_identity" "acr_identity" {
     ]
   }
 }
+
 /*
 resource "azurerm_monitor_diagnostic_setting" "settings" {
   name                       = "DiagnosticsSettings"

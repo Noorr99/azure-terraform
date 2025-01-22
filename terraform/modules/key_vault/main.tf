@@ -21,24 +21,29 @@ resource "azurerm_key_vault" "key_vault" {
   enable_rbac_authorization       = var.enable_rbac_authorization
   purge_protection_enabled        = var.purge_protection_enabled
   soft_delete_retention_days      = var.soft_delete_retention_days
-  
+
+  // Disable public network access
+  public_network_access_enabled = false
+
   timeouts {
     delete = "60m"
   }
 
   network_acls {
     bypass                     = var.bypass
-    default_action             = var.default_action
+    // Force default action to Deny to keep the vault private
+    default_action             = "Deny"
     ip_rules                   = var.ip_rules
     virtual_network_subnet_ids = var.virtual_network_subnet_ids
   }
 
   lifecycle {
-      ignore_changes = [
-          tags
-      ]
+    ignore_changes = [
+      tags
+    ]
   }
 }
+
 /*
 resource "azurerm_monitor_diagnostic_setting" "settings" {
   name                       = "DiagnosticsSettings"

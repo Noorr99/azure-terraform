@@ -72,7 +72,7 @@ variable "databricks_public_subnet_name" {
 variable "databricks_public_subnet_address_prefix" {
   description = "Specifies the address prefix for the Databricks public subnet."
   type        = list(string)
-  default     = ["10.0.64.0/24"]
+  default     = ["10.0.64.0/28"]
 }
 
 variable "databricks_private_subnet_name" {
@@ -84,7 +84,7 @@ variable "databricks_private_subnet_name" {
 variable "databricks_private_subnet_address_prefix" {
   description = "Specifies the address prefix for the Databricks private subnet."
   type        = list(string)
-  default     = ["10.0.65.0/24"]
+  default     = ["10.0.65.0/28"]
 }
 
 //

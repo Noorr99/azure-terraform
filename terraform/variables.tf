@@ -156,7 +156,6 @@ variable "vm_os_disk_storage_account_type" {
   description = "Specifies the storage account type for the OS disk of the virtual machine."
   type        = string
   default     = "Premium_LRS"
-
   validation {
     condition     = contains(
       ["Premium_LRS", "Premium_ZRS", "StandardSSD_LRS", "StandardSSD_ZRS", "Standard_LRS"],
@@ -285,5 +284,5 @@ variable "databricks_workspace_sku" {
 variable "databricks_managed_rg" {
   description = "The name of the managed resource group for the Databricks workspace. It must be different from the application's resource group."
   type        = string
-  default     = "DatabricksManagedRG"
+  default     = "DatabricksManagedNPCRG"
 }

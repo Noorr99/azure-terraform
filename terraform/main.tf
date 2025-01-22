@@ -169,7 +169,7 @@ module "databricks" {
   resource_group_name = azurerm_resource_group.rg.name
   location            = var.location
   sku                 = var.databricks_workspace_sku
-  virtual_network_id  = module.vnet.id
+  virtual_network_id  = module.vnet.vnet_id
   public_subnet_name  = var.databricks_public_subnet_name
   private_subnet_name = var.databricks_private_subnet_name
   tags                = var.tags

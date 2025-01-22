@@ -101,7 +101,7 @@ module "key_vault" {
 // ACR Module Deployment
 //
 module "acr" {
-  source              = "./modules/acr"
+  source              = "./modules/container_registry"
   name                = var.acr_name
   resource_group_name = azurerm_resource_group.rg.name
   location            = var.location

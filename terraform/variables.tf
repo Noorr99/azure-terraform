@@ -225,7 +225,7 @@ variable "acr_admin_enabled" {
 variable "acr_sku" {
   description = "The SKU of the Container Registry. Possible values are 'Basic', 'Standard', or 'Premium'."
   type        = string
-  default     = "Basic"
+  default     = "Premium"
 }
 
 variable "acr_georeplication_locations" {

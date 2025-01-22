@@ -37,6 +37,15 @@ variable "aks_vnet_address_space" {
 }
 
 //
+// New Variable: Virtual Network Name for Databricks lookup
+//
+variable "virtual_network_name" {
+  description = "The name of the virtual network into which Databricks will be injected."
+  type        = string
+  default     = "VMVNet"
+}
+
+//
 // Subnet Variables for VMs, Private Endpoints, and Databricks
 //
 variable "vm_subnet_name" {
@@ -271,15 +280,4 @@ variable "databricks_workspace_sku" {
   description = "The SKU of the Databricks workspace (e.g., standard or premium)."
   type        = string
   default     = "standard"
-}
-
-// New variables to capture the NSG association IDs for both subnets
-variable "databricks_public_subnet_nsg_association_id" {
-  description = "The network security group association ID for the Databricks public subnet."
-  type        = string
-}
-
-variable "databricks_private_subnet_nsg_association_id" {
-  description = "The network security group association ID for the Databricks private subnet."
-  type        = string
 }

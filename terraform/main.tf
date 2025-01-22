@@ -163,17 +163,16 @@ resource "azurerm_private_endpoint" "acr_pe" {
 //
 // Databricks Module Deployment
 //
-module "databricks" {
-  source              = "./modules/databricks"
-  name                = var.databricks_workspace_name
-  resource_group_name = azurerm_resource_group.rg.name
-  location            = var.location
-  sku                 = var.databricks_workspace_sku
-  virtual_network_id  = module.vnet.vnet_id
-  public_subnet_name  = var.databricks_public_subnet_name
-  private_subnet_name = var.databricks_private_subnet_name
-  tags                = var.tags
 
-  public_subnet_network_security_group_association_id  = var.databricks_public_subnet_nsg_association_id
-  private_subnet_network_security_group_association_id = var.databricks_private_subnet_nsg_association_id
+module "databricks" {
+  source               = "./modules/databricks"
+  name                 = var.databricks_workspace_name
+  resource_group_name  = azurerm_resource_group.rg.name
+  location             = var.location
+  sku                  = var.databricks_workspace_sku
+  virtual_network_id   = module.vnet.vnet_id
+  virtual_network_name = module.vnet.name
+  public_subnet_name   = var.databricks_public_subnet_name
+  private_subnet_name  = var.databricks_private_subnet_name
+  tags                 = var.tags
 }

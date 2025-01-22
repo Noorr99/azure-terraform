@@ -24,23 +24,18 @@ variable "virtual_network_id" {
   type        = string
 }
 
+variable "virtual_network_name" {
+  description = "The name of the virtual network into which Databricks will be injected."
+  type        = string
+}
+
 variable "public_subnet_name" {
   description = "The name of the public subnet for Databricks."
   type        = string
 }
 
-variable "public_subnet_network_security_group_association_id" {
-  description = "The network security group association ID for the Databricks public subnet."
-  type        = string
-}
-
 variable "private_subnet_name" {
   description = "The name of the private subnet for Databricks."
-  type        = string
-}
-
-variable "private_subnet_network_security_group_association_id" {
-  description = "The network security group association ID for the Databricks private subnet."
   type        = string
 }
 

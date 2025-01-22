@@ -4,7 +4,6 @@ terraform {
       source  = "hashicorp/azurerm"
     }
   }
-
   required_version = ">= 0.14.9"
 }
 
@@ -22,5 +21,9 @@ resource "azurerm_databricks_workspace" "databricks" {
     public_subnet_network_security_group_association_id = var.public_subnet_network_security_group_association_id
     private_subnet_name                                 = var.private_subnet_name
     private_subnet_network_security_group_association_id = var.private_subnet_network_security_group_association_id
+  }
+
+  lifecycle {
+    ignore_changes = [tags]
   }
 }

@@ -1,4 +1,6 @@
+//
 // Resource Group Variables
+//
 variable "resource_group_name" {
   description = "Specifies the name of the resource group."
   type        = string
@@ -19,7 +21,9 @@ variable "tags" {
   }
 }
 
+//
 // Virtual Network (VNet) Variables
+//
 variable "aks_vnet_name" {
   description = "Specifies the name of the Azure virtual network."
   type        = string
@@ -32,8 +36,11 @@ variable "aks_vnet_address_space" {
   default     = ["10.0.0.0/16"]
 }
 
+//
+// Subnet Variables for VMs and Private Endpoints
+//
 variable "vm_subnet_name" {
-  description = "Specifies the name of the subnet for the virtual machine."
+  description = "Specifies the name of the subnet for virtual machines."
   type        = string
   default     = "VmSubnet"
 }
@@ -44,7 +51,21 @@ variable "vm_subnet_address_prefix" {
   default     = ["10.0.48.0/20"]
 }
 
+variable "pe_subnet_name" {
+  description = "Specifies the name of the subnet for private endpoints."
+  type        = string
+  default     = "PrivateEndpointSubnet"
+}
+
+variable "pe_subnet_address_prefix" {
+  description = "Specifies the address prefix for the private endpoint subnet."
+  type        = list(string)
+  default     = ["10.0.1.0/24"]
+}
+
+//
 // Virtual Machine (VM) Variables
+//
 variable "vm_name" {
   description = "Specifies the base name of the virtual machine."
   type        = string
@@ -110,4 +131,105 @@ variable "vm_os_disk_storage_account_type" {
     )
     error_message = "The storage account type for the OS disk is invalid. Valid options are Premium_LRS, Premium_ZRS, StandardSSD_LRS, StandardSSD_ZRS, Standard_LRS."
   }
+}
+
+//
+// Key Vault Variables
+//
+variable "key_vault_name" {
+  description = "Specifies the name of the Key Vault."
+  type        = string
+  default     = "myKeyVault"
+}
+
+variable "tenant_id" {
+  description = "Specifies the tenant ID for the Key Vault."
+  type        = string
+}
+
+variable "key_vault_sku" {
+  description = "Specifies the SKU of the Key Vault. Possible values are 'standard' or 'premium'."
+  type        = string
+  default     = "standard"
+}
+
+variable "key_vault_enabled_for_deployment" {
+  description = "Allows Azure VMs to retrieve certificates stored as secrets."
+  type        = bool
+  default     = false
+}
+
+variable "key_vault_enabled_for_disk_encryption" {
+  description = "Allows Azure Disk Encryption to retrieve secrets and unwrap keys."
+  type        = bool
+  default     = false
+}
+
+variable "key_vault_enabled_for_template_deployment" {
+  description = "Allows Azure Resource Manager to retrieve secrets from the key vault."
+  type        = bool
+  default     = false
+}
+
+variable "key_vault_enable_rbac_authorization" {
+  description = "Specifies whether Key Vault uses RBAC for authorization."
+  type        = bool
+  default     = false
+}
+
+variable "key_vault_purge_protection_enabled" {
+  description = "Specifies if purge protection is enabled on the Key Vault."
+  type        = bool
+  default     = false
+}
+
+variable "key_vault_soft_delete_retention_days" {
+  description = "Specifies the soft-delete retention days for the Key Vault."
+  type        = number
+  default     = 30
+}
+
+variable "key_vault_bypass" {
+  description = "Specifies which traffic can bypass network rules for Key Vault. Options: 'AzureServices' or 'None'."
+  type        = string
+  default     = "AzureServices"
+}
+
+variable "key_vault_default_action" {
+  description = "Specifies the default action for network rules on Key Vault. Options: 'Allow' or 'Deny'."
+  type        = string
+  default     = "Allow"
+}
+
+variable "key_vault_ip_rules" {
+  description = "List of IP addresses/CIDR blocks allowed to access the Key Vault."
+  type        = list(string)
+  default     = []
+}
+
+//
+// ACR Variables
+//
+variable "acr_name" {
+  description = "Specifies the name of the Container Registry."
+  type        = string
+  default     = "myACR"
+}
+
+variable "acr_admin_enabled" {
+  description = "Specifies whether the ACR admin user is enabled."
+  type        = bool
+  default     = false
+}
+
+variable "acr_sku" {
+  description = "The SKU of the Container Registry. Possible values are 'Basic', 'Standard', or 'Premium'."
+  type        = string
+  default     = "Basic"
+}
+
+variable "acr_georeplication_locations" {
+  description = "A list of Azure locations where the container registry should be geo-replicated."
+  type        = list(string)
+  default     = []
 }

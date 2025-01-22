@@ -163,6 +163,12 @@ resource "azurerm_private_endpoint" "acr_pe" {
 //
 // Databricks Module Deployment
 //
+resource "azurerm_resource_group" "databricks_managed" {
+  name     = var.databricks_managed_rg
+  location = var.location
+  tags     = var.tags
+}
+
 
 module "databricks" {
   source               = "./modules/databricks"
@@ -170,11 +176,10 @@ module "databricks" {
   resource_group_name  = azurerm_resource_group.rg.name
   location             = var.location
   sku                  = var.databricks_workspace_sku
-  managed_resource_group_name  = var.databricks_managed_rg   // New parameter passed here
+  managed_resource_group_name  = azurerm_resource_group.databricks_managed.name
   virtual_network_id   = module.vnet.vnet_id
   virtual_network_name = module.vnet.name
   public_subnet_name   = var.databricks_public_subnet_name
   private_subnet_name  = var.databricks_private_subnet_name
   tags                 = var.tags
 }
-

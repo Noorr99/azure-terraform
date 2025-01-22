@@ -283,7 +283,7 @@ variable "databricks_workspace_sku" {
 }
 
 variable "databricks_managed_rg" {
-  description = "The name of the managed resource group for the Databricks workspace. It must be different than the application's resource group."
+  description = "The name of the managed resource group for the Databricks workspace. It must be different from the application's resource group."
   type        = string
   default     = "DatabricksManagedRG"
 }

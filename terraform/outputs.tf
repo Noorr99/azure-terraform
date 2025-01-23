@@ -1,6 +1,6 @@
 //
-// Outputs from Outer Modules
-//
+# Outputs from Outer Modules
+#
 
 output "workspace_name" {
   value       = module.databricks_workspace.workspace_name
@@ -33,8 +33,9 @@ output "security_group_public_id" {
 }
 
 //
-// Databricks Subnet Outputs
-//
+# Additional Outputs
+#
+
 output "databricks_public_subnet_id" {
   value       = module.databricks_subnets.public_subnet_id
   description = "ID of the Databricks public subnet"

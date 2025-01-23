@@ -8,8 +8,8 @@ resource "azurerm_databricks_workspace" "module-databricks" {
 
   custom_parameters {
     no_public_ip        = false
-    private_subnet_name = var.private_subnet_name
-    public_subnet_name  = var.public_subnet_name
+    private_subnet_id   = var.private_subnet_id
+    public_subnet_id    = var.public_subnet_id
     virtual_network_id  = var.vnet_id
   }
 

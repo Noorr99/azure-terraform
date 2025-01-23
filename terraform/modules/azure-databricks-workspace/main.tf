@@ -11,7 +11,7 @@ resource "azurerm_databricks_workspace" "module-databricks" {
     public_subnet_name  = var.public_subnet_name
     virtual_network_id  = var.vnet_id
     public_subnet_network_security_group_association_id = var.public_subnet_network_security_group_association_id
-
+    private_subnet_network_security_group_association_id = var.private_subnet_network_security_group_association_id
   }
 
   tags = var.tags
@@ -19,12 +19,12 @@ resource "azurerm_databricks_workspace" "module-databricks" {
 
 data "azurerm_subnet" "private_subnet" {
   name                 = var.private_subnet_name
-  virtual_network_name  = var.aks_vnet_name
+  virtual_network_name  = "VMVNet"
   resource_group_name  = var.resource_group_name
 }
 
 data "azurerm_subnet" "public_subnet" {
   name                 = var.public_subnet_name
-  virtual_network_name  = var.aks_vnet_name
+  virtual_network_name  = "VMVNet"
   resource_group_name  = var.resource_group_name
 }

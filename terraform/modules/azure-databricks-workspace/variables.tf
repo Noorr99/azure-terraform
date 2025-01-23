@@ -38,3 +38,8 @@ variable "public_subnet_network_security_group_association_id" {
   description = "The ID of the NSG associated with the public subnet."
   type        = string
 }
+
+variable "private_subnet_network_security_group_association_id" {
+  description = "The ID of the NSG associated with the private subnet."
+  type        = string
+}

@@ -133,6 +133,7 @@ resource "azurerm_private_endpoint" "key_vault_pe" {
 //
 // Private Endpoint for ACR
 //
+/*
 resource "azurerm_private_endpoint" "acr_pe" {
   name                = "${var.acr_name}-pe"
   location            = var.location
@@ -146,6 +147,28 @@ resource "azurerm_private_endpoint" "acr_pe" {
     subresource_names              = ["registry"]
     is_manual_connection           = false
   }
+}
+*/
+module "private_dns_zone_acr" {
+  source              = "./modules/private_dns_zone"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+  dns_zone_name       = "privatelink.azurecr.io"
+  vnet_id             = module.vnet.vnet_id
+}
+
+module "private_endpoint_acr" {
+  source                        = "./modules/private_endpoint"
+  name                          = "${var.acr_name}-pe"
+  location                      = var.location
+  resource_group_name           = azurerm_resource_group.rg.name
+  subnet_id                     = module.vnet.subnet_ids[var.pe_subnet_name]
+  private_connection_resource_id = module.acr.id
+  is_manual_connection          = false
+  subresource_name              = "registry"
+  private_dns_zone_group_name   = "${var.acr_name}-pdns"
+  private_dns_zone_group_ids    = [module.private_dns_zone_acr.id]
+  tags                          = var.tags
 }
 
 module "databricks_subnets" {

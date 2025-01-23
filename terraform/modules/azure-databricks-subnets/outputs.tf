@@ -8,8 +8,8 @@ output "private_subnet_id" {
   description = "ID of the Databricks private subnet"
 }
 
-output "private_subnet_prefix" {
-  value       = azurerm_subnet.private-subnet.address_prefix
+output "private_subnet_prefixes" {
+  value       = azurerm_subnet.private-subnet.address_prefixes
   description = "Address space of the Databricks private subnet"
 }
 
@@ -23,7 +23,7 @@ output "public_subnet_id" {
   description = "ID of the Databricks public subnet"
 }
 
-output "public_subnet_prefix" {
-  value       = azurerm_subnet.public-subnet.address_prefix
+output "public_subnet_prefixes" {
+  value       = azurerm_subnet.public-subnet.address_prefixes
   description = "Address space of the Databricks public subnet"
 }

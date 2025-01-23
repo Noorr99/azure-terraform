@@ -1,3 +1,13 @@
+terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+    }
+  }
+
+  required_version = ">= 0.14.9"
+}
+
 resource "azurerm_subnet" "private-subnet" {
   name                 = "${var.subnet_name_prefix}-private-subnet"
   resource_group_name  = var.vnet_resource_group_name

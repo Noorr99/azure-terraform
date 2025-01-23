@@ -1,3 +1,13 @@
+terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+    }
+  }
+
+  required_version = ">= 0.14.9"
+}
+
 // Create the security groups and make the associations with the subnets
 resource "azurerm_network_security_group" "databricks-subnet-private-sg" {
   name                = "${var.security_group_name_prefix}-private-subnet-security-group"

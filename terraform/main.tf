@@ -180,6 +180,8 @@ module "acr_private_dns_zone" {
   resource_group_name          = azurerm_resource_group.rg.name
   virtual_networks_to_link     = var.aks_vnet_name
 
+}
+
 module "acr_private_endpoint" {
   source                         = "./modules/private_endpoint"
   name                           = "${module.container_registry.name}PrivateEndpoint"

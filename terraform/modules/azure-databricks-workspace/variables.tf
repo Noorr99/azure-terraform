@@ -43,3 +43,8 @@ variable "private_subnet_network_security_group_association_id" {
   description = "The ID of the NSG associated with the private subnet."
   type        = string
 }
+
+variable "vnet_name" {
+  description = "The name of the virtual network"
+  type        = string
+}

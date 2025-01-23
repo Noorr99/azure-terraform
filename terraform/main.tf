@@ -185,7 +185,7 @@ module "databricks_workspace" {
   public_subnet_network_security_group_association_id = module.databricks_security_groups.security_group_public_id
   private_subnet_network_security_group_association_id = module.databricks_security_groups.security_group_private_id
   tags                 = var.databricks_tags
-
+  vnet_name            = var.aks_vnet_name
   depends_on = [module.databricks_subnets, module.databricks_security_groups]
 }
 

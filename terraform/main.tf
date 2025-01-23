@@ -112,6 +112,7 @@ module "acr" {
   georeplication_locations = var.acr_georeplication_locations
 }
 
+/*
 //
 // Private Endpoint for Key Vault
 //
@@ -129,6 +130,8 @@ resource "azurerm_private_endpoint" "key_vault_pe" {
     is_manual_connection           = false
   }
 }
+
+*/
 
 //
 // Private Endpoint for ACR
@@ -201,6 +204,32 @@ module "acr_private_endpoint" {
   private_dns_zone_group_ids     = [module.acr_private_dns_zone.id]
 }
 
+module "keyvault_private_dns_zone" {
+  source                       = "./modules/private_dns_zone"
+  name                         = "privatelink.vaultcore.azure.net"
+  resource_group_name          = azurerm_resource_group.rg.name
+  virtual_networks_to_link     = {
+    (module.vnet.name) = {
+      subscription_id    = data.azurerm_client_config.current.subscription_id
+      resource_group_name = azurerm_resource_group.rg.name
+    }
+  }
+  tags                         = var.tags
+}
+
+module "keyvault_private_endpoint" {
+  source                         = "./modules/private_endpoint"
+  name                           = "${module.keyvault.name}PrivateEndpoint"
+  location                       = var.location
+  resource_group_name            = azurerm_resource_group.rg.name
+  subnet_id                      = module.vnet.subnet_ids[var.pe_subnet_name]
+  tags                           = var.tags
+  private_connection_resource_id = module.keyvault.id
+  is_manual_connection           = false
+  subresource_name               = "vault"
+  private_dns_zone_group_name    = "KeyVaultPrivateDnsZoneGroup"
+  private_dns_zone_group_ids     = [module.keyvault_private_dns_zone.id]
+}
 
 module "databricks_subnets" {
   source                      = "./modules/azure-databricks-subnets"

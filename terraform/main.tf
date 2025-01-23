@@ -315,3 +315,32 @@ resource "azurerm_storage_data_lake_gen2_filesystem" "datalake_filesystem" {
     time_sleep.role_assignment_sleep
   ]
 }
+
+// datalake endpoint and private dns
+
+module "datalake_private_dns_zone" {
+  source                       = "./modules/private_dns_zone"
+  name                         = "privatelink.dfs.core.windows.net"
+  resource_group_name          = azurerm_resource_group.rg.name
+  virtual_networks_to_link     = {
+    (module.vnet.name) = {
+      subscription_id    = data.azurerm_client_config.current.subscription_id
+      resource_group_name = azurerm_resource_group.rg.name
+    }
+  }
+  tags                         = var.tags
+}
+
+module "datalake_private_endpoint" {
+  source                         = "./modules/private_endpoint"
+  name                           = "${module.datalake_storage_account.name}PrivateEndpoint"
+  location                       = var.location
+  resource_group_name            = azurerm_resource_group.rg.name
+  subnet_id                      = module.vnet.subnet_ids[var.pe_subnet_name]
+  tags                           = var.tags
+  private_connection_resource_id = module.datalake_storage_account.id
+  is_manual_connection           = false
+  subresource_name               = "dfs"
+  private_dns_zone_group_name    = "DatalakePrivateDnsZoneGroup"
+  private_dns_zone_group_ids     = [module.datalake_private_dns_zone.id]
+}

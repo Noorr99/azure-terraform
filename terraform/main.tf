@@ -199,12 +199,36 @@ resource "azurerm_storage_account" "datalake_storage_account" {
   is_hns_enabled           = var.datalake_is_hns_enabled
 }
 
+data "azurerm_client_config" "current" {}
+
+resource "azurerm_role_assignment" "storage_blob_data_owner" {
+  scope                = azurerm_storage_account.datalake_storage_account.id
+  role_definition_name = "Storage Blob Data Owner"
+  principal_id         = data.azurerm_client_config.current.object_id
+}
+
+resource "azurerm_role_assignment" "contributor" {
+  scope                = azurerm_storage_account.datalake_storage_account.id
+  role_definition_name = "Contributor"
+  principal_id         = data.azurerm_client_config.current.object_id
+}
+
+resource "time_sleep" "role_assignment_sleep" {
+  create_duration = "60s"
+
+  triggers = {
+    role_assignment = azurerm_role_assignment.storage_blob_data_owner.id
+  }
+}
+
 resource "azurerm_storage_data_lake_gen2_filesystem" "datalake_filesystem" {
   name               = var.datalake_filesystem_name
   storage_account_id = azurerm_storage_account.datalake_storage_account.id
 
   properties = var.datalake_filesystem_properties
+
   depends_on = [
-    azurerm_storage_account.datalake_storage_account
+    azurerm_storage_account.datalake_storage_account,
+    time_sleep.role_assignment_sleep
   ]
 }

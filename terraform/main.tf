@@ -57,7 +57,7 @@ module "databricks_subnets" {
   source                           = "./modules/azure-databricks-subnets"
   subnet_name_prefix               = var.databricks_subnet_name_prefix
   vnet_resource_group_name         = azurerm_resource_group.rg.name
-  vnet_name                        = module.vnet.vnet_name
+  vnet_name                        = var.aks_vnet_name
   private_subnet_address_prefixes  = var.databricks_private_subnet_address_prefix
   public_subnet_address_prefixes   = var.databricks_public_subnet_address_prefixes
   additional_service_endpoints     = var.databricks_additional_service_endpoints
@@ -93,6 +93,7 @@ module "databricks_workspace" {
 
   tags                = var.tags
 }
+
 
 # Virtual Machine Module
 module "virtual_machine" {

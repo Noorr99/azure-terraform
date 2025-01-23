@@ -1,4 +1,3 @@
-// Create the databricks workspace
 resource "azurerm_databricks_workspace" "module-databricks" {
   name                = var.workspace_name
   resource_group_name = var.resource_group_name
@@ -6,11 +5,11 @@ resource "azurerm_databricks_workspace" "module-databricks" {
   sku                 = "standard"
   managed_resource_group_name = "${var.workspace_name}-managed-rg"
 
-  custom_parameters {
-    no_public_ip        = false
-    private_subnet_id   = var.private_subnet_id
-    public_subnet_id    = var.public_subnet_id
-    virtual_network_id  = var.vnet_id
+  network {
+    no_public_ip       = false
+    private_subnet_id  = var.private_subnet_id
+    public_subnet_id   = var.public_subnet_id
+    virtual_network_id = var.vnet_id
   }
 
   tags = var.tags

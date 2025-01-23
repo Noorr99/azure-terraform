@@ -184,12 +184,12 @@ module "acr_private_dns_zone" {
 
 module "acr_private_endpoint" {
   source                         = "./modules/private_endpoint"
-  name                           = "${module.container_registry.name}PrivateEndpoint"
+  name                           = "${module.acr.name}PrivateEndpoint"
   location                       = var.location
   resource_group_name            = azurerm_resource_group.rg.name
   subnet_id                      = module.vnet.subnet_ids[var.pe_subnet_name]
   tags                           = var.tags
-  private_connection_resource_id = module.container_registry.id
+  private_connection_resource_id = module.acr.id
   is_manual_connection           = false
   subresource_name               = "registry"
   private_dns_zone_group_name    = "AcrPrivateDnsZoneGroup"

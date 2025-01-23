@@ -179,8 +179,10 @@ module "databricks_workspace" {
   workspace_name       = var.workspace_name
   resource_group_name  = azurerm_resource_group.rg.name
   location             = var.location
-  vnet_id              = module.vnet.vnet_id // Correct reference to vnet_id
+  vnet_id              = module.vnet.vnet_id // Ensure correct reference
   private_subnet_name  = module.databricks_subnets.private_subnet_name
   public_subnet_name   = module.databricks_subnets.public_subnet_name
   tags                 = var.databricks_tags
+
+  depends_on = [module.databricks_subnets] // Ensure subnets are created before workspace
 }

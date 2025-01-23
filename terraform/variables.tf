@@ -290,7 +290,7 @@ variable "databricks_tags" {
 variable "datalake_storage_account_name" {
   description = "The name of the Data Lake Storage account"
   type        = string
-  default     = "datalake_stg_npc_test"
+  default     = "datalakestgaccnpctest"
 }
 
 variable "datalake_account_tier" {
@@ -320,7 +320,7 @@ variable "datalake_is_hns_enabled" {
 variable "datalake_filesystem_name" {
   description = "The name of the Data Lake Storage Gen2 filesystem"
   type        = string
-  default     = "datalakefs_npc_test"
+  default     = "datalakefsnpctest"
 }
 
 variable "datalake_filesystem_properties" {

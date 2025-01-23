@@ -187,7 +187,7 @@ module "acr_private_endpoint" {
   name                           = "${module.container_registry.name}PrivateEndpoint"
   location                       = var.location
   resource_group_name            = azurerm_resource_group.rg.name
-  subnet_id                      = module.aks_network.subnet_ids[var.vm_subnet_name]
+  subnet_id                      = module.vnet.subnet_ids[var.pe_subnet_name]
   tags                           = var.tags
   private_connection_resource_id = module.container_registry.id
   is_manual_connection           = false

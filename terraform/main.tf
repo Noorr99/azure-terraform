@@ -7,7 +7,12 @@ terraform {
   }
 
   backend "azurerm" {
-    # backend configuration details here (if any)
+    # Add your backend configuration here if applicable
+    # Example:
+    # resource_group_name  = "my-backend-rg"
+    # storage_account_name = "mystorageaccount"
+    # container_name       = "tfstate"
+    # key                  = "terraform.tfstate"
   }
 }
 
@@ -15,15 +20,14 @@ provider "azurerm" {
   features {}
 }
 
+# Resource Group
 resource "azurerm_resource_group" "rg" {
   name     = var.resource_group_name
   location = var.location
   tags     = var.tags
 }
 
-//
-// Virtual Network Module – includes subnets for VMs, Private Endpoints, and Databricks.
-//
+# Virtual Network Module
 module "vnet" {
   source              = "./modules/virtual_network"
   resource_group_name = azurerm_resource_group.rg.name
@@ -48,9 +52,7 @@ module "vnet" {
   ]
 }
 
-//
-// Azure Databricks Subnets Module
-//
+# Azure Databricks Subnets Module
 module "databricks_subnets" {
   source                           = "./modules/azure-databricks-subnets"
   subnet_name_prefix               = var.databricks_subnet_name_prefix
@@ -60,27 +62,24 @@ module "databricks_subnets" {
   public_subnet_address_prefixes   = var.databricks_public_subnet_address_prefixes
   additional_service_endpoints     = var.databricks_additional_service_endpoints
   service_delegation_actions       = var.databricks_service_delegation_actions
+  tags                             = var.tags
 }
 
-//
-// Azure Databricks Security Groups Module
-//
+# Azure Databricks Security Groups Module
 module "databricks_security_groups" {
-  source                     = "./modules/azure-databricks-security-groups"
-  security_group_name_prefix = var.databricks_security_group_name_prefix
-  location                   = var.location
-  vnet_resource_group_name   = azurerm_resource_group.rg.name
+  source                      = "./modules/azure-databricks-security-groups"
+  security_group_name_prefix  = var.databricks_security_group_name_prefix
+  location                    = var.location
+  vnet_resource_group_name    = azurerm_resource_group.rg.name
 
   # Reference subnet IDs from the Databricks Subnets module
-  private_subnet_id          = module.databricks_subnets.private_subnet_id
-  public_subnet_id           = module.databricks_subnets.public_subnet_id
+  private_subnet_id           = module.databricks_subnets.private_subnet_id
+  public_subnet_id            = module.databricks_subnets.public_subnet_id
 
-  tags                       = var.tags
+  tags                        = var.tags
 }
 
-//
-// Azure Databricks Workspace Module
-//
+# Azure Databricks Workspace Module
 module "databricks_workspace" {
   source              = "./modules/azure-databricks-workspace"
   workspace_name      = var.workspace_name
@@ -95,9 +94,7 @@ module "databricks_workspace" {
   tags                = var.tags
 }
 
-//
-// Virtual Machine Module (unchanged)
-//
+# Virtual Machine Module
 module "virtual_machine" {
   count               = var.vm_count
   source              = "./modules/virtual_machine"
@@ -116,9 +113,7 @@ module "virtual_machine" {
   os_disk_storage_account_type = var.vm_os_disk_storage_account_type
 }
 
-//
-// Key Vault Module Deployment
-//
+# Key Vault Module
 module "key_vault" {
   source              = "./modules/key_vault"
   name                = var.key_vault_name
@@ -141,9 +136,7 @@ module "key_vault" {
   virtual_network_subnet_ids = []
 }
 
-//
-// ACR Module Deployment
-//
+# ACR Module
 module "acr" {
   source              = "./modules/container_registry"
   name                = var.acr_name
@@ -156,9 +149,7 @@ module "acr" {
   georeplication_locations = var.acr_georeplication_locations
 }
 
-//
-// Private Endpoint for Key Vault
-//
+# Private Endpoint for Key Vault
 resource "azurerm_private_endpoint" "key_vault_pe" {
   name                = "${var.key_vault_name}-pe"
   location            = var.location
@@ -174,9 +165,7 @@ resource "azurerm_private_endpoint" "key_vault_pe" {
   }
 }
 
-//
-// Private Endpoint for ACR
-//
+# Private Endpoint for ACR
 resource "azurerm_private_endpoint" "acr_pe" {
   name                = "${var.acr_name}-pe"
   location            = var.location
@@ -191,7 +180,3 @@ resource "azurerm_private_endpoint" "acr_pe" {
     is_manual_connection           = false
   }
 }
-
-//
-// Outputs from Databricks Modules are handled in the `outputs.tf` file below.
-//

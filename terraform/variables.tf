@@ -1,5 +1,5 @@
 //
-// Resource Group Variables
+# Resource Group Variables
 //
 variable "resource_group_name" {
   description = "Specifies the name of the resource group."
@@ -22,7 +22,7 @@ variable "tags" {
 }
 
 //
-// Virtual Network (VNet) Variables
+# Virtual Network (VNet) Variables
 //
 variable "aks_vnet_name" {
   description = "Specifies the name of the Azure virtual network."
@@ -37,7 +37,7 @@ variable "aks_vnet_address_space" {
 }
 
 //
-// Subnet Variables for VMs, Private Endpoints, and Databricks
+# Subnet Variables for VMs and Private Endpoints
 //
 variable "vm_subnet_name" {
   description = "Specifies the name of the subnet for virtual machines."
@@ -64,7 +64,7 @@ variable "pe_subnet_address_prefix" {
 }
 
 //
-// Databricks Subnet Variables
+# Databricks Subnet Variables
 //
 variable "databricks_subnet_name_prefix" {
   description = "Prefix for Databricks subnets."
@@ -96,9 +96,6 @@ variable "databricks_service_delegation_actions" {
   default     = ["Microsoft.Network/virtualNetworks/subnets/join/action"]
 }
 
-//
-// Databricks Security Groups Variables
-//
 variable "databricks_security_group_name_prefix" {
   description = "Prefix for Databricks security groups."
   type        = string
@@ -106,7 +103,7 @@ variable "databricks_security_group_name_prefix" {
 }
 
 //
-// Virtual Machine (VM) Variables
+# Virtual Machine (VM) Variables
 //
 variable "vm_name" {
   description = "Specifies the base name of the virtual machine."
@@ -176,7 +173,7 @@ variable "vm_os_disk_storage_account_type" {
 }
 
 //
-// Key Vault Variables
+# Key Vault Variables
 //
 variable "key_vault_name" {
   description = "Specifies the name of the Key Vault."
@@ -250,7 +247,7 @@ variable "key_vault_ip_rules" {
 }
 
 //
-// ACR Variables
+# ACR Variables
 //
 variable "acr_name" {
   description = "Specifies the name of the Container Registry."
@@ -277,48 +274,9 @@ variable "acr_georeplication_locations" {
 }
 
 //
-// Databricks Variables
+# Databricks Variables
 //
 variable "workspace_name" {
   description = "Name of the Databricks workspace."
   type        = string
-}
-
-//
-// Additional Databricks Variables
-//
-variable "databricks_subnet_name_prefix" {
-  description = "Prefix for Databricks subnets."
-  type        = string
-  default     = "Databricks"
-}
-
-variable "databricks_public_subnet_address_prefixes" {
-  description = "Address prefixes for the Databricks public subnet."
-  type        = list(string)
-  default     = ["10.0.2.0/24"]
-}
-
-variable "databricks_private_subnet_address_prefix" {
-  description = "Address prefix for the Databricks private subnet."
-  type        = list(string)
-  default     = ["10.0.3.0/24"]
-}
-
-variable "databricks_additional_service_endpoints" {
-  description = "Additional service endpoints for Databricks subnets."
-  type        = list(string)
-  default     = []
-}
-
-variable "databricks_service_delegation_actions" {
-  description = "Service delegation actions for Databricks subnets."
-  type        = list(string)
-  default     = ["Microsoft.Network/virtualNetworks/subnets/join/action"]
-}
-
-variable "databricks_security_group_name_prefix" {
-  description = "Prefix for Databricks security groups."
-  type        = string
-  default     = "DatabricksSG"
 }

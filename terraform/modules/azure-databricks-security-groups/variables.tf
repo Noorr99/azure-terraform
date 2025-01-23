@@ -1,31 +1,29 @@
 variable "security_group_name_prefix" {
+  description = "Prefix for Databricks security groups."
   type        = string
-  description = "Prefix for the names of the security groups created by this module"
-  default     = "tamr-databricks"
 }
 
 variable "location" {
+  description = "Azure region for deployment."
   type        = string
-  description = "Location in which Databricks will be deployed"
 }
 
 variable "vnet_resource_group_name" {
+  description = "Resource group name of the virtual network."
   type        = string
-  description = "Name of resource group which contains the virtual network and subnets"
 }
 
 variable "private_subnet_id" {
+  description = "ID of the private subnet for Databricks."
   type        = string
-  description = "ID of the private subnet"
 }
 
 variable "public_subnet_id" {
+  description = "ID of the public subnet for Databricks."
   type        = string
-  description = "ID of the public subnet"
 }
 
 variable "tags" {
+  description = "Tags to apply to security groups."
   type        = map(string)
-  description = "Map of tags to attach to Databricks workspace"
-  default     = {}
 }

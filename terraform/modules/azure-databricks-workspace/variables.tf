@@ -33,3 +33,8 @@ variable "tags" {
   description = "Map of tags to attach to Databricks workspace"
   default     = {}
 }
+
+variable "public_subnet_network_security_group_association_id" {
+  description = "The ID of the NSG associated with the public subnet."
+  type        = string
+}

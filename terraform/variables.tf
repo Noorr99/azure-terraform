@@ -244,10 +244,10 @@ variable "workspace_name" {
   default     = "DatabricksWorkspace-npc-test"
 }
 
-variable "databricks_vnet_id" {
-  description = "ID of the existing virtual network where Databricks will be deployed"
-  type        = string
-}
+#variable "databricks_vnet_id" {
+#  description = "ID of the existing virtual network where Databricks will be deployed"
+#  type        = string
+#}
 
 variable "databricks_vnet_resource_group_name" {
   description = "Name of the resource group containing the virtual network for Databricks"

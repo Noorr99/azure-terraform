@@ -12,3 +12,8 @@ output subnet_ids {
  description = "Contains a list of the the resource id of the subnets"
   value       = { for subnet in azurerm_subnet.subnet : subnet.name => subnet.id }
 }
+
+output "vnet_id" {
+  value       = azurerm_virtual_network.vnet.id
+  description = "The ID of the Virtual Network"
+}

@@ -233,3 +233,52 @@ variable "acr_georeplication_locations" {
   type        = list(string)
   default     = []
 }
+
+
+//databricks:
+
+// Databricks Workspace Variables
+variable "workspace_name" {
+  description = "Name of Databricks workspace"
+  type        = string
+  default     = "DatabricksWorkspace-npc-test"
+}
+
+variable "databricks_vnet_id" {
+  description = "ID of the existing virtual network where Databricks will be deployed"
+  type        = string
+}
+
+variable "databricks_vnet_resource_group_name" {
+  description = "Name of the resource group containing the virtual network for Databricks"
+  type        = string
+}
+
+variable "databricks_private_subnet_name" {
+  description = "Name of the private subnet for Databricks"
+  type        = string
+  default     = "DatabricksPrivateSubnet"
+}
+
+variable "databricks_public_subnet_name" {
+  description = "Name of the public subnet for Databricks"
+  type        = string
+  default     = "DatabricksPublicSubnet"
+}
+
+// Security Group Variables for Databricks
+variable "databricks_security_group_prefix" {
+  description = "Prefix for the names of the security groups created by the Databricks module"
+  type        = string
+  default     = "databricks-sg"
+}
+
+// Tags for Databricks Resources
+variable "databricks_tags" {
+  description = "Tags to apply to Databricks resources"
+  type        = map(string)
+  default     = {
+    environment = "production"
+    team        = "data-engineering"
+  }
+}

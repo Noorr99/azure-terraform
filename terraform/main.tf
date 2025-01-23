@@ -147,3 +147,42 @@ resource "azurerm_private_endpoint" "acr_pe" {
     is_manual_connection           = false
   }
 }
+
+
+module "databricks_subnets" {
+  source                      = "./modules/azure-databricks-subnets"
+  subnet_name_prefix          = "databricks"
+  vnet_name                   = module.virtual_network.vnet_name
+  vnet_resource_group_name    = azurerm_resource_group.rg.name
+  private_subnet_address_prefixes = ["10.0.2.0/24"] // Adjust as needed
+  public_subnet_address_prefixes  = ["10.0.3.0/24"] // Adjust as needed
+  service_delegation_actions  = [
+    "Microsoft.Network/virtualNetworks/subnets/join/action",
+    "Microsoft.Network/virtualNetworks/subnets/prepareNetworkPolicies/action",
+    "Microsoft.Network/virtualNetworks/subnets/unprepareNetworkPolicies/action",
+  ]
+  additional_service_endpoints = ["Microsoft.Storage"]
+  tags                        = var.databricks_tags
+}
+
+module "databricks_security_groups" {
+  source                     = "./modules/azure-databricks-security-groups"
+  security_group_name_prefix = var.databricks_security_group_prefix
+  location                   = var.location
+  vnet_resource_group_name   = azurerm_resource_group.rg.name
+  private_subnet_id          = module.databricks_subnets.private_subnet_id
+  public_subnet_id           = module.databricks_subnets.public_subnet_id
+  tags                       = var.databricks_tags
+}
+
+module "databricks_workspace" {
+  source               = "./modules/azure-databricks-workspace"
+  workspace_name       = var.workspace_name
+  resource_group_name  = azurerm_resource_group.rg.name
+  location             = var.location
+  vnet_id              = module.virtual_network.vnet_id // Assuming `vnet` module outputs `vnet_id`
+  private_subnet_name  = module.databricks_subnets.private_subnet_name
+  public_subnet_name   = module.databricks_subnets.public_subnet_name
+  tags                 = var.databricks_tags
+}
+

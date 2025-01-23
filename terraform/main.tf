@@ -31,7 +31,7 @@ module "vnet" {
   vnet_name           = var.aks_vnet_name
   address_space       = var.aks_vnet_address_space
 
-  # Updated list of subnets including Databricks subnets.
+  # Define subnets excluding Databricks subnets
   subnets = [
     {
       name                                          = var.vm_subnet_name
@@ -44,20 +44,55 @@ module "vnet" {
       address_prefixes                              = var.pe_subnet_address_prefix
       private_endpoint_network_policies_enabled     = false
       private_link_service_network_policies_enabled = true
-    },
-    {
-      name                                          = var.databricks_public_subnet_name
-      address_prefixes                              = var.databricks_public_subnet_address_prefix
-      private_endpoint_network_policies_enabled     = false
-      private_link_service_network_policies_enabled = false
-    },
-    {
-      name                                          = var.databricks_private_subnet_name
-      address_prefixes                              = var.databricks_private_subnet_address_prefix
-      private_endpoint_network_policies_enabled     = false
-      private_link_service_network_policies_enabled = false
     }
   ]
+}
+
+//
+// Azure Databricks Subnets Module
+//
+module "databricks_subnets" {
+  source                           = "./modules/azure-databricks-subnets"
+  subnet_name_prefix               = var.databricks_subnet_name_prefix
+  vnet_resource_group_name         = azurerm_resource_group.rg.name
+  vnet_name                        = module.vnet.vnet_name
+  private_subnet_address_prefixes  = var.databricks_private_subnet_address_prefix
+  public_subnet_address_prefixes   = var.databricks_public_subnet_address_prefixes
+  additional_service_endpoints     = var.databricks_additional_service_endpoints
+  service_delegation_actions       = var.databricks_service_delegation_actions
+}
+
+//
+// Azure Databricks Security Groups Module
+//
+module "databricks_security_groups" {
+  source                     = "./modules/azure-databricks-security-groups"
+  security_group_name_prefix = var.databricks_security_group_name_prefix
+  location                   = var.location
+  vnet_resource_group_name   = azurerm_resource_group.rg.name
+
+  # Reference subnet IDs from the Databricks Subnets module
+  private_subnet_id          = module.databricks_subnets.private_subnet_id
+  public_subnet_id           = module.databricks_subnets.public_subnet_id
+
+  tags                       = var.tags
+}
+
+//
+// Azure Databricks Workspace Module
+//
+module "databricks_workspace" {
+  source              = "./modules/azure-databricks-workspace"
+  workspace_name      = var.workspace_name
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = var.location
+  vnet_id             = module.vnet.vnet_id
+
+  # Reference subnet IDs from the Databricks Subnets module
+  public_subnet_id    = module.databricks_subnets.public_subnet_id
+  private_subnet_id   = module.databricks_subnets.private_subnet_id
+
+  tags                = var.tags
 }
 
 //
@@ -158,36 +193,5 @@ resource "azurerm_private_endpoint" "acr_pe" {
 }
 
 //
-// Create the Databricks Workspace
+// Outputs from Databricks Modules are handled in the `outputs.tf` file below.
 //
-module "databricks-workspace" {
-  source              = "./modules/azure-databricks-workspace"
-  workspace_name      = var.workspace_name
-  resource_group_name = azurerm_resource_group.rg.name
-  location            = var.location
-
-  # Pass the VNet ID from the VNet module
-  vnet_id             = module.vnet.vnet_id
-
-  # Pass the specific subnet IDs from the VNet module based on subnet names
-  public_subnet_id    = module.vnet.subnet_ids[var.databricks_public_subnet_name]
-  private_subnet_id   = module.vnet.subnet_ids[var.databricks_private_subnet_name]
-
-  tags                = var.tags
-}
-
-//
-// Create the Security Groups for the Subnets
-//
-module "security-groups" {
-  source                     = "./modules/azure-databricks-security-groups"
-  security_group_name_prefix = var.workspace_name
-  location                   = var.location
-  vnet_resource_group_name   = azurerm_resource_group.rg.name
-
-  # Reference subnet IDs from the VNet module
-  private_subnet_id          = module.vnet.subnet_ids[var.databricks_private_subnet_name]
-  public_subnet_id           = module.vnet.subnet_ids[var.databricks_public_subnet_name]
-
-  tags                       = var.tags
-}

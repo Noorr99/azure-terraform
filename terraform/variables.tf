@@ -37,7 +37,7 @@ variable "aks_vnet_address_space" {
 }
 
 //
-// Subnet Variables for VMs, Private Endpoints, and Databricks
+// Subnet Variables for VMs and Private Endpoints
 //
 variable "vm_subnet_name" {
   description = "Specifies the name of the subnet for virtual machines."
@@ -66,28 +66,43 @@ variable "pe_subnet_address_prefix" {
 //
 // Databricks Subnet Variables
 //
-variable "databricks_public_subnet_name" {
-  description = "Specifies the name of the public subnet for Databricks."
+variable "databricks_subnet_name_prefix" {
+  description = "Prefix for Databricks subnets."
   type        = string
-  default     = "DatabricksPublicSubnet"
+  default     = "Databricks"
 }
 
-variable "databricks_public_subnet_address_prefix" {
-  description = "Specifies the address prefix for the Databricks public subnet."
+variable "databricks_public_subnet_address_prefixes" {
+  description = "Address prefixes for the Databricks public subnet."
   type        = list(string)
   default     = ["10.0.2.0/24"]
 }
 
-variable "databricks_private_subnet_name" {
-  description = "Specifies the name of the private subnet for Databricks."
-  type        = string
-  default     = "DatabricksPrivateSubnet"
-}
-
 variable "databricks_private_subnet_address_prefix" {
-  description = "Specifies the address prefix for the Databricks private subnet."
+  description = "Address prefix for the Databricks private subnet."
   type        = list(string)
   default     = ["10.0.3.0/24"]
+}
+
+variable "databricks_additional_service_endpoints" {
+  description = "Additional service endpoints for Databricks subnets."
+  type        = list(string)
+  default     = []
+}
+
+variable "databricks_service_delegation_actions" {
+  description = "Service delegation actions for Databricks subnets."
+  type        = list(string)
+  default     = ["Microsoft.Network/virtualNetworks/subnets/join/action"]
+}
+
+//
+// Databricks Security Groups Variables
+//
+variable "databricks_security_group_name_prefix" {
+  description = "Prefix for Databricks security groups."
+  type        = string
+  default     = "DatabricksSG"
 }
 
 //
@@ -265,18 +280,12 @@ variable "acr_georeplication_locations" {
 // Databricks Variables
 //
 variable "workspace_name" {
+  description = "Name of the Databricks workspace."
   type        = string
-  description = "Name of the Databricks workspace"
 }
 
-variable "databricks_public_subnet_name" {
-  description = "Name of the public subnet for Databricks."
-  type        = string
-  default     = "DatabricksPublicSubnet"
-}
-
-variable "databricks_private_subnet_name" {
-  description = "Name of the private subnet for Databricks."
-  type        = string
-  default     = "DatabricksPrivateSubnet"
-}
+//
+// Additional Databricks Variables
+//
+# These variables are already defined above as part of subnets and security groups.
+# If you have any additional variables required by Databricks modules, define them here.

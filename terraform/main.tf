@@ -204,4 +204,7 @@ resource "azurerm_storage_data_lake_gen2_filesystem" "datalake_filesystem" {
   storage_account_id = azurerm_storage_account.datalake_storage_account.id
 
   properties = var.datalake_filesystem_properties
+  depends_on = [
+    azurerm_storage_account.datalake_storage_account
+  ]
 }

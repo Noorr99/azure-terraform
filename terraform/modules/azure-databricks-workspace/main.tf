@@ -19,12 +19,12 @@ resource "azurerm_databricks_workspace" "module-databricks" {
 
 data "azurerm_subnet" "private_subnet" {
   name                 = var.private_subnet_name
-  virtual_network_name  = "VMVNet"
+  virtual_network_name = module.vnet.name
   resource_group_name  = var.resource_group_name
 }
 
 data "azurerm_subnet" "public_subnet" {
   name                 = var.public_subnet_name
-  virtual_network_name  = "VMVNet"
+  virtual_network_name = module.vnet.name
   resource_group_name  = var.resource_group_name
 }

@@ -152,7 +152,7 @@ resource "azurerm_private_endpoint" "acr_pe" {
 module "databricks_subnets" {
   source                      = "./modules/azure-databricks-subnets"
   subnet_name_prefix          = "databricks"
-  vnet_name                   = module.virtual_network.vnet_name
+  vnet_name                   = module.vnet.vnet_name
   vnet_resource_group_name    = azurerm_resource_group.rg.name
   private_subnet_address_prefixes = ["10.0.2.0/24"] // Adjust as needed
   public_subnet_address_prefixes  = ["10.0.3.0/24"] // Adjust as needed
@@ -180,7 +180,7 @@ module "databricks_workspace" {
   workspace_name       = var.workspace_name
   resource_group_name  = azurerm_resource_group.rg.name
   location             = var.location
-  vnet_id              = module.virtual_network.vnet_id // Assuming `vnet` module outputs `vnet_id`
+  vnet_id              = module.vnet.vnet_id // Assuming `vnet` module outputs `vnet_id`
   private_subnet_name  = module.databricks_subnets.private_subnet_name
   public_subnet_name   = module.databricks_subnets.public_subnet_name
   tags                 = var.databricks_tags

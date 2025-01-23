@@ -219,12 +219,12 @@ module "keyvault_private_dns_zone" {
 
 module "keyvault_private_endpoint" {
   source                         = "./modules/private_endpoint"
-  name                           = "${module.keyvault.name}PrivateEndpoint"
+  name                           = "${module.key_vault.name}PrivateEndpoint"
   location                       = var.location
   resource_group_name            = azurerm_resource_group.rg.name
   subnet_id                      = module.vnet.subnet_ids[var.pe_subnet_name]
   tags                           = var.tags
-  private_connection_resource_id = module.keyvault.id
+  private_connection_resource_id = module.key_vault.id
   is_manual_connection           = false
   subresource_name               = "vault"
   private_dns_zone_group_name    = "KeyVaultPrivateDnsZoneGroup"

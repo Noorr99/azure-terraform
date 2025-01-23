@@ -188,3 +188,20 @@ module "databricks_workspace" {
 
   depends_on = [module.databricks_subnets, module.databricks_security_groups]
 }
+
+resource "azurerm_storage_account" "datalake_storage_account" {
+  name                     = var.datalake_storage_account_name
+  resource_group_name      = azurerm_resource_group.rg.name
+  location                 = azurerm_resource_group.rg.location
+  account_tier             = var.datalake_account_tier
+  account_replication_type = var.datalake_account_replication_type
+  account_kind             = var.datalake_account_kind
+  is_hns_enabled           = var.datalake_is_hns_enabled
+}
+
+resource "azurerm_storage_data_lake_gen2_filesystem" "datalake_filesystem" {
+  name               = var.datalake_filesystem_name
+  storage_account_id = azurerm_storage_account.datalake_storage_account.id
+
+  properties = var.datalake_filesystem_properties
+}

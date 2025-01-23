@@ -252,6 +252,7 @@ variable "workspace_name" {
 variable "databricks_vnet_resource_group_name" {
   description = "Name of the resource group containing the virtual network for Databricks"
   type        = string
+  default     = "VMVNet"
 }
 
 variable "databricks_private_subnet_name" {
@@ -280,5 +281,52 @@ variable "databricks_tags" {
   default     = {
     environment = "production"
     team        = "data-engineering"
+  }
+}
+
+
+// Datalake storage variables
+
+variable "datalake_storage_account_name" {
+  description = "The name of the Data Lake Storage account"
+  type        = string
+  default     = "datalake_stg_npc_test"
+}
+
+variable "datalake_account_tier" {
+  description = "The tier of the Data Lake Storage account"
+  type        = string
+  default     = "Standard"
+}
+
+variable "datalake_account_replication_type" {
+  description = "The replication type of the Data Lake Storage account"
+  type        = string
+  default     = "LRS"
+}
+
+variable "datalake_account_kind" {
+  description = "The kind of the Data Lake Storage account"
+  type        = string
+  default     = "StorageV2"
+}
+
+variable "datalake_is_hns_enabled" {
+  description = "Whether the hierarchical namespace is enabled"
+  type        = bool
+  default     = true
+}
+
+variable "datalake_filesystem_name" {
+  description = "The name of the Data Lake Storage Gen2 filesystem"
+  type        = string
+  default     = "datalakefs_npc_test"
+}
+
+variable "datalake_filesystem_properties" {
+  description = "The properties of the Data Lake Storage Gen2 filesystem"
+  type        = map(string)
+  default     = {
+    hello = "aGVsbG8="
   }
 }

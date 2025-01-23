@@ -178,8 +178,13 @@ module "acr_private_dns_zone" {
   source                       = "./modules/private_dns_zone"
   name                         = "privatelink.azurecr.io"
   resource_group_name          = azurerm_resource_group.rg.name
-  virtual_networks_to_link     = var.aks_vnet_name
-
+  virtual_networks_to_link     = {
+    (module.vnet.name) = {
+      subscription_id    = data.azurerm_client_config.current.subscription_id
+      resource_group_name = azurerm_resource_group.rg.name
+    }
+  }
+  tags                         = var.tags
 }
 
 module "acr_private_endpoint" {

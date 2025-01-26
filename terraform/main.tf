@@ -89,6 +89,7 @@ module "key_vault" {
   enable_rbac_authorization       = var.key_vault_enable_rbac_authorization
   purge_protection_enabled        = var.key_vault_purge_protection_enabled
   soft_delete_retention_days      = var.key_vault_soft_delete_retention_days
+  public_network_access_enabled   = var.public_network_access_enabled
 
   bypass                        = var.key_vault_bypass
   default_action                = var.key_vault_default_action
@@ -108,6 +109,7 @@ module "acr" {
   admin_enabled       = var.acr_admin_enabled
   sku                 = var.acr_sku
   tags                = var.tags
+  public_network_access_enabled = var.public_network_access_enabled
 
   georeplication_locations = var.acr_georeplication_locations
 }

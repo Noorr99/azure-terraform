@@ -69,7 +69,7 @@ variable "pe_subnet_address_prefix" {
 variable "vm_name" {
   description = "Specifies the base name of the virtual machine."
   type        = string
-  default     = "vm-nih-shared-dev"
+  default     = "vm-nih-dev-01"
 }
 
 variable "vm_count" {
@@ -207,6 +207,10 @@ variable "key_vault_ip_rules" {
   default     = []
 }
 
+variable "public_network_access_enabled" { 
+  description = "(Optional) Whether public network access is allowed for this Key Vault."
+  default     = []
+}
 //
 // ACR Variables
 //

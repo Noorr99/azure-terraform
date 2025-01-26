@@ -153,3 +153,11 @@ module "sql_private_dns_zone" {
   virtual_networks_to_link     = { (module.vnet.name) = { subscription_id = data.azurerm_client_config.current.subscription_id, resource_group_name = azurerm_resource_group.rg.name } }
   tags                         = var.tags
 }
+
+module "data_factory" {
+  source              = "./modules/data_factory"
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = var.location
+  data_factory_name   = var.data_factory_name
+  tags                = var.tags
+}

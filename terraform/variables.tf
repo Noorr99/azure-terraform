@@ -210,3 +210,9 @@ variable "public_network_access_enabled" {
   description = "(Optional) Whether public network access is allowed for this Key Vault."
   default     = false
 }
+
+variable "data_factory_name" {
+  description = "Specifies the name of the Azure Data Factory."
+  type        = string
+  default     = "adf-nih-dev-test"
+}

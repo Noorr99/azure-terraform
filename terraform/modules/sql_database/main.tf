@@ -1,3 +1,4 @@
+# SQL Server Resource
 resource "azurerm_sql_server" "sql_server" {
   name                         = var.sql_server_name
   resource_group_name          = var.resource_group_name
@@ -8,35 +9,27 @@ resource "azurerm_sql_server" "sql_server" {
   tags                         = var.tags
 }
 
+# SQL Database Resource
 resource "azurerm_sql_database" "sql_database" {
   name                = var.sql_database_name
   resource_group_name = var.resource_group_name
-  server_name         = azurerm_sql_server.sql_server.name
   location            = var.location
+  server_name         = azurerm_sql_server.sql_server.name
   edition             = var.sql_database_tier
-  requested_service_objective_name = "P1"
+  requested_service_objective_name = "P1" # Premium tier, P1: 125 DTUs
   max_size_gb         = var.sql_database_size_gb
-  zone_redundant      = true
   tags                = var.tags
 }
 
-resource "azurerm_private_endpoint" "sql_private_endpoint" {
-  name                = "${var.sql_server_name}-pe"
-  location            = var.location
+# Backup Retention Policy (if required)
+resource "azurerm_backup_policy_vm" "long_term_retention" {
+  name                = "${var.sql_server_name}-backup-policy"
   resource_group_name = var.resource_group_name
-  subnet_id           = var.subnet_id
-
-  private_service_connection {
-    name                           = "sqlServerConnection"
-    private_connection_resource_id = azurerm_sql_server.sql_server.id
-    subresource_names              = ["sqlServer"]
+  location            = var.location
+  retention_policy {
+    daily_schedule {
+      retention_duration = "${var.long_term_retention_backup}GB"
+    }
   }
-}
-
-resource "azurerm_private_dns_zone_virtual_network_link" "sql_dns_vnet_link" {
-  name                  = "${var.sql_server_name}-dns-link"
-  resource_group_name   = var.resource_group_name
-  private_dns_zone_id   = var.private_dns_zone_id
-  virtual_network_id    = var.subnet_id
-  registration_enabled  = false
+  tags = var.tags
 }

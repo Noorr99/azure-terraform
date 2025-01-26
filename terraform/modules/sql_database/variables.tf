@@ -57,3 +57,8 @@ variable "tags" {
   description = "Tags to apply to all resources."
   type        = map(string)
 }
+
+variable "long_term_retention_backup" {
+  description = "Specifies the size of the long-term retention backup in GB."
+  type        = number
+}

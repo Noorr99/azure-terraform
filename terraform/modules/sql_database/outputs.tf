@@ -5,5 +5,5 @@ output "sql_server_id" {
 
 output "sql_database_id" {
   description = "The ID of the SQL Database."
-  value       = azurerm_sql_database.sql_database.id
+  value       = azurerm_sql_database.id
 }

@@ -5,10 +5,11 @@ terraform {
       version = "3.50"
     }
   }
-
+/*
   backend "azurerm" {
     # Backend configuration details here (if any)
   }
+*/
 }
 
 provider "azurerm" {

@@ -75,12 +75,12 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
     outbound_type      = var.outbound_type
     service_cidr       = var.network_service_cidr
   }
-
+/*
   oms_agent {
     msi_auth_for_monitoring_enabled = true
 //    log_analytics_workspace_id      = coalesce(var.oms_agent.log_analytics_workspace_id, var.log_analytics_workspace_id)
   }
-
+*/
   dynamic "ingress_application_gateway" {
     for_each = try(var.ingress_application_gateway.gateway_id, null) == null ? [] : [1]
 

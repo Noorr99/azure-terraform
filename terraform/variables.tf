@@ -30,7 +30,7 @@ variable "tags" {
 variable "aks_vnet_name" {
   description = "Specifies the name of the Azure virtual network."
   type        = string
-  default     = "vnet-nih-dev-northeurope-001"
+  default     = "vnet-nih-dev-001"
 }
 
 variable "aks_vnet_address_space" {
@@ -46,7 +46,7 @@ variable "aks_vnet_address_space" {
 variable "vm_subnet_name" {
   description = "Specifies the name of the subnet for virtual machines."
   type        = string
-  default     = "snet-nih-dev-northeurope-vm-001"
+  default     = "snet-nih-dev-vm-001"
 }
 
 variable "vm_subnet_address_prefix" {
@@ -58,7 +58,7 @@ variable "vm_subnet_address_prefix" {
 variable "pe_subnet_name" {
   description = "Specifies the name of the subnet for private endpoints."
   type        = string
-  default     = "snet-nih-dev-northeurope-pe-001"
+  default     = "snet-nih-dev-pe-001"
 }
 
 variable "pe_subnet_address_prefix" {
@@ -125,7 +125,7 @@ variable "vm_os_disk_image" {
 variable "domain_name_label" {
   description = "Specifies the domain name label for the virtual machine."
   type        = string
-  default     = "nih-dev-northeurope-001"
+  default     = "nih-dev-001"
 }
 
 variable "vm_os_disk_storage_account_type" {
@@ -270,13 +270,13 @@ variable "databricks_vnet_resource_group_name" {
 variable "databricks_private_subnet_name" {
   description = "Name of the private subnet for Databricks"
   type        = string
-  default     = "snet-nih-dev-northeurope-dbp-001"
+  default     = "snet-nih-dev-dbp-001"
 }
 
 variable "databricks_public_subnet_name" {
   description = "Name of the public subnet for Databricks"
   type        = string
-  default     = "snet-nih-dev-northeurope-dbu-001"
+  default     = "snet-nih-dev-dbu-001"
 }
 
 // Security Group Variables for Databricks

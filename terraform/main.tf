@@ -183,6 +183,7 @@ module "databricks_subnets" {
   ]
   additional_service_endpoints = ["Microsoft.Storage"]
   tags                        = var.databricks_tags
+  depends_on = [module.vnet]
 }
 
 module "databricks_security_groups" {
@@ -193,6 +194,8 @@ module "databricks_security_groups" {
   private_subnet_id          = module.databricks_subnets.private_subnet_id
   public_subnet_id           = module.databricks_subnets.public_subnet_id
   tags                       = var.databricks_tags
+  depends_on = [module.databricks_subnets]
+
 }
 
 module "databricks_workspace" {

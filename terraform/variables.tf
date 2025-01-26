@@ -16,39 +16,6 @@ variable "environment" {
 }
 
 ////////////////////////////////////////////////////////////////////////
-//                          Backend Vars
-////////////////////////////////////////////////////////////////////////
-variable "azure_provider_version" {
-  type        = string
-  description = "Version of the azurerm provider."
-  default     = "3.50"
-}
-
-variable "backend_resource_group_name" {
-  type        = string
-  description = "Resource group used to store the Terraform state."
-  default     = "my-tfstate-rg"
-}
-
-variable "backend_storage_account_name" {
-  type        = string
-  description = "Storage account name used to store the Terraform state."
-  default     = "mytfstateaccount"
-}
-
-variable "backend_container_name" {
-  type        = string
-  description = "Container name for the Terraform state file."
-  default     = "tfstate"
-}
-
-variable "backend_key" {
-  type        = string
-  description = "Key (file name) for where the Terraform state will be saved."
-  default     = "terraform.tfstate"
-}
-
-////////////////////////////////////////////////////////////////////////
 //                       Global Resource Vars
 ////////////////////////////////////////////////////////////////////////
 variable "resource_group_name" {

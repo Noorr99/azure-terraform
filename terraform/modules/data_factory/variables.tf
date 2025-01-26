@@ -14,7 +14,7 @@ variable "data_factory_name" {
 }
 
 variable "tags" {
-  description = "A map of tags for the Data Factory resources."
+  description = "A map of tags for the Data Factory resource."
   type        = map(string)
   default     = {}
 }

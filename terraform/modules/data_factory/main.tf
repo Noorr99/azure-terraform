@@ -5,40 +5,36 @@ resource "azurerm_data_factory" "this" {
   name                = var.data_factory_name
   resource_group_name = var.resource_group_name
   location            = var.location
-
-  tags = var.tags
+  tags                = var.tags
 }
 
 //
 // Azure Integration Runtime (Managed)
 //
 resource "azurerm_data_factory_integration_runtime_managed" "azure_ir" {
-  name                = "${var.data_factory_name}-azureir"
-  data_factory_name   = azurerm_data_factory.this.name
-  resource_group_name = var.resource_group_name
-  location            = var.location
-  description         = "Azure Integration Runtime for data movement in Azure."
+  name            = "${var.data_factory_name}-managed-ir"
+  data_factory_id = azurerm_data_factory.this.id
+  
+  # Required argument:
+  node_size = "Standard_D8_v3" 
 
-  # Example compute settings: 8 cores, 10 minute time-to-live
-  compute_properties {
-    compute_type = "General"
-    core_count   = 8
-    time_to_live = 10
-  }
-
-  tags = var.tags
+  # Optional:
+  # description = "Managed IR for data movement in Azure."
+  # number_of_nodes = 4
+  # max_parallel_executions_per_node = 2
+  # vnet_integration {
+  #   # If you want to attach it to a Data Factory Managed VNet
+  # }
 }
 
 //
 // Self-Hosted Integration Runtime
-// (If you need on-prem or VM-based data movement.)
+// (Remove if you don't need on-prem data movement)
 //
 resource "azurerm_data_factory_integration_runtime_self_hosted" "self_hosted_ir" {
-  name                = "${var.data_factory_name}-selfhostedir"
-  data_factory_name   = azurerm_data_factory.this.name
-  resource_group_name = var.resource_group_name
-  location            = var.location
-  description         = "Self-Hosted IR for on-prem or VM-based data movement."
+  name            = "${var.data_factory_name}-selfhosted-ir"
+  data_factory_id = azurerm_data_factory.this.id
 
-  tags = var.tags
+  # Optional:
+  # description = "Self-Hosted IR for on-prem or VM-based data movement."
 }

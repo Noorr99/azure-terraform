@@ -128,7 +128,7 @@ variable "key_vault_ip_rules" {
 variable "datalake_storage_account_name" {
   description = "The name of the Data Lake Storage account."
   type        = string
-  default     = "dlsnihdev"
+  default     = "dlsnihdev02"
 }
 
 variable "datalake_account_tier" {
@@ -161,7 +161,7 @@ variable "datalake_is_hns_enabled" {
 variable "sql_server_name" {
   description = "Specifies the name of the SQL Server."
   type        = string
-  default     = "sql-server-dev"
+  default     = "sql-server-dev-nih"
 }
 
 variable "sql_admin_username" {

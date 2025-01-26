@@ -154,9 +154,6 @@ module "sql_private_dns_zone" {
   tags                         = var.tags
 }
 
-# ...
-data "azurerm_client_config" "current" {}
-
 module "data_factory" {
   source              = "./modules/data_factory"
   resource_group_name = azurerm_resource_group.rg.name

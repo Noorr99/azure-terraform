@@ -78,7 +78,7 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
 
   oms_agent {
     msi_auth_for_monitoring_enabled = true
-    log_analytics_workspace_id      = coalesce(var.oms_agent.log_analytics_workspace_id, var.log_analytics_workspace_id)
+//    log_analytics_workspace_id      = coalesce(var.oms_agent.log_analytics_workspace_id, var.log_analytics_workspace_id)
   }
 
   dynamic "ingress_application_gateway" {
@@ -110,7 +110,7 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
     ]
   }
 }
-
+/*
 resource "azurerm_monitor_diagnostic_setting" "settings" {
   name                       = "DiagnosticsSettings"
   target_resource_id         = azurerm_kubernetes_cluster.aks_cluster.id
@@ -148,3 +148,5 @@ resource "azurerm_monitor_diagnostic_setting" "settings" {
     category = "AllMetrics"
   }
 }
+
+*/

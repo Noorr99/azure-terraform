@@ -22,6 +22,8 @@ resource "azurerm_resource_group" "rg" {
   tags     = var.tags
 }
 
+data "azurerm_client_config" "current" {}
+
 //
 // Virtual Network Module
 //

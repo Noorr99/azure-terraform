@@ -4,7 +4,7 @@
 variable "resource_group_name" {
   description = "Specifies the name of the resource group."
   type        = string
-  default     = "VMCountRG"
+  default     = "rg-nih-dev-001"
 }
 
 variable "location" {
@@ -18,16 +18,19 @@ variable "tags" {
   type        = map(string)
   default     = {
     createdWith = "Terraform"
+    environment = "dev"
+    project     = "nih"
   }
 }
 
 //
 // Virtual Network (VNet) Variables
 //
+// Microsoft recommends: vnet-<subscription purpose or project>-<region>-<###>
 variable "aks_vnet_name" {
   description = "Specifies the name of the Azure virtual network."
   type        = string
-  default     = "VMVNet"
+  default     = "vnet-nih-dev-northeurope-001"
 }
 
 variable "aks_vnet_address_space" {
@@ -39,10 +42,11 @@ variable "aks_vnet_address_space" {
 //
 // Subnet Variables for VMs and Private Endpoints
 //
+// Microsoft recommends: snet-<purpose>-<region>-<###>
 variable "vm_subnet_name" {
   description = "Specifies the name of the subnet for virtual machines."
   type        = string
-  default     = "VmSubnet"
+  default     = "snet-nih-dev-northeurope-vm-001"
 }
 
 variable "vm_subnet_address_prefix" {
@@ -54,7 +58,7 @@ variable "vm_subnet_address_prefix" {
 variable "pe_subnet_name" {
   description = "Specifies the name of the subnet for private endpoints."
   type        = string
-  default     = "PrivateEndpointSubnet"
+  default     = "snet-nih-dev-northeurope-pe-001"
 }
 
 variable "pe_subnet_address_prefix" {
@@ -66,10 +70,11 @@ variable "pe_subnet_address_prefix" {
 //
 // Virtual Machine (VM) Variables
 //
+// Microsoft recommends: vm-<project>-<environment>-<###>
 variable "vm_name" {
   description = "Specifies the base name of the virtual machine."
   type        = string
-  default     = "TestVm"
+  default     = "vm-nih-dev-001"
 }
 
 variable "vm_count" {
@@ -113,10 +118,14 @@ variable "vm_os_disk_image" {
   }
 }
 
+//
+// DNS Label
+//
+// Microsoft recommends something like <label>.<region>.cloudapp.azure.com
 variable "domain_name_label" {
   description = "Specifies the domain name label for the virtual machine."
   type        = string
-  default     = "windowsnpcvmtrial"
+  default     = "nih-dev-northeurope-001"
 }
 
 variable "vm_os_disk_storage_account_type" {
@@ -125,8 +134,14 @@ variable "vm_os_disk_storage_account_type" {
   default     = "Premium_LRS"
 
   validation {
-    condition     = contains(
-      ["Premium_LRS", "Premium_ZRS", "StandardSSD_LRS", "StandardSSD_ZRS", "Standard_LRS"],
+    condition = contains(
+      [
+        "Premium_LRS",
+        "Premium_ZRS",
+        "StandardSSD_LRS",
+        "StandardSSD_ZRS",
+        "Standard_LRS"
+      ],
       var.vm_os_disk_storage_account_type
     )
     error_message = "The storage account type for the OS disk is invalid. Valid options are Premium_LRS, Premium_ZRS, StandardSSD_LRS, StandardSSD_ZRS, Standard_LRS."
@@ -136,10 +151,11 @@ variable "vm_os_disk_storage_account_type" {
 //
 // Key Vault Variables
 //
+// A common prefix is kv-<project>-<environment>-<###>
 variable "key_vault_name" {
   description = "Specifies the name of the Key Vault."
   type        = string
-  default     = "KeyVaultNpcTest"
+  default     = "kv-nih-dev-001"
 }
 
 variable "tenant_id" {
@@ -210,10 +226,11 @@ variable "key_vault_ip_rules" {
 //
 // ACR Variables
 //
+// Microsoft recommends: cr<project><environment><###>
 variable "acr_name" {
   description = "Specifies the name of the Container Registry."
   type        = string
-  default     = "ACRNPCTest"
+  default     = "crnihdev001"
 }
 
 variable "acr_admin_enabled" {
@@ -234,44 +251,41 @@ variable "acr_georeplication_locations" {
   default     = []
 }
 
-
-//databricks:
-
+//
 // Databricks Workspace Variables
+//
+// No official example from Microsoft, but you could do something like dbw-<project>-<environment>-<###>
 variable "workspace_name" {
   description = "Name of Databricks workspace"
   type        = string
-  default     = "DatabricksWorkspace-npc-test"
+  default     = "dbw-nih-dev-001"
 }
-
-#variable "databricks_vnet_id" {
-#  description = "ID of the existing virtual network where Databricks will be deployed"
-#  type        = string
-#}
 
 variable "databricks_vnet_resource_group_name" {
   description = "Name of the resource group containing the virtual network for Databricks"
   type        = string
-  default     = "VMVNet"
+  default     = "rg-nih-dev-001"
 }
 
 variable "databricks_private_subnet_name" {
   description = "Name of the private subnet for Databricks"
   type        = string
-  default     = "DatabricksPrivateSubnet"
+  default     = "snet-nih-dev-northeurope-dbp-001"
 }
 
 variable "databricks_public_subnet_name" {
   description = "Name of the public subnet for Databricks"
   type        = string
-  default     = "DatabricksPublicSubnet"
+  default     = "snet-nih-dev-northeurope-dbu-001"
 }
 
 // Security Group Variables for Databricks
+// For NSGs, Microsoft recommends: nsg-<policy or app name>-<###>
+// We’ll use a prefix to keep it consistent with Databricks usage:
 variable "databricks_security_group_prefix" {
   description = "Prefix for the names of the security groups created by the Databricks module"
   type        = string
-  default     = "databricks-sg"
+  default     = "nsg-dbr-nih-dev"
 }
 
 // Tags for Databricks Resources
@@ -279,18 +293,20 @@ variable "databricks_tags" {
   description = "Tags to apply to Databricks resources"
   type        = map(string)
   default     = {
-    environment = "production"
+    environment = "dev"
     team        = "data-engineering"
+    project     = "nih"
   }
 }
 
-
+//
 // Datalake storage variables
-
+//
+// For Data Lake Storage, Microsoft recommends: dls<project><environment>
 variable "datalake_storage_account_name" {
   description = "The name of the Data Lake Storage account"
   type        = string
-  default     = "datalakestgaccnpctest"
+  default     = "dlsnihdev"
 }
 
 variable "datalake_account_tier" {
@@ -317,10 +333,11 @@ variable "datalake_is_hns_enabled" {
   default     = true
 }
 
+// Filesystem naming can be internal preference. Keep it short, e.g., fs<project><environment>.
 variable "datalake_filesystem_name" {
   description = "The name of the Data Lake Storage Gen2 filesystem"
   type        = string
-  default     = "datalakefsnpctest"
+  default     = "fsnihdev"
 }
 
 variable "datalake_filesystem_properties" {

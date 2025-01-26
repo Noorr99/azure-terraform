@@ -78,13 +78,13 @@ variable "pe_subnet_address_prefix" {
 variable "vm_name" {
   description = "Specifies the Azure resource name of the virtual machine."
   type        = string
-  default     = "vm-nih-dev-001"
+  default     = "vm-nih-dev"
 }
 
 variable "vm_computer_name" {
   description = "Specifies the Windows computer name (NetBIOS name) for the VM (<= 15 chars)."
   type        = string
-  default     = "vm-nih-dev-01"
+  default     = "vm-nih-dev"
 }
 
 variable "vm_count" {

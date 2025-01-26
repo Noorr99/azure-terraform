@@ -1,218 +1,294 @@
-//
-// Resource Group Variables
-//
+///////////////////////////////////////////////////////////
+// Resource Group & Location
+///////////////////////////////////////////////////////////
 variable "resource_group_name" {
-  description = "Specifies the name of the resource group."
   type        = string
+  description = "Name of the resource group."
   default     = "rg-nih-dev-002"
 }
 
 variable "location" {
-  description = "Specifies the Azure region where resources will be created."
   type        = string
+  description = "Azure region for resources."
   default     = "northeurope"
 }
 
 variable "tags" {
-  description = "Specifies tags to apply to all resources."
   type        = map(string)
-  default     = {
+  description = "Tags to apply to all resources."
+  default = {
     createdWith = "Terraform"
   }
 }
 
-//
-// Virtual Network (VNet) Variables
-//
-variable "aks_vnet_name" {
-  description = "Specifies the name of the Azure virtual network."
-  type        = string
-  default     = "vnet-dev-qatar-002"
-}
-
-variable "aks_vnet_address_space" {
-  description = "Specifies the address space for the Azure virtual network."
-  type        = list(string)
-  default     = ["10.0.0.0/16"]
-}
-
+///////////////////////////////////////////////////////////
+// Shared Subnet (existing usage for SQL, KV, etc.)
+///////////////////////////////////////////////////////////
 variable "shared_subnet_name" {
-  description = "The name of the shared subnet for SQL Database, Key Vault, and Data Lake."
   type        = string
+  description = "Name of the shared subnet."
   default     = "snet-shared-qatar-002"
 }
 
 variable "shared_subnet_address_prefix" {
-  description = "The address prefix for the shared subnet."
   type        = list(string)
+  description = "CIDR for the shared subnet."
   default     = ["10.0.1.0/24"]
 }
 
-//
-// Key Vault Variables
-//
-variable "key_vault_name" {
-  description = "Specifies the name of the Key Vault."
+///////////////////////////////////////////////////////////
+// New Subnet for AKS
+///////////////////////////////////////////////////////////
+variable "aks_subnet_name" {
   type        = string
-  default     = "kv-nih-shared-dev-02"
+  description = "Name of the subnet for AKS node pool(s)."
+  default     = "snet-aks-qatar-002"
 }
 
-variable "tenant_id" {
-  description = "Specifies the tenant ID for the Key Vault."
-  type        = string
-}
-
-variable "key_vault_sku" {
-  description = "Specifies the SKU of the Key Vault. Possible values are 'standard' or 'premium'."
-  type        = string
-  default     = "standard"
-}
-
-variable "key_vault_enabled_for_deployment" {
-  description = "Allows Azure VMs to retrieve certificates stored as secrets."
-  type        = bool
-  default     = false
-}
-
-variable "key_vault_enabled_for_disk_encryption" {
-  description = "Allows Azure Disk Encryption to retrieve secrets and unwrap keys."
-  type        = bool
-  default     = false
-}
-
-variable "key_vault_enabled_for_template_deployment" {
-  description = "Allows Azure Resource Manager to retrieve secrets from the key vault."
-  type        = bool
-  default     = false
-}
-
-variable "key_vault_enable_rbac_authorization" {
-  description = "Specifies whether Key Vault uses RBAC for authorization."
-  type        = bool
-  default     = false
-}
-
-variable "key_vault_purge_protection_enabled" {
-  description = "Specifies if purge protection is enabled on the Key Vault."
-  type        = bool
-  default     = false
-}
-
-variable "key_vault_soft_delete_retention_days" {
-  description = "Specifies the soft-delete retention days for the Key Vault."
-  type        = number
-  default     = 30
-}
-
-variable "key_vault_bypass" {
-  description = "Specifies which traffic can bypass network rules for Key Vault. Options: 'AzureServices' or 'None'."
-  type        = string
-  default     = "AzureServices"
-}
-
-variable "key_vault_default_action" {
-  description = "Specifies the default action for network rules on Key Vault. Options: 'Allow' or 'Deny'."
-  type        = string
-  default     = "Allow"
-}
-
-variable "key_vault_ip_rules" {
-  description = "List of IP addresses/CIDR blocks allowed to access the Key Vault."
+variable "aks_subnet_address_prefix" {
   type        = list(string)
+  description = "CIDR for the AKS node subnet."
+  default     = ["10.0.2.0/24"]
+}
+
+///////////////////////////////////////////////////////////
+// Route Table (User-Defined Routes)
+///////////////////////////////////////////////////////////
+variable "route_table_name" {
+  type        = string
+  description = "Name of the route table for AKS subnet."
+  default     = "rt-aks"
+}
+
+variable "route_name" {
+  type        = string
+  description = "Name of the default UDR route."
+  default     = "route-default-0-0-0-0"
+}
+
+variable "firewall_private_ip" {
+  type        = string
+  description = "Private IP of your Firewall/NVA for routing."
+  default     = "10.0.0.4"
+}
+
+///////////////////////////////////////////////////////////
+// Private DNS Zone for AKS Private Cluster
+///////////////////////////////////////////////////////////
+variable "aks_private_dns_zone_name" {
+  type        = string
+  description = "The Private DNS zone for private AKS (e.g., privatelink.<region>.azmk8s.io)."
+  default     = "privatelink.northeurope.azmk8s.io"
+}
+
+///////////////////////////////////////////////////////////
+// AKS Variables
+///////////////////////////////////////////////////////////
+variable "aks_cluster_name" {
+  type        = string
+  description = "Name of the AKS cluster."
+  default     = "aks-nih-dev-002"
+}
+
+variable "kubernetes_version" {
+  type        = string
+  description = "AKS Kubernetes version."
+  default     = "1.25.6"
+}
+
+variable "sku_tier" {
+  type        = string
+  description = "AKS SKU tier: Free or Paid."
+  default     = "Free"
+}
+
+variable "automatic_channel_upgrade" {
+  type        = string
+  description = "The upgrade channel for the AKS cluster."
+  default     = "stable"
+}
+
+variable "default_node_pool_name" {
+  type        = string
+  description = "Name of the default node pool."
+  default     = "system"
+}
+
+variable "default_node_pool_vm_size" {
+  type        = string
+  description = "VM size for the default node pool."
+  default     = "Standard_F8s_v2"
+}
+
+variable "default_node_pool_availability_zones" {
+  type        = list(string)
+  description = "Availability zones for the default node pool."
+  default     = ["1", "2", "3"]
+}
+
+variable "default_node_pool_enable_auto_scaling" {
+  type        = bool
+  description = "Enable cluster autoscaler for the default node pool."
+  default     = true
+}
+
+variable "default_node_pool_enable_host_encryption" {
+  type        = bool
+  description = "Enable host encryption on node pool VMs."
+  default     = false
+}
+
+variable "default_node_pool_enable_node_public_ip" {
+  type        = bool
+  description = "Enable public IP on each node."
+  default     = false
+}
+
+variable "default_node_pool_max_pods" {
+  type        = number
+  description = "Max pods per node."
+  default     = 50
+}
+
+variable "default_node_pool_max_count" {
+  type        = number
+  description = "Autoscaler max node count."
+  default     = 10
+}
+
+variable "default_node_pool_min_count" {
+  type        = number
+  description = "Autoscaler min node count."
+  default     = 3
+}
+
+variable "default_node_pool_node_count" {
+  type        = number
+  description = "Initial node count."
+  default     = 3
+}
+
+variable "default_node_pool_os_disk_type" {
+  type        = string
+  description = "OS disk type. Usually 'Managed' or 'Ephemeral'."
+  default     = "Managed"
+}
+
+variable "default_node_pool_node_labels" {
+  type        = map(string)
+  description = "Key-value labels for default node pool."
+  default     = {}
+}
+
+variable "default_node_pool_node_taints" {
+  type        = list(string)
+  description = "Node taints for default node pool."
   default     = []
 }
 
-//
-// Data Lake Storage Variables
-//
-variable "datalake_storage_account_name" {
-  description = "The name of the Data Lake Storage account."
+variable "network_plugin" {
   type        = string
-  default     = "dlsnihdev02"
+  description = "Network plugin: 'azure' or 'kubenet'."
+  default     = "azure"
 }
 
-variable "datalake_account_tier" {
-  description = "The tier of the Data Lake Storage account."
+variable "network_service_cidr" {
   type        = string
-  default     = "Standard"
+  description = "Service CIDR for cluster services."
+  default     = "10.2.0.0/24"
 }
 
-variable "datalake_account_replication_type" {
-  description = "The replication type of the Data Lake Storage account."
+variable "network_dns_service_ip" {
   type        = string
-  default     = "LRS"
+  description = "DNS service IP."
+  default     = "10.2.0.10"
 }
 
-variable "datalake_account_kind" {
-  description = "The kind of the Data Lake Storage account."
+variable "outbound_type" {
   type        = string
-  default     = "StorageV2"
+  description = "Outbound routing: 'loadBalancer' or 'userDefinedRouting'."
+  default     = "userDefinedRouting"
 }
 
-variable "datalake_is_hns_enabled" {
-  description = "Specifies whether hierarchical namespace is enabled for the Data Lake."
+variable "role_based_access_control_enabled" {
+  type        = bool
+  description = "Enable RBAC in AKS."
+  default     = true
+}
+
+variable "tenant_id" {
+  type        = string
+  description = "Tenant ID for Azure AD integration."
+}
+
+variable "admin_group_object_ids" {
+  type        = list(string)
+  description = "List of AAD group object IDs for AKS Admin."
+  default     = []
+}
+
+variable "azure_rbac_enabled" {
+  type        = bool
+  description = "Enable Azure RBAC."
+  default     = true
+}
+
+variable "admin_username" {
+  type        = string
+  description = "Admin username on AKS nodes."
+  default     = "azadmin"
+}
+
+variable "ssh_public_key" {
+  type        = string
+  description = "SSH public key for node access."
+}
+
+variable "keda_enabled" {
   type        = bool
   default     = true
 }
 
-//
-// SQL Database Variables
-//
-variable "sql_server_name" {
-  description = "Specifies the name of the SQL Server."
-  type        = string
-  default     = "sql-server-dev-nih"
+variable "vertical_pod_autoscaler_enabled" {
+  type        = bool
+  default     = true
 }
 
-variable "sql_admin_username" {
-  description = "Specifies the admin username for the SQL Server."
-  type        = string
-  default     = "sqladmin"
+variable "workload_identity_enabled" {
+  type        = bool
+  default     = true
 }
 
-variable "sql_admin_password" {
-  description = "Specifies the admin password for the SQL Server."
-  type        = string
-  sensitive   = true
+variable "oidc_issuer_enabled" {
+  type        = bool
+  default     = true
 }
 
-variable "sql_database_name" {
-  description = "Specifies the name of the SQL Database."
-  type        = string
-  default     = "sql-db-dev"
+variable "open_service_mesh_enabled" {
+  type        = bool
+  default     = true
 }
 
-variable "sql_database_dtu" {
-  description = "Specifies the DTU allocation for the SQL Database."
-  type        = string
-  default     = "125"
+variable "image_cleaner_enabled" {
+  type        = bool
+  default     = true
 }
 
-variable "sql_database_tier" {
-  description = "Specifies the pricing tier for the SQL Database."
-  type        = string
-  default     = "Premium"
+variable "azure_policy_enabled" {
+  type        = bool
+  default     = true
 }
 
-variable "sql_database_size_gb" {
-  description = "Specifies the maximum storage size for the SQL Database in GB."
-  type        = number
-  default     = 500
-}
-
-variable "long_term_retention_backup" {
-  description = "Specifies the size of the long-term retention backup in GB."
-  type        = number
-  default     = 100
-}
-
-variable "public_network_access_enabled" { 
-  description = "(Optional) Whether public network access is allowed for this Key Vault."
+variable "http_application_routing_enabled" {
+  type        = bool
   default     = false
 }
 
-variable "data_factory_name" {
-  description = "Specifies the name of the Azure Data Factory."
+///////////////////////////////////////////////////////////
+// Log Analytics (disabled / not used)
+///////////////////////////////////////////////////////////
+variable "log_analytics_workspace_id" {
   type        = string
-  default     = "adf-nih-dev-test"
+  description = "Log Analytics workspace id (not used if null)."
+  default     = null
 }

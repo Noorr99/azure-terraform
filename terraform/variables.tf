@@ -4,7 +4,7 @@
 variable "resource_group_name" {
   description = "Specifies the name of the resource group."
   type        = string
-  default     = "rg-nih-dev"
+  default     = "rg-nih-dev-001"
 }
 
 variable "location" {
@@ -252,7 +252,7 @@ variable "workspace_name" {
 variable "databricks_vnet_resource_group_name" {
   description = "Name of the resource group containing the virtual network for Databricks"
   type        = string
-  default     = "vnet-dev-qatar-001"
+  default     = "rg-nih-dev-001"
 }
 
 variable "databricks_private_subnet_name" {

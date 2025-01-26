@@ -1,20 +1,20 @@
 variable "resource_group_name" {
-  description = "The name of the Resource Group where Data Factory will be created."
+  description = "Name of the Resource Group for Data Factory"
   type        = string
 }
 
 variable "location" {
-  description = "The Azure location where Data Factory will be created."
+  description = "Azure region for Data Factory"
   type        = string
 }
 
 variable "data_factory_name" {
-  description = "The name of the Data Factory."
+  description = "Name of the Azure Data Factory"
   type        = string
 }
 
 variable "tags" {
-  description = "A map of tags for the Data Factory resource."
+  description = "A map of tags for the Data Factory"
   type        = map(string)
   default     = {}
 }

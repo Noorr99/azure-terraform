@@ -69,7 +69,7 @@ variable "pe_subnet_address_prefix" {
 variable "vm_name" {
   description = "Specifies the base name of the virtual machine."
   type        = string
-  default     = "vm-nih-dev-01"
+  default     = "vm-nih-dev"
 }
 
 variable "vm_count" {

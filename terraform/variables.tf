@@ -1,111 +1,165 @@
-//
-// Resource Group Variables
-//
-variable "resource_group_name" {
-  description = "Specifies the name of the resource group."
+////////////////////////////////////////////////////////////////////////
+//                       Global Project & Environment
+////////////////////////////////////////////////////////////////////////
+# If you no longer need to pass in project/environment, you can remove these.
+# Shown here in case you want to keep them for tagging or documentation.
+variable "project" {
   type        = string
-  default     = "VMCountRG"
+  description = "Project/Workload code."
+  default     = "nih"
+}
+
+variable "environment" {
+  type        = string
+  description = "Environment (e.g. dev, prod)."
+  default     = "dev"
+}
+
+////////////////////////////////////////////////////////////////////////
+//                          Backend Vars
+////////////////////////////////////////////////////////////////////////
+variable "azure_provider_version" {
+  type        = string
+  description = "Version of the azurerm provider."
+  default     = "3.50"
+}
+
+variable "backend_resource_group_name" {
+  type        = string
+  description = "Resource group used to store the Terraform state."
+  default     = "my-tfstate-rg"
+}
+
+variable "backend_storage_account_name" {
+  type        = string
+  description = "Storage account name used to store the Terraform state."
+  default     = "mytfstateaccount"
+}
+
+variable "backend_container_name" {
+  type        = string
+  description = "Container name for the Terraform state file."
+  default     = "tfstate"
+}
+
+variable "backend_key" {
+  type        = string
+  description = "Key (file name) for where the Terraform state will be saved."
+  default     = "terraform.tfstate"
+}
+
+////////////////////////////////////////////////////////////////////////
+//                       Global Resource Vars
+////////////////////////////////////////////////////////////////////////
+variable "resource_group_name" {
+  type        = string
+  description = "Name of the resource group."
+  # CAF pattern => rg-<project>-<env>
+  default     = "rg-nih-dev"
 }
 
 variable "location" {
-  description = "Specifies the Azure region where resources will be created."
   type        = string
+  description = "Azure region for resource deployment."
   default     = "northeurope"
 }
 
 variable "tags" {
-  description = "Specifies tags to apply to all resources."
   type        = map(string)
-  default     = {
+  description = "Tags applied to all resources."
+  default = {
     createdWith = "Terraform"
   }
 }
 
-//
-// Virtual Network (VNet) Variables
-//
-variable "aks_vnet_name" {
-  description = "Specifies the name of the Azure virtual network."
+////////////////////////////////////////////////////////////////////////
+//                       VNet & Subnet Vars
+////////////////////////////////////////////////////////////////////////
+variable "vnet_name" {
   type        = string
-  default     = "VMVNet"
+  description = "Name of the Azure virtual network."
+  # CAF pattern => vnet-<project>-<env>
+  default     = "vnet-nih-dev"
 }
 
-variable "aks_vnet_address_space" {
-  description = "Specifies the address space for the Azure virtual network."
+variable "vnet_address_space" {
   type        = list(string)
+  description = "Address space for the Azure virtual network."
   default     = ["10.0.0.0/16"]
 }
 
-//
-// Subnet Variables for VMs and Private Endpoints
-//
 variable "vm_subnet_name" {
-  description = "Specifies the name of the subnet for virtual machines."
   type        = string
-  default     = "VmSubnet"
+  description = "Name of the subnet for virtual machines."
+  # CAF pattern => snet-<project>-<env>-vm
+  default     = "snet-nih-dev-vm"
 }
 
 variable "vm_subnet_address_prefix" {
-  description = "Specifies the address prefix for the VM subnet."
   type        = list(string)
+  description = "Address prefix for the VM subnet."
   default     = ["10.0.48.0/20"]
 }
 
+# Single Private Endpoint Subnet (Key Vault, ACR, Data Lake, etc.)
 variable "pe_subnet_name" {
-  description = "Specifies the name of the subnet for private endpoints."
   type        = string
-  default     = "PrivateEndpointSubnet"
+  description = "Name of the subnet for all private endpoints."
+  # CAF pattern => snet-<project>-<env>-pe
+  default     = "snet-nih-dev-pe"
 }
 
 variable "pe_subnet_address_prefix" {
-  description = "Specifies the address prefix for the private endpoint subnet."
   type        = list(string)
-  default     = ["10.0.1.0/24"]
+  description = "Address prefix for the private endpoint subnet."
+  default     = ["10.0.50.0/24"]
 }
 
-//
-// Virtual Machine (VM) Variables
-//
-variable "vm_name" {
-  description = "Specifies the base name of the virtual machine."
+////////////////////////////////////////////////////////////////////////
+//                       Virtual Machine Vars
+////////////////////////////////////////////////////////////////////////
+variable "vm_name_prefix" {
   type        = string
-  default     = "TestVm"
+  description = "Base prefix for virtual machines."
+  # CAF pattern => vm-<project>-<env>
+  default     = "vm-nih-dev"
 }
 
 variable "vm_count" {
-  description = "The number of virtual machines to create."
   type        = number
+  description = "Number of virtual machines to create."
   default     = 2
 }
 
 variable "vm_size" {
-  description = "Specifies the size of the virtual machine."
   type        = string
+  description = "Size of the virtual machine."
   default     = "Standard_DS1_v2"
 }
 
 variable "vm_public_ip" {
-  description = "Specifies whether to create a public IP for the virtual machine."
   type        = bool
+  description = "Whether to create a public IP for the VM."
   default     = false
 }
 
 variable "admin_username" {
-  description = "Specifies the admin username for the virtual machine."
   type        = string
+  description = "Admin username for the virtual machines."
   default     = "azadmin"
 }
 
 variable "admin_password" {
-  description = "Specifies the administrator password for the Windows virtual machine."
   type        = string
+  description = "Admin password for the virtual machines."
   sensitive   = true
+  default     = ""
 }
 
 variable "vm_os_disk_image" {
-  description = "Specifies the OS disk image for the virtual machine."
   type        = map(string)
-  default     = {
+  description = "OS disk image for the virtual machines."
+  default = {
     publisher = "MicrosoftWindowsServer"
     offer     = "WindowsServer"
     sku       = "2019-Datacenter"
@@ -114,219 +168,241 @@ variable "vm_os_disk_image" {
 }
 
 variable "domain_name_label" {
-  description = "Specifies the domain name label for the virtual machine."
   type        = string
+  description = "Domain name label for the VMs (for public IP DNS)."
   default     = "windowsnpcvmtrial"
 }
 
 variable "vm_os_disk_storage_account_type" {
-  description = "Specifies the storage account type for the OS disk of the virtual machine."
   type        = string
+  description = "Storage account type for the VM OS disk."
   default     = "Premium_LRS"
-
   validation {
-    condition     = contains(
-      ["Premium_LRS", "Premium_ZRS", "StandardSSD_LRS", "StandardSSD_ZRS", "Standard_LRS"],
+    condition = contains(
+      [
+        "Premium_LRS",
+        "Premium_ZRS",
+        "StandardSSD_LRS",
+        "StandardSSD_ZRS",
+        "Standard_LRS"
+      ],
       var.vm_os_disk_storage_account_type
     )
-    error_message = "The storage account type for the OS disk is invalid. Valid options are Premium_LRS, Premium_ZRS, StandardSSD_LRS, StandardSSD_ZRS, Standard_LRS."
+    error_message = "Invalid OS disk storage account type."
   }
 }
 
-//
-// Key Vault Variables
-//
+////////////////////////////////////////////////////////////////////////
+//                          Key Vault Vars
+////////////////////////////////////////////////////////////////////////
 variable "key_vault_name" {
-  description = "Specifies the name of the Key Vault."
   type        = string
-  default     = "KeyVaultNpcTest"
+  description = "Name of the Key Vault."
+  # CAF pattern => kv-<project>-<env>
+  default     = "kv-nih-dev"
 }
 
 variable "tenant_id" {
-  description = "Specifies the tenant ID for the Key Vault."
   type        = string
+  description = "Tenant ID for the Key Vault."
 }
 
 variable "key_vault_sku" {
-  description = "Specifies the SKU of the Key Vault. Possible values are 'standard' or 'premium'."
   type        = string
+  description = "SKU of Key Vault: 'standard' or 'premium'."
   default     = "standard"
 }
 
 variable "key_vault_enabled_for_deployment" {
-  description = "Allows Azure VMs to retrieve certificates stored as secrets."
   type        = bool
+  description = "Allow Azure VMs to retrieve certificates stored as secrets."
   default     = false
 }
 
 variable "key_vault_enabled_for_disk_encryption" {
-  description = "Allows Azure Disk Encryption to retrieve secrets and unwrap keys."
   type        = bool
+  description = "Allow Azure Disk Encryption to retrieve secrets and unwrap keys."
   default     = false
 }
 
 variable "key_vault_enabled_for_template_deployment" {
-  description = "Allows Azure Resource Manager to retrieve secrets from the key vault."
   type        = bool
+  description = "Allow ARM templates to retrieve secrets from the Key Vault."
   default     = false
 }
 
 variable "key_vault_enable_rbac_authorization" {
-  description = "Specifies whether Key Vault uses RBAC for authorization."
   type        = bool
+  description = "Use RBAC for authorization in the Key Vault."
   default     = false
 }
 
 variable "key_vault_purge_protection_enabled" {
-  description = "Specifies if purge protection is enabled on the Key Vault."
   type        = bool
+  description = "Enable purge protection on the Key Vault."
   default     = false
 }
 
 variable "key_vault_soft_delete_retention_days" {
-  description = "Specifies the soft-delete retention days for the Key Vault."
   type        = number
+  description = "Soft-delete retention days for the Key Vault."
   default     = 30
 }
 
 variable "key_vault_bypass" {
-  description = "Specifies which traffic can bypass network rules for Key Vault. Options: 'AzureServices' or 'None'."
   type        = string
-  default     = "AzureServices"
+  description = "Traffic that can bypass Key Vault network rules. 'AzureServices' or 'None'."
+  default     = "None"
 }
 
 variable "key_vault_default_action" {
-  description = "Specifies the default action for network rules on Key Vault. Options: 'Allow' or 'Deny'."
   type        = string
-  default     = "Allow"
+  description = "Default network rule action. 'Allow' or 'Deny'."
+  default     = "Deny"
 }
 
 variable "key_vault_ip_rules" {
-  description = "List of IP addresses/CIDR blocks allowed to access the Key Vault."
   type        = list(string)
+  description = "IP addresses/CIDR blocks allowed to access Key Vault."
   default     = []
 }
 
-//
-// ACR Variables
-//
+////////////////////////////////////////////////////////////////////////
+//                             ACR Vars
+////////////////////////////////////////////////////////////////////////
 variable "acr_name" {
-  description = "Specifies the name of the Container Registry."
   type        = string
-  default     = "ACRNPCTest"
+  description = <<EOT
+Name of the Container Registry.
+Per Azure naming constraints, use only lowercase, up to 50 chars.
+CAF example => acr<project><env>
+EOT
+  default = "acrnihdev"
 }
 
 variable "acr_admin_enabled" {
-  description = "Specifies whether the ACR admin user is enabled."
   type        = bool
+  description = "Enable the admin user on ACR?"
   default     = false
 }
 
 variable "acr_sku" {
-  description = "The SKU of the Container Registry. Possible values are 'Basic', 'Standard', or 'Premium'."
   type        = string
+  description = "SKU of ACR: 'Basic', 'Standard', or 'Premium'."
   default     = "Premium"
 }
 
 variable "acr_georeplication_locations" {
-  description = "A list of Azure locations where the container registry should be geo-replicated."
   type        = list(string)
+  description = "Azure regions for geo-replication of the ACR."
   default     = []
 }
 
-
-//databricks:
-
-// Databricks Workspace Variables
+////////////////////////////////////////////////////////////////////////
+//                          Databricks Vars
+////////////////////////////////////////////////////////////////////////
 variable "workspace_name" {
-  description = "Name of Databricks workspace"
   type        = string
-  default     = "DatabricksWorkspace-npc-test"
+  description = "Name of the Databricks workspace."
+  default     = "databricksworkspace-nih-dev"
 }
 
-#variable "databricks_vnet_id" {
-#  description = "ID of the existing virtual network where Databricks will be deployed"
-#  type        = string
-#}
-
 variable "databricks_vnet_resource_group_name" {
-  description = "Name of the resource group containing the virtual network for Databricks"
   type        = string
+  description = "Resource group containing the VNet used by Databricks."
   default     = "VMVNet"
 }
 
-variable "databricks_private_subnet_name" {
-  description = "Name of the private subnet for Databricks"
-  type        = string
-  default     = "DatabricksPrivateSubnet"
+variable "databricks_private_subnet_address_prefixes" {
+  type        = list(string)
+  description = "Address prefixes for the Databricks private subnet."
+  default     = ["10.0.2.0/24"]
 }
 
-variable "databricks_public_subnet_name" {
-  description = "Name of the public subnet for Databricks"
-  type        = string
-  default     = "DatabricksPublicSubnet"
+variable "databricks_public_subnet_address_prefixes" {
+  type        = list(string)
+  description = "Address prefixes for the Databricks public subnet."
+  default     = ["10.0.3.0/24"]
 }
 
-// Security Group Variables for Databricks
+variable "databricks_service_delegation_actions" {
+  type        = list(string)
+  description = "Service delegation actions for Databricks subnets."
+  default = [
+    "Microsoft.Network/virtualNetworks/subnets/join/action",
+    "Microsoft.Network/virtualNetworks/subnets/prepareNetworkPolicies/action",
+    "Microsoft.Network/virtualNetworks/subnets/unprepareNetworkPolicies/action"
+  ]
+}
+
+variable "databricks_additional_service_endpoints" {
+  type        = list(string)
+  description = "Additional service endpoints for Databricks subnets."
+  default     = ["Microsoft.Storage"]
+}
+
 variable "databricks_security_group_prefix" {
-  description = "Prefix for the names of the security groups created by the Databricks module"
   type        = string
+  description = "Prefix for the Databricks security group names."
   default     = "databricks-sg"
 }
 
-// Tags for Databricks Resources
 variable "databricks_tags" {
-  description = "Tags to apply to Databricks resources"
   type        = map(string)
-  default     = {
+  description = "Tags applied to Databricks resources."
+  default = {
     environment = "production"
     team        = "data-engineering"
   }
 }
 
-
-// Datalake storage variables
-
+////////////////////////////////////////////////////////////////////////
+//                          Data Lake Vars
+////////////////////////////////////////////////////////////////////////
 variable "datalake_storage_account_name" {
-  description = "The name of the Data Lake Storage account"
   type        = string
-  default     = "datalakestgaccnpctest"
+  description = <<EOT
+Name of the Data Lake Storage account.
+Must be unique, 3-24 chars, all lowercase.
+CAF pattern => st<project><env>
+EOT
+  default     = "stnihdev"
 }
 
 variable "datalake_account_tier" {
-  description = "The tier of the Data Lake Storage account"
   type        = string
+  description = "Tier of the Data Lake Storage account."
   default     = "Standard"
 }
 
 variable "datalake_account_replication_type" {
-  description = "The replication type of the Data Lake Storage account"
   type        = string
+  description = "Replication type: LRS, GRS, RAGRS, ZRS, etc."
   default     = "LRS"
 }
 
 variable "datalake_account_kind" {
-  description = "The kind of the Data Lake Storage account"
   type        = string
+  description = "Kind of the Data Lake Storage account."
   default     = "StorageV2"
 }
 
 variable "datalake_is_hns_enabled" {
-  description = "Whether the hierarchical namespace is enabled"
   type        = bool
+  description = "Enable hierarchical namespace?"
   default     = true
 }
 
 variable "datalake_filesystem_name" {
-  description = "The name of the Data Lake Storage Gen2 filesystem"
   type        = string
+  description = "Name of the Data Lake Storage Gen2 filesystem."
   default     = "datalakefsnpctest"
 }
 
 variable "datalake_filesystem_properties" {
-  description = "The properties of the Data Lake Storage Gen2 filesystem"
   type        = map(string)
-  default     = {
+  description = "Properties for the Data Lake Storage Gen2 filesystem."
+  default = {
     hello = "aGVsbG8="
   }
 }

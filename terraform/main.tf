@@ -1,63 +1,79 @@
+////////////////////////////////////////////////////////////////////////
+//                       Terraform Settings
+////////////////////////////////////////////////////////////////////////
 terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "3.50"
+      version = var.azure_provider_version
     }
   }
 
   backend "azurerm" {
-    # backend configuration details here (if any)
+    resource_group_name  = var.backend_resource_group_name
+    storage_account_name = var.backend_storage_account_name
+    container_name       = var.backend_container_name
+    key                  = var.backend_key
   }
 }
 
 provider "azurerm" {
   features {}
+  # Optionally define subscription_id, tenant_id, client_id, etc.
 }
 
+////////////////////////////////////////////////////////////////////////
+//                         Resource Group
+////////////////////////////////////////////////////////////////////////
 resource "azurerm_resource_group" "rg" {
+  # CHANGED: name = var.resource_group_name
   name     = var.resource_group_name
   location = var.location
   tags     = var.tags
 }
 
-//
-// Virtual Network Module – includes two subnets: one for VMs and one for private endpoints.
-//
+////////////////////////////////////////////////////////////////////////
+//                       Virtual Network Module
+////////////////////////////////////////////////////////////////////////
 module "vnet" {
   source              = "./modules/virtual_network"
   resource_group_name = azurerm_resource_group.rg.name
   location            = var.location
-  vnet_name           = var.aks_vnet_name
-  address_space       = var.aks_vnet_address_space
 
-  # Two subnets are provided to the vnet module.
+  # CHANGED: vnet_name = var.vnet_name
+  vnet_name           = var.vnet_name
+  address_space       = var.vnet_address_space
+
+  # Creating two subnets:
+  # 1. For VMs
+  # 2. For Private Endpoints (KV, ACR, Data Lake, etc.)
   subnets = [
     {
+      # CHANGED: name = var.vm_subnet_name
       name                                          = var.vm_subnet_name
       address_prefixes                              = var.vm_subnet_address_prefix
       private_endpoint_network_policies_enabled     = true
       private_link_service_network_policies_enabled = false
     },
     {
+      # CHANGED: name = var.pe_subnet_name
       name                                          = var.pe_subnet_name
       address_prefixes                              = var.pe_subnet_address_prefix
-      # For private endpoints, network policies must be disabled.
       private_endpoint_network_policies_enabled     = false
-      # Enable private link service network policies if needed.
       private_link_service_network_policies_enabled = true
     }
   ]
 }
 
-//
-// Virtual Machine Module (unchanged)
-//
+////////////////////////////////////////////////////////////////////////
+//                       Virtual Machine Module
+////////////////////////////////////////////////////////////////////////
 module "virtual_machine" {
-  count               = var.vm_count
-  source              = "./modules/virtual_machine"
+  count  = var.vm_count
+  source = "./modules/virtual_machine"
 
-  name                = "${count.index}-${var.vm_name}"
+  # CHANGED: name = "${var.vm_name_prefix}-${count.index + 1}"
+  name                = "${var.vm_name_prefix}-${count.index + 1}"
   size                = var.vm_size
   location            = var.location
   public_ip           = var.vm_public_ip
@@ -67,15 +83,18 @@ module "virtual_machine" {
   domain_name_label   = var.domain_name_label
   resource_group_name = azurerm_resource_group.rg.name
 
-  subnet_id                   = module.vnet.subnet_ids[var.vm_subnet_name]
+  # CHANGED: subnet_id = module.vnet.subnet_ids[var.vm_subnet_name]
+  subnet_id = module.vnet.subnet_ids[var.vm_subnet_name]
+
   os_disk_storage_account_type = var.vm_os_disk_storage_account_type
 }
 
-//
-// Key Vault Module Deployment
-//
+////////////////////////////////////////////////////////////////////////
+//                       Key Vault Module
+////////////////////////////////////////////////////////////////////////
 module "key_vault" {
   source              = "./modules/key_vault"
+  # CHANGED: name = var.key_vault_name
   name                = var.key_vault_name
   resource_group_name = azurerm_resource_group.rg.name
   location            = var.location
@@ -90,18 +109,55 @@ module "key_vault" {
   purge_protection_enabled        = var.key_vault_purge_protection_enabled
   soft_delete_retention_days      = var.key_vault_soft_delete_retention_days
 
-  bypass                        = var.key_vault_bypass
-  default_action                = var.key_vault_default_action
-  ip_rules                      = var.key_vault_ip_rules
-  # With private endpoints in use, leave virtual_network_subnet_ids empty
-  virtual_network_subnet_ids    = []
+  bypass         = var.key_vault_bypass
+  default_action = var.key_vault_default_action
+  ip_rules       = var.key_vault_ip_rules
 }
 
-//
-// ACR Module Deployment
-//
+# The key_vault module should have:
+# public_network_access_enabled = false
+
+////////////////////////////////////////////////////////////////////////
+//                  Key Vault Private DNS & Private Endpoint
+////////////////////////////////////////////////////////////////////////
+module "keyvault_private_dns_zone" {
+  source                = "./modules/private_dns_zone"
+  name                  = "privatelink.vaultcore.azure.net"
+  resource_group_name   = azurerm_resource_group.rg.name
+
+  virtual_networks_to_link = {
+    (module.vnet.name) = {
+      subscription_id     = data.azurerm_client_config.current.subscription_id
+      resource_group_name = azurerm_resource_group.rg.name
+    }
+  }
+
+  tags = var.tags
+}
+
+module "keyvault_private_endpoint" {
+  source                         = "./modules/private_endpoint"
+  # CHANGED: name = "${module.key_vault.name}PrivateEndpoint"
+  name                           = "${module.key_vault.name}PrivateEndpoint"
+  location                       = var.location
+  resource_group_name            = azurerm_resource_group.rg.name
+
+  # CHANGED: subnet_id = module.vnet.subnet_ids[var.pe_subnet_name]
+  subnet_id                      = module.vnet.subnet_ids[var.pe_subnet_name]
+  tags                           = var.tags
+  private_connection_resource_id = module.key_vault.id
+  is_manual_connection           = false
+  subresource_name               = "vault"
+  private_dns_zone_group_name    = "KeyVaultPrivateDnsZoneGroup"
+  private_dns_zone_group_ids     = [module.keyvault_private_dns_zone.id]
+}
+
+////////////////////////////////////////////////////////////////////////
+//                          ACR Module
+////////////////////////////////////////////////////////////////////////
 module "acr" {
   source              = "./modules/container_registry"
+  # CHANGED: name = var.acr_name
   name                = var.acr_name
   resource_group_name = azurerm_resource_group.rg.name
   location            = var.location
@@ -112,89 +168,36 @@ module "acr" {
   georeplication_locations = var.acr_georeplication_locations
 }
 
-/*
-//
-// Private Endpoint for Key Vault
-//
-resource "azurerm_private_endpoint" "key_vault_pe" {
-  name                = "${var.key_vault_name}-pe"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.rg.name
+# The container_registry module should have:
+# public_network_access_enabled = false
+# network_rule_set { default_action = "Deny" }
 
-  subnet_id = module.vnet.subnet_ids[var.pe_subnet_name]
-
-  private_service_connection {
-    name                           = "${var.key_vault_name}-psc"
-    private_connection_resource_id = module.key_vault.id
-    subresource_names              = ["vault"]
-    is_manual_connection           = false
-  }
-}
-
-*/
-
-//
-// Private Endpoint for ACR
-//
-/*
-resource "azurerm_private_endpoint" "acr_pe" {
-  name                = "${var.acr_name}-pe"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.rg.name
-
-  subnet_id = module.vnet.subnet_ids[var.pe_subnet_name]
-
-  private_service_connection {
-    name                           = "${var.acr_name}-psc"
-    private_connection_resource_id = module.acr.id
-    subresource_names              = ["registry"]
-    is_manual_connection           = false
-  }
-}
-*/
-
-/*
-module "private_dns_zone_acr" {
-  source              = "./modules/private_dns_zone"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.rg.name
-  dns_zone_name       = "privatelink.azurecr.io"
-  vnet_id             = module.vnet.vnet_id
-}
-
-module "private_endpoint_acr" {
-  source                        = "./modules/private_endpoint"
-  name                          = "${var.acr_name}-pe"
-  location                      = var.location
-  resource_group_name           = azurerm_resource_group.rg.name
-  subnet_id                     = module.vnet.subnet_ids[var.pe_subnet_name]
-  private_connection_resource_id = module.acr.id
-  is_manual_connection          = false
-  subresource_name              = "registry"
-  private_dns_zone_group_name   = "${var.acr_name}-pdns"
-  private_dns_zone_group_ids    = [module.private_dns_zone_acr.id]
-  tags                          = var.tags
-}
-*/
-
+////////////////////////////////////////////////////////////////////////
+//               ACR Private DNS & Private Endpoint
+////////////////////////////////////////////////////////////////////////
 module "acr_private_dns_zone" {
-  source                       = "./modules/private_dns_zone"
-  name                         = "privatelink.azurecr.io"
-  resource_group_name          = azurerm_resource_group.rg.name
-  virtual_networks_to_link     = {
+  source                = "./modules/private_dns_zone"
+  name                  = "privatelink.azurecr.io"
+  resource_group_name   = azurerm_resource_group.rg.name
+
+  virtual_networks_to_link = {
     (module.vnet.name) = {
-      subscription_id    = data.azurerm_client_config.current.subscription_id
+      subscription_id     = data.azurerm_client_config.current.subscription_id
       resource_group_name = azurerm_resource_group.rg.name
     }
   }
-  tags                         = var.tags
+
+  tags = var.tags
 }
 
 module "acr_private_endpoint" {
   source                         = "./modules/private_endpoint"
+  # CHANGED: name = "${module.acr.name}PrivateEndpoint"
   name                           = "${module.acr.name}PrivateEndpoint"
   location                       = var.location
   resource_group_name            = azurerm_resource_group.rg.name
+
+  # CHANGED: subnet_id = module.vnet.subnet_ids[var.pe_subnet_name]
   subnet_id                      = module.vnet.subnet_ids[var.pe_subnet_name]
   tags                           = var.tags
   private_connection_resource_id = module.acr.id
@@ -204,49 +207,26 @@ module "acr_private_endpoint" {
   private_dns_zone_group_ids     = [module.acr_private_dns_zone.id]
 }
 
-module "keyvault_private_dns_zone" {
-  source                       = "./modules/private_dns_zone"
-  name                         = "privatelink.vaultcore.azure.net"
-  resource_group_name          = azurerm_resource_group.rg.name
-  virtual_networks_to_link     = {
-    (module.vnet.name) = {
-      subscription_id    = data.azurerm_client_config.current.subscription_id
-      resource_group_name = azurerm_resource_group.rg.name
-    }
-  }
-  tags                         = var.tags
-}
-
-module "keyvault_private_endpoint" {
-  source                         = "./modules/private_endpoint"
-  name                           = "${module.key_vault.name}PrivateEndpoint"
-  location                       = var.location
-  resource_group_name            = azurerm_resource_group.rg.name
-  subnet_id                      = module.vnet.subnet_ids[var.pe_subnet_name]
-  tags                           = var.tags
-  private_connection_resource_id = module.key_vault.id
-  is_manual_connection           = false
-  subresource_name               = "vault"
-  private_dns_zone_group_name    = "KeyVaultPrivateDnsZoneGroup"
-  private_dns_zone_group_ids     = [module.keyvault_private_dns_zone.id]
-}
-
+////////////////////////////////////////////////////////////////////////
+//                     Databricks Subnets Module
+////////////////////////////////////////////////////////////////////////
 module "databricks_subnets" {
-  source                      = "./modules/azure-databricks-subnets"
-  subnet_name_prefix          = "databricks"
-  vnet_name                   = var.aks_vnet_name // Changed to use variable
-  vnet_resource_group_name    = azurerm_resource_group.rg.name
-  private_subnet_address_prefixes = ["10.0.2.0/24"] // Adjust as needed
-  public_subnet_address_prefixes  = ["10.0.3.0/24"] // Adjust as needed
-  service_delegation_actions  = [
-    "Microsoft.Network/virtualNetworks/subnets/join/action",
-    "Microsoft.Network/virtualNetworks/subnets/prepareNetworkPolicies/action",
-    "Microsoft.Network/virtualNetworks/subnets/unprepareNetworkPolicies/action",
-  ]
-  additional_service_endpoints = ["Microsoft.Storage"]
-  tags                        = var.databricks_tags
+  source                          = "./modules/azure-databricks-subnets"
+  subnet_name_prefix              = "databricks"
+
+  # If you previously used local.vnet_name, just do:
+  vnet_name                       = var.vnet_name
+  vnet_resource_group_name        = azurerm_resource_group.rg.name
+  private_subnet_address_prefixes = var.databricks_private_subnet_address_prefixes
+  public_subnet_address_prefixes  = var.databricks_public_subnet_address_prefixes
+  service_delegation_actions      = var.databricks_service_delegation_actions
+  additional_service_endpoints    = var.databricks_additional_service_endpoints
+  tags                            = var.databricks_tags
 }
 
+////////////////////////////////////////////////////////////////////////
+//                 Databricks Security Groups Module
+////////////////////////////////////////////////////////////////////////
 module "databricks_security_groups" {
   source                     = "./modules/azure-databricks-security-groups"
   security_group_name_prefix = var.databricks_security_group_prefix
@@ -257,6 +237,9 @@ module "databricks_security_groups" {
   tags                       = var.databricks_tags
 }
 
+////////////////////////////////////////////////////////////////////////
+//                   Databricks Workspace Module
+////////////////////////////////////////////////////////////////////////
 module "databricks_workspace" {
   source               = "./modules/azure-databricks-workspace"
   workspace_name       = var.workspace_name
@@ -268,11 +251,21 @@ module "databricks_workspace" {
   public_subnet_network_security_group_association_id = module.databricks_security_groups.security_group_public_id
   private_subnet_network_security_group_association_id = module.databricks_security_groups.security_group_private_id
   tags                 = var.databricks_tags
-  vnet_name            = var.aks_vnet_name
-  depends_on = [module.databricks_subnets, module.databricks_security_groups]
+  vnet_name            = var.vnet_name
+
+  depends_on = [
+    module.databricks_subnets,
+    module.databricks_security_groups
+  ]
 }
 
+////////////////////////////////////////////////////////////////////////
+//                 Data Lake Storage Account & File System
+////////////////////////////////////////////////////////////////////////
+data "azurerm_client_config" "current" {}
+
 resource "azurerm_storage_account" "datalake_storage_account" {
+  # CHANGED: name = var.datalake_storage_account_name
   name                     = var.datalake_storage_account_name
   resource_group_name      = azurerm_resource_group.rg.name
   location                 = azurerm_resource_group.rg.location
@@ -281,8 +274,6 @@ resource "azurerm_storage_account" "datalake_storage_account" {
   account_kind             = var.datalake_account_kind
   is_hns_enabled           = var.datalake_is_hns_enabled
 }
-
-data "azurerm_client_config" "current" {}
 
 resource "azurerm_role_assignment" "storage_blob_data_owner" {
   scope                = azurerm_storage_account.datalake_storage_account.id
@@ -307,8 +298,7 @@ resource "time_sleep" "role_assignment_sleep" {
 resource "azurerm_storage_data_lake_gen2_filesystem" "datalake_filesystem" {
   name               = var.datalake_filesystem_name
   storage_account_id = azurerm_storage_account.datalake_storage_account.id
-
-  properties = var.datalake_filesystem_properties
+  properties         = var.datalake_filesystem_properties
 
   depends_on = [
     azurerm_storage_account.datalake_storage_account,
@@ -316,26 +306,32 @@ resource "azurerm_storage_data_lake_gen2_filesystem" "datalake_filesystem" {
   ]
 }
 
-// datalake endpoint and private dns
-
+////////////////////////////////////////////////////////////////////////
+//                     Data Lake Private Endpoint
+////////////////////////////////////////////////////////////////////////
 module "datalake_private_dns_zone" {
-  source                       = "./modules/private_dns_zone"
-  name                         = "privatelink.dfs.core.windows.net"
-  resource_group_name          = azurerm_resource_group.rg.name
-  virtual_networks_to_link     = {
+  source                = "./modules/private_dns_zone"
+  name                  = "privatelink.dfs.core.windows.net"
+  resource_group_name   = azurerm_resource_group.rg.name
+
+  virtual_networks_to_link = {
     (module.vnet.name) = {
-      subscription_id    = data.azurerm_client_config.current.subscription_id
+      subscription_id     = data.azurerm_client_config.current.subscription_id
       resource_group_name = azurerm_resource_group.rg.name
     }
   }
-  tags                         = var.tags
+
+  tags = var.tags
 }
 
 module "datalake_private_endpoint" {
   source                         = "./modules/private_endpoint"
+  # CHANGED: name = "${azurerm_storage_account.datalake_storage_account.name}PrivateEndpoint"
   name                           = "${azurerm_storage_account.datalake_storage_account.name}PrivateEndpoint"
   location                       = var.location
   resource_group_name            = azurerm_resource_group.rg.name
+
+  # CHANGED: subnet_id = module.vnet.subnet_ids[var.pe_subnet_name]
   subnet_id                      = module.vnet.subnet_ids[var.pe_subnet_name]
   tags                           = var.tags
   private_connection_resource_id = azurerm_storage_account.datalake_storage_account.id

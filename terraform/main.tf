@@ -1,6 +1,6 @@
-///////////////////////////////////////////////////////////
-// 1. Terraform & Provider
-///////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
+// 1. Terraform and Provider
+////////////////////////////////////////////////////////////////////////
 terraform {
   required_providers {
     azurerm = {
@@ -8,20 +8,20 @@ terraform {
       version = "3.50"
     }
   }
-
-  # Uncomment if using remote state, etc.
-  # backend "azurerm" {
-  #   ...
-  # }
+  /*
+  backend "azurerm" {
+    # Backend configuration details here (if any)
+  }
+  */
 }
 
 provider "azurerm" {
   features {}
 }
 
-///////////////////////////////////////////////////////////
-// 2. Resource Group & Config
-///////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
+// 2. Resource Group
+////////////////////////////////////////////////////////////////////////
 resource "azurerm_resource_group" "rg" {
   name     = var.resource_group_name
   location = var.location
@@ -30,17 +30,17 @@ resource "azurerm_resource_group" "rg" {
 
 data "azurerm_client_config" "current" {}
 
-///////////////////////////////////////////////////////////
-// 3. Virtual Network & Subnets
-//    Creates two subnets: "snet-shared" and "snet-aks"
-///////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
+// 3. VNet Module (with Shared + AKS subnets)
+////////////////////////////////////////////////////////////////////////
 module "vnet" {
   source              = "./modules/virtual_network"
   resource_group_name = azurerm_resource_group.rg.name
   location            = var.location
-  vnet_name           = "vnet-nih-dev-002"
-  address_space       = ["10.0.0.0/16"]
+  vnet_name           = var.aks_vnet_name
+  address_space       = var.aks_vnet_address_space
 
+  // Here we add both the Shared Subnet and the new AKS Subnet
   subnets = [
     {
       name                                          = var.shared_subnet_name
@@ -57,23 +57,156 @@ module "vnet" {
   ]
 }
 
-///////////////////////////////////////////////////////////
-// 4. Route Table (UDR)
-//    Associates with the AKS subnet for userDefinedRouting.
-///////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
+// 4. Data Lake Storage + Private Endpoint + DNS
+////////////////////////////////////////////////////////////////////////
+resource "azurerm_storage_account" "datalake_storage_account" {
+  name                     = var.datalake_storage_account_name
+  resource_group_name      = azurerm_resource_group.rg.name
+  location                 = azurerm_resource_group.rg.location
+  account_tier             = var.datalake_account_tier
+  account_replication_type = var.datalake_account_replication_type
+  account_kind             = var.datalake_account_kind
+  is_hns_enabled           = var.datalake_is_hns_enabled
+  tags                     = var.tags
+}
+
+module "datalake_private_dns_zone" {
+  source                    = "./modules/private_dns_zone"
+  name                      = "privatelink.dfs.core.windows.net"
+  resource_group_name       = azurerm_resource_group.rg.name
+  virtual_networks_to_link  = {
+    (module.vnet.name) = {
+      subscription_id      = data.azurerm_client_config.current.subscription_id
+      resource_group_name  = azurerm_resource_group.rg.name
+    }
+  }
+  tags = var.tags
+}
+
+module "datalake_private_endpoint" {
+  source                         = "./modules/private_endpoint"
+  name                           = "${azurerm_storage_account.datalake_storage_account.name}-pe"
+  location                       = var.location
+  resource_group_name            = azurerm_resource_group.rg.name
+  subnet_id                      = module.vnet.subnet_ids[var.shared_subnet_name]
+  private_connection_resource_id = azurerm_storage_account.datalake_storage_account.id
+  subresource_name               = "dfs"
+  private_dns_zone_group_name    = "DatalakePrivateDnsZoneGroup"
+  private_dns_zone_group_ids     = [module.datalake_private_dns_zone.id]
+  tags                           = var.tags
+}
+
+////////////////////////////////////////////////////////////////////////
+// 5. Key Vault + Private Endpoint + DNS
+////////////////////////////////////////////////////////////////////////
+module "key_vault" {
+  source              = "./modules/key_vault"
+  name                = var.key_vault_name
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = var.location
+  tenant_id           = var.tenant_id
+  sku_name            = var.key_vault_sku
+  tags                = var.tags
+
+  enabled_for_deployment          = var.key_vault_enabled_for_deployment
+  enabled_for_disk_encryption     = var.key_vault_enabled_for_disk_encryption
+  enabled_for_template_deployment = var.key_vault_enabled_for_template_deployment
+  enable_rbac_authorization       = var.key_vault_enable_rbac_authorization
+  purge_protection_enabled        = var.key_vault_purge_protection_enabled
+  soft_delete_retention_days      = var.key_vault_soft_delete_retention_days
+  public_network_access_enabled   = false
+
+  bypass                     = var.key_vault_bypass
+  default_action             = var.key_vault_default_action
+  ip_rules                   = var.key_vault_ip_rules
+  virtual_network_subnet_ids = []
+}
+
+module "keyvault_private_dns_zone" {
+  source                    = "./modules/private_dns_zone"
+  name                      = "privatelink.vaultcore.azure.net"
+  resource_group_name       = azurerm_resource_group.rg.name
+  virtual_networks_to_link  = {
+    (module.vnet.name) = {
+      subscription_id      = data.azurerm_client_config.current.subscription_id
+      resource_group_name  = azurerm_resource_group.rg.name
+    }
+  }
+  tags = var.tags
+}
+
+module "keyvault_private_endpoint" {
+  source                         = "./modules/private_endpoint"
+  name                           = "${var.key_vault_name}-pe"
+  location                       = var.location
+  resource_group_name            = azurerm_resource_group.rg.name
+  subnet_id                      = module.vnet.subnet_ids[var.shared_subnet_name]
+  private_connection_resource_id = module.key_vault.id
+  subresource_name               = "vault"
+  private_dns_zone_group_name    = "KeyVaultPrivateDnsZoneGroup"
+  private_dns_zone_group_ids     = [module.keyvault_private_dns_zone.id]
+  tags                           = var.tags
+}
+
+////////////////////////////////////////////////////////////////////////
+// 6. SQL Database + Private Endpoint + DNS
+////////////////////////////////////////////////////////////////////////
+module "sql_database" {
+  source              = "./modules/sql_database"
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = var.location
+  sql_server_name     = var.sql_server_name
+  sql_admin_username  = var.sql_admin_username
+  sql_admin_password  = var.sql_admin_password
+  sql_database_name   = var.sql_database_name
+  sql_database_dtu    = var.sql_database_dtu
+  sql_database_tier   = var.sql_database_tier
+  sql_database_size_gb = var.sql_database_size_gb
+  long_term_retention_backup = var.long_term_retention_backup
+  
+  // re-use the shared subnet for SQL
+  subnet_id           = module.vnet.subnet_ids[var.shared_subnet_name]
+  private_dns_zone_id = module.sql_private_dns_zone.id
+  tags                = var.tags
+}
+
+module "sql_private_dns_zone" {
+  source                    = "./modules/private_dns_zone"
+  name                      = "privatelink.database.windows.net"
+  resource_group_name       = azurerm_resource_group.rg.name
+  virtual_networks_to_link  = {
+    (module.vnet.name) = {
+      subscription_id      = data.azurerm_client_config.current.subscription_id
+      resource_group_name  = azurerm_resource_group.rg.name
+    }
+  }
+  tags = var.tags
+}
+
+////////////////////////////////////////////////////////////////////////
+// 7. Data Factory
+////////////////////////////////////////////////////////////////////////
+module "data_factory" {
+  source              = "./modules/data_factory"
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = var.location
+  data_factory_name   = var.data_factory_name
+  tags                = var.tags
+}
+
+////////////////////////////////////////////////////////////////////////
+// 8. Route Table for the AKS Subnet (User-Defined Routing)
+////////////////////////////////////////////////////////////////////////
 module "routetable" {
   source              = "./modules/route_table"
   resource_group_name = azurerm_resource_group.rg.name
   location            = var.location
 
-  // Provide any param your module requires:
   route_table_name    = var.route_table_name
   route_name          = var.route_name
-
-  // The IP of your NVA/Firewall for default route
   firewall_private_ip = var.firewall_private_ip
 
-  // Associate route table with the new AKS subnet
   subnets_to_associate = {
     (var.aks_subnet_name) = {
       subscription_id      = data.azurerm_client_config.current.subscription_id
@@ -83,18 +216,15 @@ module "routetable" {
   }
 }
 
-///////////////////////////////////////////////////////////
-// 5. Private DNS Zone for Private AKS
-//    For private_cluster_enabled = true, we link
-//    'privatelink.<region>.azmk8s.io' to our VNet
-///////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
+// 9. Private DNS Zone for private AKS control plane
+////////////////////////////////////////////////////////////////////////
 module "aks_private_dns_zone" {
   source              = "./modules/private_dns_zone"
   name                = var.aks_private_dns_zone_name
   resource_group_name = azurerm_resource_group.rg.name
   tags                = var.tags
 
-  // Link your VNet so the cluster's private FQDN resolves
   virtual_networks_to_link = {
     (module.vnet.name) = {
       subscription_id     = data.azurerm_client_config.current.subscription_id
@@ -103,28 +233,29 @@ module "aks_private_dns_zone" {
   }
 }
 
-///////////////////////////////////////////////////////////
-// 6. AKS Module - Private Cluster using the new AKS subnet
-///////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
+// 10. AKS (Private Cluster) Using the New Subnet
+////////////////////////////////////////////////////////////////////////
 module "aks_cluster" {
-  source                               = "./modules/aks"
+  source = "./modules/aks"
 
-  name                                 = var.aks_cluster_name
-  location                             = var.location
-  resource_group_name                  = azurerm_resource_group.rg.name
-  resource_group_id                    = azurerm_resource_group.rg.id
-  kubernetes_version                   = var.kubernetes_version
-  dns_prefix                           = lower(var.aks_cluster_name)
+  name                = var.aks_cluster_name
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_id   = azurerm_resource_group.rg.id
 
-  // Enable private cluster
-  private_cluster_enabled              = true
-  sku_tier                             = var.sku_tier
-  automatic_channel_upgrade            = var.automatic_channel_upgrade
+  kubernetes_version        = var.kubernetes_version
+  dns_prefix                = lower(var.aks_cluster_name)
+  private_cluster_enabled   = true
+  sku_tier                  = var.sku_tier
+  automatic_channel_upgrade = var.automatic_channel_upgrade
 
   // Node pool config
-  default_node_pool_name              = var.default_node_pool_name
-  default_node_pool_vm_size           = var.default_node_pool_vm_size
-  vnet_subnet_id                       = module.vnet.subnet_ids[var.aks_subnet_name]
+  default_node_pool_name    = var.default_node_pool_name
+  default_node_pool_vm_size = var.default_node_pool_vm_size
+
+  // AKS node subnet
+  vnet_subnet_id = module.vnet.subnet_ids[var.aks_subnet_name]
 
   default_node_pool_availability_zones     = var.default_node_pool_availability_zones
   default_node_pool_node_labels            = var.default_node_pool_node_labels
@@ -143,17 +274,16 @@ module "aks_cluster" {
   outbound_type          = var.outbound_type
   network_service_cidr   = var.network_service_cidr
   network_dns_service_ip = var.network_dns_service_ip
-  
-  // No log analytics for now
-  log_analytics_workspace_id = var.log_analytics_workspace_id
 
-  // AAD / RBAC
+  log_analytics_workspace_id = null // No Log Analytics for now
+
+  // RBAC / AAD
   role_based_access_control_enabled = var.role_based_access_control_enabled
   tenant_id                         = var.tenant_id
   admin_group_object_ids            = var.admin_group_object_ids
   azure_rbac_enabled               = var.azure_rbac_enabled
 
-  // Node access
+  // AKS node access
   admin_username = var.admin_username
   ssh_public_key = var.ssh_public_key
 
@@ -169,23 +299,20 @@ module "aks_cluster" {
 
   tags = var.tags
 
+  // Ensure the route table and the private DNS zone are created first
   depends_on = [
-    module.routetable,          // Ensure route table is created/associated
-    module.aks_private_dns_zone // Ensure private DNS zone is ready
+    module.routetable,
+    module.aks_private_dns_zone
   ]
 }
 
-///////////////////////////////////////////////////////////
-// 7. (Optional) Role Assignments
-//    Grant AKS identity "Network Contributor" on the RG
-//    if your module uses a User Assigned Identity
-///////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
+// 11. (Optional) Role Assignment: Network Contributor
+//     Grants the AKS user-assigned identity permission to manage net resources
+////////////////////////////////////////////////////////////////////////
 resource "azurerm_role_assignment" "aks_network_contributor" {
   scope                = azurerm_resource_group.rg.id
   role_definition_name = "Network Contributor"
-  // This principal_id typically comes from the AKS module output
-  // e.g. module.aks_cluster.aks_identity_principal_id
   principal_id         = module.aks_cluster.aks_identity_principal_id
-
   skip_service_principal_aad_check = true
 }

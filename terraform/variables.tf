@@ -70,11 +70,21 @@ variable "pe_subnet_address_prefix" {
 //
 // Virtual Machine (VM) Variables
 //
-// Microsoft recommends: vm-<project>-<environment>-<###>
+// Typically: vm-<project>-<environment>-<###>
+//
+// 1) vm_name: for the Azure resource name (can be more descriptive, up to 64 chars).
+// 2) vm_computer_name: for the Windows "computer_name" (MUST be <= 15 chars).
+//
 variable "vm_name" {
-  description = "Specifies the base name of the virtual machine."
+  description = "Specifies the Azure resource name of the virtual machine."
   type        = string
   default     = "vm-nih-dev-001"
+}
+
+variable "vm_computer_name" {
+  description = "Specifies the Windows computer name (NetBIOS name) for the VM (<= 15 chars)."
+  type        = string
+  default     = "vm-nih-dev-01"
 }
 
 variable "vm_count" {
@@ -121,7 +131,7 @@ variable "vm_os_disk_image" {
 //
 // DNS Label
 //
-// Microsoft recommends something like <label>.<region>.cloudapp.azure.com
+// Example: <label>.<region>.cloudapp.azure.com
 variable "domain_name_label" {
   description = "Specifies the domain name label for the virtual machine."
   type        = string
@@ -151,7 +161,7 @@ variable "vm_os_disk_storage_account_type" {
 //
 // Key Vault Variables
 //
-// A common prefix is kv-<project>-<environment>-<###>
+// Example prefix: kv-<project>-<environment>-<###>
 variable "key_vault_name" {
   description = "Specifies the name of the Key Vault."
   type        = string
@@ -226,7 +236,7 @@ variable "key_vault_ip_rules" {
 //
 // ACR Variables
 //
-// Microsoft recommends: cr<project><environment><###>
+// Example: cr<project><environment><###>
 variable "acr_name" {
   description = "Specifies the name of the Container Registry."
   type        = string
@@ -254,7 +264,7 @@ variable "acr_georeplication_locations" {
 //
 // Databricks Workspace Variables
 //
-// No official example from Microsoft, but you could do something like dbw-<project>-<environment>-<###>
+// Example: dbw-<project>-<environment>-<###>
 variable "workspace_name" {
   description = "Name of Databricks workspace"
   type        = string
@@ -281,7 +291,6 @@ variable "databricks_public_subnet_name" {
 
 // Security Group Variables for Databricks
 // For NSGs, Microsoft recommends: nsg-<policy or app name>-<###>
-// We’ll use a prefix to keep it consistent with Databricks usage:
 variable "databricks_security_group_prefix" {
   description = "Prefix for the names of the security groups created by the Databricks module"
   type        = string
@@ -302,7 +311,7 @@ variable "databricks_tags" {
 //
 // Datalake storage variables
 //
-// For Data Lake Storage, Microsoft recommends: dls<project><environment>
+// For Data Lake Storage, recommended: dls<project><environment>
 variable "datalake_storage_account_name" {
   description = "The name of the Data Lake Storage account"
   type        = string
@@ -333,7 +342,7 @@ variable "datalake_is_hns_enabled" {
   default     = true
 }
 
-// Filesystem naming can be internal preference. Keep it short, e.g., fs<project><environment>.
+// Filesystem naming can be an internal preference. Keep it short, e.g., fs<project><environment>.
 variable "datalake_filesystem_name" {
   description = "The name of the Data Lake Storage Gen2 filesystem"
   type        = string

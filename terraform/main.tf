@@ -57,7 +57,7 @@ module "virtual_machine" {
   count               = var.vm_count
   source              = "./modules/virtual_machine"
 
-  name                = "${count.index}-${var.vm_name}"
+  name                = "${var.vm_name}-${count.index}"
   size                = var.vm_size
   location            = var.location
   public_ip           = var.vm_public_ip
@@ -112,70 +112,6 @@ module "acr" {
   georeplication_locations = var.acr_georeplication_locations
 }
 
-/*
-//
-// Private Endpoint for Key Vault
-//
-resource "azurerm_private_endpoint" "key_vault_pe" {
-  name                = "${var.key_vault_name}-pe"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.rg.name
-
-  subnet_id = module.vnet.subnet_ids[var.pe_subnet_name]
-
-  private_service_connection {
-    name                           = "${var.key_vault_name}-psc"
-    private_connection_resource_id = module.key_vault.id
-    subresource_names              = ["vault"]
-    is_manual_connection           = false
-  }
-}
-
-*/
-
-//
-// Private Endpoint for ACR
-//
-/*
-resource "azurerm_private_endpoint" "acr_pe" {
-  name                = "${var.acr_name}-pe"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.rg.name
-
-  subnet_id = module.vnet.subnet_ids[var.pe_subnet_name]
-
-  private_service_connection {
-    name                           = "${var.acr_name}-psc"
-    private_connection_resource_id = module.acr.id
-    subresource_names              = ["registry"]
-    is_manual_connection           = false
-  }
-}
-*/
-
-/*
-module "private_dns_zone_acr" {
-  source              = "./modules/private_dns_zone"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.rg.name
-  dns_zone_name       = "privatelink.azurecr.io"
-  vnet_id             = module.vnet.vnet_id
-}
-
-module "private_endpoint_acr" {
-  source                        = "./modules/private_endpoint"
-  name                          = "${var.acr_name}-pe"
-  location                      = var.location
-  resource_group_name           = azurerm_resource_group.rg.name
-  subnet_id                     = module.vnet.subnet_ids[var.pe_subnet_name]
-  private_connection_resource_id = module.acr.id
-  is_manual_connection          = false
-  subresource_name              = "registry"
-  private_dns_zone_group_name   = "${var.acr_name}-pdns"
-  private_dns_zone_group_ids    = [module.private_dns_zone_acr.id]
-  tags                          = var.tags
-}
-*/
 
 module "acr_private_dns_zone" {
   source                       = "./modules/private_dns_zone"

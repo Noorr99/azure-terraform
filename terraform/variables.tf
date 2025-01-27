@@ -299,7 +299,7 @@ variable "default_node_pool_name" {
 variable "default_node_pool_vm_size" {
   description = "Specifies the VM size for the default node pool."
   type        = string
-  default     = "Standard_F4s_v2"  # Changed from "Standard_F8s_v2" to "Standard_F4s_v2"
+  default     = "Standard_D2s_v2"  # Changed from "Standard_D2s_v2" to "Standard_F4s_v2"
 }
 
 variable "default_node_pool_availability_zones" {

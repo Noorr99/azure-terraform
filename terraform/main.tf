@@ -136,7 +136,7 @@ module "acr_private_dns_zone" {
 
 module "acr_private_endpoint" {
   source                         = "./modules/private_endpoint"
-  name                           = "${module.acr.name}PrivateEndpoint"
+  name                           = "pe-${module.acr.name}"
   location                       = var.location
   resource_group_name            = var.resource_group_name
   subnet_id                      = module.vnet.subnet_ids[var.pe_subnet_name]
@@ -163,7 +163,7 @@ module "keyvault_private_dns_zone" {
 
 module "keyvault_private_endpoint" {
   source                         = "./modules/private_endpoint"
-  name                           = "${module.key_vault.name}PrivateEndpoint"
+  name                           = "pe-${module.key_vault.name}"
   location                       = var.location
   resource_group_name            = var.resource_group_name
   subnet_id                      = module.vnet.subnet_ids[var.pe_subnet_name]
@@ -280,7 +280,7 @@ module "datalake_private_dns_zone" {
 
 module "datalake_private_endpoint" {
   source                         = "./modules/private_endpoint"
-  name                           = "${azurerm_storage_account.datalake_storage_account.name}PrivateEndpoint"
+  name                           = "pe-${azurerm_storage_account.datalake_storage_account.name}"
   location                       = var.location
   resource_group_name            = var.resource_group_name
   subnet_id                      = module.vnet.subnet_ids[var.pe_subnet_name]

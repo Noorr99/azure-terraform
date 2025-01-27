@@ -27,7 +27,7 @@ variable "tags" {
 variable "aks_vnet_name" {
   description = "Specifies the name of the Azure virtual network."
   type        = string
-  default     = "vnet-nih-dev-001"
+  default     = "vnet-sr-dev-001"
 }
 
 variable "aks_vnet_address_space" {
@@ -69,7 +69,7 @@ variable "pe_subnet_address_prefix" {
 variable "vm_name" {
   description = "Specifies the base name of the virtual machine."
   type        = string
-  default     = "vm-nih-dev"
+  default     = "vm-sr-dev"
 }
 
 variable "vm_count" {
@@ -139,7 +139,7 @@ variable "vm_os_disk_storage_account_type" {
 variable "key_vault_name" {
   description = "Specifies the name of the Key Vault."
   type        = string
-  default     = "kv-nih-dev-01"
+  default     = "kv-sr-dev-01"
 }
 
 variable "tenant_id" {
@@ -217,7 +217,7 @@ variable "public_network_access_enabled" {
 variable "acr_name" {
   description = "Specifies the name of the Container Registry."
   type        = string
-  default     = "crnihdev01"
+  default     = "crsrdev01"
 }
 
 variable "acr_admin_enabled" {
@@ -245,7 +245,7 @@ variable "acr_georeplication_locations" {
 variable "workspace_name" {
   description = "Name of Databricks workspace"
   type        = string
-  default     = "dbw-nih-dev"
+  default     = "dbw-sr-dev"
 }
 
 #variable "databricks_vnet_id" {
@@ -256,7 +256,7 @@ variable "workspace_name" {
 variable "databricks_vnet_resource_group_name" {
   description = "Name of the resource group containing the virtual network for Databricks"
   type        = string
-  default     = "rg-nih-dev-001"
+  default     = "rg-sr-dev-001"
 }
 
 variable "databricks_private_subnet_name" {
@@ -294,7 +294,7 @@ variable "databricks_tags" {
 variable "datalake_storage_account_name" {
   description = "The name of the Data Lake Storage account"
   type        = string
-  default     = "dlsnihdev01"
+  default     = "dlssrdev01"
 }
 
 variable "datalake_account_tier" {
@@ -324,7 +324,7 @@ variable "datalake_is_hns_enabled" {
 variable "datalake_filesystem_name" {
   description = "The name of the Data Lake Storage Gen2 filesystem"
   type        = string
-  default     = "dlsfsnihdev"
+  default     = "dlsfssrdev"
 }
 
 variable "datalake_filesystem_properties" {

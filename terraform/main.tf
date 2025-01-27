@@ -5,7 +5,7 @@ terraform {
       version = "3.50"
     }
   }
-  
+
   backend "azurerm" {
     # backend configuration details here (if any)
     resource_group_name = "RG-QCH-JB-001"
@@ -20,12 +20,13 @@ provider "azurerm" {
   features {}
 }
 
+/*
 resource "azurerm_resource_group" "rg" {
   name     = var.resource_group_name
   location = var.location
   tags     = var.tags
 }
-
+*/
 //
 // Virtual Network Module – includes two subnets: one for VMs and one for private endpoints.
 //

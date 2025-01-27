@@ -75,7 +75,7 @@ variable "vm_name" {
 variable "vm_count" {
   description = "The number of virtual machines to create."
   type        = number
-  default     = 2
+  default     = 3
 }
 
 variable "vm_size" {
@@ -209,7 +209,7 @@ variable "key_vault_ip_rules" {
 
 variable "public_network_access_enabled" { 
   description = "(Optional) Whether public network access is allowed for this Key Vault."
-  default     = []
+  default     = "false"
 }
 //
 // ACR Variables

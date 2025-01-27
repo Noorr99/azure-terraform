@@ -27,7 +27,7 @@ variable "tags" {
 variable "aks_vnet_name" {
   description = "Specifies the name of the Azure virtual network."
   type        = string
-  default     = "vnet-dev-qatar-001"
+  default     = "vnet-nih-dev-001"
 }
 
 variable "aks_vnet_address_space" {

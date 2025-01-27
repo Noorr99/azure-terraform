@@ -299,7 +299,7 @@ variable "default_node_pool_name" {
 variable "default_node_pool_vm_size" {
   description = "Specifies the VM size for the default node pool."
   type        = string
-  default     = "Standard_F8s_v2"
+  default     = "Standard_F4s_v2"  # Changed from "Standard_F8s_v2" to "Standard_F4s_v2"
 }
 
 variable "default_node_pool_availability_zones" {
@@ -353,13 +353,13 @@ variable "default_node_pool_max_count" {
 variable "default_node_pool_min_count" {
   description = "Min number of nodes in the default node pool."
   type        = number
-  default     = 3
+  default     = 2  # Changed Reduced from 3 to 2
 }
 
 variable "default_node_pool_node_count" {
   description = "Initial node count in the default node pool."
   type        = number
-  default     = 3
+  default     = 2  # Changed Reduced from 3 to 2
 }
 
 variable "default_node_pool_os_disk_type" {

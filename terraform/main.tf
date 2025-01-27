@@ -8,11 +8,14 @@ terraform {
       version = "3.50"
     }
   }
-  /*
   backend "azurerm" {
-    # Backend configuration details here (if any)
+    # backend configuration details here (if any)
+    resource_group_name = "monitor"
+    storage_account_name = "aksmonitornoorr"
+    container_name = "tfstate"
+    key = "terraform.tfstate"
+    subscription_id      = "df3d4aac-017f-4207-b30f-18f2ead9f65e"
   }
-  */
 }
 
 provider "azurerm" {

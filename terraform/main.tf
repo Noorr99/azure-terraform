@@ -158,7 +158,7 @@ module "keyvault_private_endpoint" {
 module "sql_database" {
   source              = "./modules/sql_database"
   resource_group_name = azurerm_resource_group.rg.name
-  location            = "eastus"
+  location            = var.location
   sql_server_name     = var.sql_server_name
   sql_admin_username  = var.sql_admin_username
   sql_admin_password  = var.sql_admin_password

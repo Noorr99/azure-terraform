@@ -8,6 +8,11 @@ terraform {
 
   backend "azurerm" {
     # backend configuration details here (if any)
+    resource_group_name = "RG-QCH-JB-001"
+    storage_account_name = "stnihstate001"
+    container_name = "tfstate"
+    key = "terraform.tfstate"
+    subscription_id      = "7a1647d0-01c6-410b-9b4c-2f015f49edee"
   }
 }
 

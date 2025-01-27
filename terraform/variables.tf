@@ -176,7 +176,7 @@ variable "datalake_is_hns_enabled" {
 variable "sql_server_name" {
   description = "Specifies the name of the SQL Server."
   type        = string
-  default     = "sql-server-dev-nir"
+  default     = "sql-server-devv-nir"
 }
 
 variable "sql_admin_username" {
@@ -299,7 +299,7 @@ variable "default_node_pool_name" {
 variable "default_node_pool_vm_size" {
   description = "Specifies the VM size for the default node pool."
   type        = string
-  default     = "Standard_D2s_v2"  # Changed from "Standard_D2s_v2" to "Standard_F4s_v2"
+  default     = "Standard_B2s_v2"  # Changed from "Standard_D2s_v2" to "Standard_F4s_v2"
 }
 
 variable "default_node_pool_availability_zones" {

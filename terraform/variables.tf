@@ -139,7 +139,7 @@ variable "vm_os_disk_storage_account_type" {
 variable "key_vault_name" {
   description = "Specifies the name of the Key Vault."
   type        = string
-  default     = "kv-nih-shared-dev"
+  default     = "kv-nih-dev-01"
 }
 
 variable "tenant_id" {
@@ -217,7 +217,7 @@ variable "public_network_access_enabled" {
 variable "acr_name" {
   description = "Specifies the name of the Container Registry."
   type        = string
-  default     = "crnihdev001"
+  default     = "crnihdev01"
 }
 
 variable "acr_admin_enabled" {
@@ -294,7 +294,7 @@ variable "databricks_tags" {
 variable "datalake_storage_account_name" {
   description = "The name of the Data Lake Storage account"
   type        = string
-  default     = "dlsnihdev"
+  default     = "dlsnihdev01"
 }
 
 variable "datalake_account_tier" {

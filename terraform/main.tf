@@ -5,7 +5,6 @@ terraform {
       version = ">= 3.60.0"  # Example: Replace with the latest version
     }
   }
-}
 
   backend "azurerm" {
     # backend configuration details here (if any)

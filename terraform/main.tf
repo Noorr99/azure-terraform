@@ -222,7 +222,7 @@ module "databricks_workspace" {
 resource "azurerm_storage_account" "datalake_storage_account" {
   name                     = var.datalake_storage_account_name
   resource_group_name      = var.resource_group_name
-  location                 = azurerm_resource_group.rg.location
+  location                 = var.location
   account_tier             = var.datalake_account_tier
   account_replication_type = var.datalake_account_replication_type
   account_kind             = var.datalake_account_kind

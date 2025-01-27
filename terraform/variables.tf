@@ -4,7 +4,7 @@
 variable "resource_group_name" {
   description = "Specifies the name of the resource group."
   type        = string
-  default     = "rg-nih-dev-002"
+  default     = "rg-nir-dev-002"
 }
 
 variable "location" {
@@ -69,7 +69,7 @@ variable "aks_subnet_address_prefix" {
 variable "key_vault_name" {
   description = "Specifies the name of the Key Vault."
   type        = string
-  default     = "kv-nih-shared-dev-02"
+  default     = "kv-nir-shared-dev-02"
 }
 
 variable "tenant_id" {
@@ -143,7 +143,7 @@ variable "key_vault_ip_rules" {
 variable "datalake_storage_account_name" {
   description = "The name of the Data Lake Storage account."
   type        = string
-  default     = "dlsnihdev02"
+  default     = "dlsnirdev02"
 }
 
 variable "datalake_account_tier" {
@@ -176,7 +176,7 @@ variable "datalake_is_hns_enabled" {
 variable "sql_server_name" {
   description = "Specifies the name of the SQL Server."
   type        = string
-  default     = "sql-server-dev-nih"
+  default     = "sql-server-dev-nir"
 }
 
 variable "sql_admin_username" {
@@ -230,7 +230,7 @@ variable "public_network_access_enabled" {
 variable "data_factory_name" {
   description = "Specifies the name of the Azure Data Factory."
   type        = string
-  default     = "adf-nih-dev-test"
+  default     = "adf-nir-dev-test"
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -269,7 +269,7 @@ variable "aks_private_dns_zone_name" {
 variable "aks_cluster_name" {
   description = "Specifies the name of the AKS cluster."
   type        = string
-  default     = "aks-nih-dev-002"
+  default     = "aks-nir-dev-002"
 }
 
 variable "kubernetes_version" {

@@ -10,7 +10,7 @@ variable "resource_group_name" {
 variable "location" {
   description = "Specifies the Azure region where resources will be created."
   type        = string
-  default     = "northeurope"
+  default     = "qatarcentral"
 }
 
 variable "tags" {

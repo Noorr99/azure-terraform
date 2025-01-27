@@ -2,10 +2,10 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = ">= 3.60.0"  # Example: Replace with the latest version
+      version = "3.50"
     }
   }
-
+  
   backend "azurerm" {
     # backend configuration details here (if any)
     resource_group_name = "RG-QCH-JB-001"

@@ -12,7 +12,7 @@ terraform {
     storage_account_name = "stnihstate001"
     container_name = "tfstate"
     key = "terraform.tfstate"
-    subscription_id      = "7a1647d0-01c6-410b-9b4c-2f015f49edee"
+    subscription_id      = "751b8a58-5878-4c86-93dc-13c41b3a90cf"
   }
 }
 

@@ -32,7 +32,7 @@ resource "azurerm_resource_group" "rg" {
 //
 module "vnet" {
   source              = "./modules/virtual_network"
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = var.resource_group_name
   location            = var.location
   vnet_name           = var.aks_vnet_name
   address_space       = var.aks_vnet_address_space
@@ -71,7 +71,7 @@ module "virtual_machine" {
   admin_password      = var.admin_password
   os_disk_image       = var.vm_os_disk_image
   domain_name_label   = var.domain_name_label
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = var.resource_group_name
 
   subnet_id                   = module.vnet.subnet_ids[var.vm_subnet_name]
   os_disk_storage_account_type = var.vm_os_disk_storage_account_type
@@ -83,7 +83,7 @@ module "virtual_machine" {
 module "key_vault" {
   source              = "./modules/key_vault"
   name                = var.key_vault_name
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = var.resource_group_name
   location            = var.location
   tenant_id           = var.tenant_id
   sku_name            = var.key_vault_sku
@@ -110,7 +110,7 @@ module "key_vault" {
 module "acr" {
   source              = "./modules/container_registry"
   name                = var.acr_name
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = var.resource_group_name
   location            = var.location
   admin_enabled       = var.acr_admin_enabled
   sku                 = var.acr_sku
@@ -124,11 +124,11 @@ module "acr" {
 module "acr_private_dns_zone" {
   source                       = "./modules/private_dns_zone"
   name                         = "privatelink.azurecr.io"
-  resource_group_name          = azurerm_resource_group.rg.name
+  resource_group_name          = var.resource_group_name
   virtual_networks_to_link     = {
     (module.vnet.name) = {
       subscription_id    = data.azurerm_client_config.current.subscription_id
-      resource_group_name = azurerm_resource_group.rg.name
+      resource_group_name = var.resource_group_name
     }
   }
   tags                         = var.tags
@@ -138,7 +138,7 @@ module "acr_private_endpoint" {
   source                         = "./modules/private_endpoint"
   name                           = "${module.acr.name}PrivateEndpoint"
   location                       = var.location
-  resource_group_name            = azurerm_resource_group.rg.name
+  resource_group_name            = var.resource_group_name
   subnet_id                      = module.vnet.subnet_ids[var.pe_subnet_name]
   tags                           = var.tags
   private_connection_resource_id = module.acr.id
@@ -151,11 +151,11 @@ module "acr_private_endpoint" {
 module "keyvault_private_dns_zone" {
   source                       = "./modules/private_dns_zone"
   name                         = "privatelink.vaultcore.azure.net"
-  resource_group_name          = azurerm_resource_group.rg.name
+  resource_group_name          = var.resource_group_name
   virtual_networks_to_link     = {
     (module.vnet.name) = {
       subscription_id    = data.azurerm_client_config.current.subscription_id
-      resource_group_name = azurerm_resource_group.rg.name
+      resource_group_name = var.resource_group_name
     }
   }
   tags                         = var.tags
@@ -165,7 +165,7 @@ module "keyvault_private_endpoint" {
   source                         = "./modules/private_endpoint"
   name                           = "${module.key_vault.name}PrivateEndpoint"
   location                       = var.location
-  resource_group_name            = azurerm_resource_group.rg.name
+  resource_group_name            = var.resource_group_name
   subnet_id                      = module.vnet.subnet_ids[var.pe_subnet_name]
   tags                           = var.tags
   private_connection_resource_id = module.key_vault.id
@@ -179,7 +179,7 @@ module "databricks_subnets" {
   source                      = "./modules/azure-databricks-subnets"
   subnet_name_prefix          = "databricks"
   vnet_name                   = var.aks_vnet_name // Changed to use variable
-  vnet_resource_group_name    = azurerm_resource_group.rg.name
+  vnet_resource_group_name    = var.resource_group_name
   private_subnet_address_prefixes = ["10.0.2.0/24"] // Adjust as needed
   public_subnet_address_prefixes  = ["10.0.3.0/24"] // Adjust as needed
   service_delegation_actions  = [
@@ -196,7 +196,7 @@ module "databricks_security_groups" {
   source                     = "./modules/azure-databricks-security-groups"
   security_group_name_prefix = var.databricks_security_group_prefix
   location                   = var.location
-  vnet_resource_group_name   = azurerm_resource_group.rg.name
+  vnet_resource_group_name   = var.resource_group_name
   private_subnet_id          = module.databricks_subnets.private_subnet_id
   public_subnet_id           = module.databricks_subnets.public_subnet_id
   tags                       = var.databricks_tags
@@ -207,7 +207,7 @@ module "databricks_security_groups" {
 module "databricks_workspace" {
   source               = "./modules/azure-databricks-workspace"
   workspace_name       = var.workspace_name
-  resource_group_name  = azurerm_resource_group.rg.name
+  resource_group_name  = var.resource_group_name
   location             = var.location
   vnet_id              = module.vnet.vnet_id
   private_subnet_name  = module.databricks_subnets.private_subnet_name
@@ -221,7 +221,7 @@ module "databricks_workspace" {
 
 resource "azurerm_storage_account" "datalake_storage_account" {
   name                     = var.datalake_storage_account_name
-  resource_group_name      = azurerm_resource_group.rg.name
+  resource_group_name      = var.resource_group_name
   location                 = azurerm_resource_group.rg.location
   account_tier             = var.datalake_account_tier
   account_replication_type = var.datalake_account_replication_type
@@ -268,11 +268,11 @@ resource "azurerm_storage_data_lake_gen2_filesystem" "datalake_filesystem" {
 module "datalake_private_dns_zone" {
   source                       = "./modules/private_dns_zone"
   name                         = "privatelink.dfs.core.windows.net"
-  resource_group_name          = azurerm_resource_group.rg.name
+  resource_group_name          = var.resource_group_name
   virtual_networks_to_link     = {
     (module.vnet.name) = {
       subscription_id    = data.azurerm_client_config.current.subscription_id
-      resource_group_name = azurerm_resource_group.rg.name
+      resource_group_name = var.resource_group_name
     }
   }
   tags                         = var.tags
@@ -282,7 +282,7 @@ module "datalake_private_endpoint" {
   source                         = "./modules/private_endpoint"
   name                           = "${azurerm_storage_account.datalake_storage_account.name}PrivateEndpoint"
   location                       = var.location
-  resource_group_name            = azurerm_resource_group.rg.name
+  resource_group_name            = var.resource_group_name
   subnet_id                      = module.vnet.subnet_ids[var.pe_subnet_name]
   tags                           = var.tags
   private_connection_resource_id = azurerm_storage_account.datalake_storage_account.id

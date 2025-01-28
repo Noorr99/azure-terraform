@@ -10,11 +10,11 @@ terraform {
   }
   backend "azurerm" {
     # backend configuration details here (if any)
-    resource_group_name = "monitor"
-    storage_account_name = "aksmonitornoorr"
-    container_name = "tfstate"
+    resource_group_name = "RG-QCH-JB-001"
+    storage_account_name = "stnihstate001"
+    container_name = "tfstatenihdev"
     key = "terraform.tfstate"
-    subscription_id      = "df3d4aac-017f-4207-b30f-18f2ead9f65e"
+    subscription_id      = "751b8a58-5878-4c86-93dc-13c41b3a90cf"
   }
 }
 
@@ -25,20 +25,25 @@ provider "azurerm" {
 ////////////////////////////////////////////////////////////////////////
 // 2. Resource Group
 ////////////////////////////////////////////////////////////////////////
+/*
 resource "azurerm_resource_group" "rg" {
   name     = var.resource_group_name
   location = var.location
   tags     = var.tags
 }
-
+*/
 data "azurerm_client_config" "current" {}
+
+data "azurerm_resource_group" "rg" {
+  name = var.resource_group_name
+}
 
 ////////////////////////////////////////////////////////////////////////
 // 3. VNet Module (with Shared + AKS subnets)
 ////////////////////////////////////////////////////////////////////////
 module "vnet" {
   source              = "./modules/virtual_network"
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = var.resource_group_name
   location            = var.location
   vnet_name           = var.aks_vnet_name
   address_space       = var.aks_vnet_address_space
@@ -65,8 +70,8 @@ module "vnet" {
 ////////////////////////////////////////////////////////////////////////
 resource "azurerm_storage_account" "datalake_storage_account" {
   name                     = var.datalake_storage_account_name
-  resource_group_name      = azurerm_resource_group.rg.name
-  location                 = azurerm_resource_group.rg.location
+  resource_group_name      = var.resource_group_name
+  location                 = var.location
   account_tier             = var.datalake_account_tier
   account_replication_type = var.datalake_account_replication_type
   account_kind             = var.datalake_account_kind
@@ -77,11 +82,11 @@ resource "azurerm_storage_account" "datalake_storage_account" {
 module "datalake_private_dns_zone" {
   source                    = "./modules/private_dns_zone"
   name                      = "privatelink.dfs.core.windows.net"
-  resource_group_name       = azurerm_resource_group.rg.name
+  resource_group_name       = var.resource_group_name
   virtual_networks_to_link  = {
     (module.vnet.name) = {
       subscription_id      = data.azurerm_client_config.current.subscription_id
-      resource_group_name  = azurerm_resource_group.rg.name
+      resource_group_name  = var.resource_group_name
     }
   }
   tags = var.tags
@@ -91,7 +96,7 @@ module "datalake_private_endpoint" {
   source                         = "./modules/private_endpoint"
   name                           = "${azurerm_storage_account.datalake_storage_account.name}-pe"
   location                       = var.location
-  resource_group_name            = azurerm_resource_group.rg.name
+  resource_group_name            = var.resource_group_name
   subnet_id                      = module.vnet.subnet_ids[var.shared_subnet_name]
   private_connection_resource_id = azurerm_storage_account.datalake_storage_account.id
   subresource_name               = "dfs"
@@ -106,7 +111,7 @@ module "datalake_private_endpoint" {
 module "key_vault" {
   source              = "./modules/key_vault"
   name                = var.key_vault_name
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = var.resource_group_name
   location            = var.location
   tenant_id           = var.tenant_id
   sku_name            = var.key_vault_sku
@@ -129,11 +134,11 @@ module "key_vault" {
 module "keyvault_private_dns_zone" {
   source                    = "./modules/private_dns_zone"
   name                      = "privatelink.vaultcore.azure.net"
-  resource_group_name       = azurerm_resource_group.rg.name
+  resource_group_name       = var.resource_group_name
   virtual_networks_to_link  = {
     (module.vnet.name) = {
       subscription_id      = data.azurerm_client_config.current.subscription_id
-      resource_group_name  = azurerm_resource_group.rg.name
+      resource_group_name  = var.resource_group_name
     }
   }
   tags = var.tags
@@ -143,7 +148,7 @@ module "keyvault_private_endpoint" {
   source                         = "./modules/private_endpoint"
   name                           = "${var.key_vault_name}-pe"
   location                       = var.location
-  resource_group_name            = azurerm_resource_group.rg.name
+  resource_group_name            = var.resource_group_name
   subnet_id                      = module.vnet.subnet_ids[var.shared_subnet_name]
   private_connection_resource_id = module.key_vault.id
   subresource_name               = "vault"
@@ -157,7 +162,7 @@ module "keyvault_private_endpoint" {
 ////////////////////////////////////////////////////////////////////////
 module "sql_database" {
   source              = "./modules/sql_database"
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = var.resource_group_name
   location            = var.location
   sql_server_name     = var.sql_server_name
   sql_admin_username  = var.sql_admin_username
@@ -177,11 +182,11 @@ module "sql_database" {
 module "sql_private_dns_zone" {
   source                    = "./modules/private_dns_zone"
   name                      = "privatelink.database.windows.net"
-  resource_group_name       = azurerm_resource_group.rg.name
+  resource_group_name       = var.resource_group_name
   virtual_networks_to_link  = {
     (module.vnet.name) = {
       subscription_id      = data.azurerm_client_config.current.subscription_id
-      resource_group_name  = azurerm_resource_group.rg.name
+      resource_group_name  = var.resource_group_name
     }
   }
   tags = var.tags
@@ -192,7 +197,7 @@ module "sql_private_dns_zone" {
 ////////////////////////////////////////////////////////////////////////
 module "data_factory" {
   source              = "./modules/data_factory"
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = var.resource_group_name
   location            = var.location
   data_factory_name   = var.data_factory_name
   tags                = var.tags
@@ -203,7 +208,7 @@ module "data_factory" {
 ////////////////////////////////////////////////////////////////////////
 module "routetable" {
   source              = "./modules/route_table"
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = var.resource_group_name
   location            = var.location
 
   route_table_name    = var.route_table_name
@@ -213,7 +218,7 @@ module "routetable" {
   subnets_to_associate = {
     (var.aks_subnet_name) = {
       subscription_id      = data.azurerm_client_config.current.subscription_id
-      resource_group_name  = azurerm_resource_group.rg.name
+      resource_group_name  = var.resource_group_name
       virtual_network_name = module.vnet.name
     }
   }
@@ -225,13 +230,13 @@ module "routetable" {
 module "aks_private_dns_zone" {
   source              = "./modules/private_dns_zone"
   name                = var.aks_private_dns_zone_name
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = var.resource_group_name
   tags                = var.tags
 
   virtual_networks_to_link = {
     (module.vnet.name) = {
       subscription_id     = data.azurerm_client_config.current.subscription_id
-      resource_group_name = azurerm_resource_group.rg.name
+      resource_group_name = var.resource_group_name
     }
   }
 }
@@ -244,7 +249,7 @@ module "aks_cluster" {
 
   name                = var.aks_cluster_name
   location            = var.location
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = var.resource_group_name
   resource_group_id   = azurerm_resource_group.rg.id
 
   kubernetes_version        = var.kubernetes_version

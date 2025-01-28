@@ -4,20 +4,24 @@
 variable "resource_group_name" {
   description = "Specifies the name of the resource group."
   type        = string
-  default     = "rg-nir-dev-002"
+  default     = "rg-nih-dev"
 }
 
 variable "location" {
   description = "Specifies the Azure region where resources will be created."
   type        = string
-  default     = "eastus"
+  default     = "qatarcentral"
 }
+
 
 variable "tags" {
   description = "Specifies tags to apply to all resources."
   type        = map(string)
-  default = {
+  default     = {
     createdWith = "Terraform"
+    Environment = "dev"
+    Workload    = "nih"
+    Region      = "Qatar Central"
   }
 }
 
@@ -27,25 +31,25 @@ variable "tags" {
 variable "aks_vnet_name" {
   description = "Specifies the name of the Azure virtual network."
   type        = string
-  default     = "vnet-dev-qatar-002"
+  default     = "vnet-dev-qatar-001"
 }
 
 variable "aks_vnet_address_space" {
   description = "Specifies the address space for the Azure virtual network."
   type        = list(string)
-  default     = ["10.0.0.0/16"]
+  default     = ["192.168.71.128/26"]
 }
 
 variable "shared_subnet_name" {
   description = "The name of the shared subnet for SQL Database, Key Vault, and Data Lake."
   type        = string
-  default     = "snet-shared-qatar-002"
+  default     = "snet-nih-pe-qatar-001"
 }
 
 variable "shared_subnet_address_prefix" {
   description = "The address prefix for the shared subnet."
   type        = list(string)
-  default     = ["10.0.1.0/24"]
+  default     = ["192.168.71.128/28"]
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -54,13 +58,13 @@ variable "shared_subnet_address_prefix" {
 variable "aks_subnet_name" {
   description = "The name of the subnet for AKS node pool(s)."
   type        = string
-  default     = "snet-aks-qatar-002"
+  default     = "snet-nih-aks-qatar-001"
 }
 
 variable "aks_subnet_address_prefix" {
   description = "The address prefix for the AKS subnet."
   type        = list(string)
-  default     = ["10.0.2.0/24"]
+  default     = ["192.168.71.160/27"]
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -69,7 +73,7 @@ variable "aks_subnet_address_prefix" {
 variable "key_vault_name" {
   description = "Specifies the name of the Key Vault."
   type        = string
-  default     = "kv-nir-shared-dev-02"
+  default     = "kv-nih-dev-001"
 }
 
 variable "tenant_id" {
@@ -143,7 +147,7 @@ variable "key_vault_ip_rules" {
 variable "datalake_storage_account_name" {
   description = "The name of the Data Lake Storage account."
   type        = string
-  default     = "dlsnirdev02"
+  default     = "dlsnihdev01"
 }
 
 variable "datalake_account_tier" {
@@ -170,13 +174,13 @@ variable "datalake_is_hns_enabled" {
   default     = true
 }
 
-////////////////////////////////////////////////////////////////////////
+//
 // SQL Database Variables
-////////////////////////////////////////////////////////////////////////
+//
 variable "sql_server_name" {
   description = "Specifies the name of the SQL Server."
   type        = string
-  default     = "sql-server-devv-nir"
+  default     = "sql-server-nih-dev"
 }
 
 variable "sql_admin_username" {
@@ -200,25 +204,25 @@ variable "sql_database_name" {
 variable "sql_database_dtu" {
   description = "Specifies the DTU allocation for the SQL Database."
   type        = string
-  default     = "125"
+  default     = "100"
 }
 
 variable "sql_database_tier" {
   description = "Specifies the pricing tier for the SQL Database."
   type        = string
-  default     = "Premium"
+  default     = "Standard"
 }
 
 variable "sql_database_size_gb" {
   description = "Specifies the maximum storage size for the SQL Database in GB."
   type        = number
-  default     = 500
+  default     = 250
 }
 
 variable "long_term_retention_backup" {
   description = "Specifies the size of the long-term retention backup in GB."
   type        = number
-  default     = 100
+  default     = 0
 }
 
 variable "public_network_access_enabled" { 
@@ -230,7 +234,7 @@ variable "public_network_access_enabled" {
 variable "data_factory_name" {
   description = "Specifies the name of the Azure Data Factory."
   type        = string
-  default     = "adf-nir-dev-test"
+  default     = "adf-nih-dev-test"
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -269,7 +273,7 @@ variable "aks_private_dns_zone_name" {
 variable "aks_cluster_name" {
   description = "Specifies the name of the AKS cluster."
   type        = string
-  default     = "aks-nir-dev-002"
+  default     = "aks-nih-dev-001"
 }
 
 variable "kubernetes_version" {
@@ -299,7 +303,7 @@ variable "default_node_pool_name" {
 variable "default_node_pool_vm_size" {
   description = "Specifies the VM size for the default node pool."
   type        = string
-  default     = "Standard_B2s_v2"  # Changed from "Standard_D2s_v2" to "Standard_F4s_v2"
+  default     = "Standard_D4ds_v4"
 }
 
 variable "default_node_pool_availability_zones" {
@@ -353,13 +357,13 @@ variable "default_node_pool_max_count" {
 variable "default_node_pool_min_count" {
   description = "Min number of nodes in the default node pool."
   type        = number
-  default     = 2  # Changed Reduced from 3 to 2
+  default     = 3
 }
 
 variable "default_node_pool_node_count" {
   description = "Initial node count in the default node pool."
   type        = number
-  default     = 2  # Changed Reduced from 3 to 2
+  default     = 3
 }
 
 variable "default_node_pool_os_disk_type" {
@@ -383,13 +387,13 @@ variable "outbound_type" {
 variable "network_service_cidr" {
   description = "Service CIDR for AKS."
   type        = string
-  default     = "10.2.0.0/24"
+  default     = "10.1.0.0/24"
 }
 
 variable "network_dns_service_ip" {
   description = "DNS service IP for AKS."
   type        = string
-  default     = "10.2.0.10"
+  default     = "10.1.0.10"
 }
 
 variable "role_based_access_control_enabled" {

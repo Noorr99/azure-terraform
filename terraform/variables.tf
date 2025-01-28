@@ -249,11 +249,6 @@ variable "zone_redundant" {
   default     = false
 }
 
-/*
-
-  zone_redundant = false  # set to true if your region supports zone redundancy
-
-/*
 
 
 variable "public_network_access_enabled" { 

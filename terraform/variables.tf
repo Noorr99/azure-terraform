@@ -4,7 +4,7 @@
 variable "resource_group_name" {
   description = "Specifies the name of the resource group."
   type        = string
-  default     = "rg-nih-dev"
+  default     = "rg-nih-dev-001"
 }
 
 variable "location" {

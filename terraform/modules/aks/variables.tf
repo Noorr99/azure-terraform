@@ -166,8 +166,8 @@ variable "default_node_pool_node_labels" {
 
 variable "default_node_pool_node_taints" {
   description = "(Optional) A map of Kubernetes labels which should be applied to nodes in this Node Pool. Changing this forces a new resource to be created."
-  type          = list(string)
-  default       = []
+  type          = string
+  default       = "null"
 } 
 
 variable "default_node_pool_os_disk_type" {

@@ -276,8 +276,8 @@ module "aks_cluster" {
   default_node_pool_enable_host_encryption = var.default_node_pool_enable_host_encryption
   default_node_pool_enable_node_public_ip  = var.default_node_pool_enable_node_public_ip
   default_node_pool_max_pods               = var.default_node_pool_max_pods
-  default_node_pool_max_count              = var.default_node_pool_max_count
-  default_node_pool_min_count              = var.default_node_pool_min_count
+//  default_node_pool_max_count              = var.default_node_pool_max_count
+//  default_node_pool_min_count              = var.default_node_pool_min_count
   default_node_pool_node_count             = var.default_node_pool_node_count
   default_node_pool_os_disk_type           = var.default_node_pool_os_disk_type
 

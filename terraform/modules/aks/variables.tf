@@ -177,18 +177,19 @@ variable "default_node_pool_os_disk_type" {
   default       = "Ephemeral"
 } 
 
+/*
 variable "default_node_pool_max_count" {
   description = "Max number of nodes in the default node pool."
-  type        = string
-  default     = "null"
+  type        = number
+  default     = "
 }
 
 variable "default_node_pool_min_count" {
   description = "Min number of nodes in the default node pool."
-  type        = string
-  default     = "null"
+  type        = number
+  default     = "
 }
-
+*/
 variable "default_node_pool_node_count" {
   description = "(Optional) The initial number of nodes which should exist within this Node Pool. Valid values are between 0 and 1000 and must be a value in the range min_count - max_count."
   type          = number

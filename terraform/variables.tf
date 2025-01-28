@@ -335,7 +335,7 @@ variable "default_node_pool_vm_size" {
 variable "default_node_pool_availability_zones" {
   description = "Availability zones for the default node pool."
   type        = list(string)
-  default     = ["None"]
+  default     = ["1"]
 }
 
 variable "default_node_pool_node_labels" {

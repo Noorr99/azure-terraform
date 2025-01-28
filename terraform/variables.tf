@@ -346,8 +346,8 @@ variable "default_node_pool_node_labels" {
 
 variable "default_node_pool_node_taints" {
   description = "A list of Kubernetes taints for nodes in this pool."
-  type        = list(string)
-  default     = []
+  type        = string
+  default     = "null"
 }
 
 variable "default_node_pool_enable_auto_scaling" {

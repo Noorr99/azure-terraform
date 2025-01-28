@@ -255,7 +255,7 @@ variable "route_name" {
 variable "firewall_private_ip" {
   description = "Private IP of your firewall/NVA for egress. If no firewall, adjust accordingly."
   type        = string
-  default     = "10.0.0.4"
+  default     = "192.168.64.70"
 }
 
 ////////////////////////////////////////////////////////////////////////

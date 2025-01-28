@@ -6,7 +6,6 @@ terraform {
     azurerm = {
       source  = "hashicorp/azurerm"
       version = "3.50"
-      skip_provider_registration = true
       }
   }
   backend "azurerm" {
@@ -21,6 +20,7 @@ terraform {
 
 provider "azurerm" {
   features {}
+  skip_provider_registration = true
 }
 
 ////////////////////////////////////////////////////////////////////////

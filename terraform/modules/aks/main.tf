@@ -43,7 +43,7 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
     vm_size                 = var.default_node_pool_vm_size
     vnet_subnet_id          = var.vnet_subnet_id
     pod_subnet_id           = var.pod_subnet_id
-    zones                   = var.default_node_pool_availability_zones
+//    zones                   = var.default_node_pool_availability_zones
     node_labels             = var.default_node_pool_node_labels
 //    node_taints             = var.default_node_pool_node_taints
     enable_auto_scaling     = var.default_node_pool_enable_auto_scaling

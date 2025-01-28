@@ -269,7 +269,7 @@ module "aks_cluster" {
   // AKS node subnet
   vnet_subnet_id = module.vnet.subnet_ids[var.aks_subnet_name]
 
-  default_node_pool_availability_zones     = var.default_node_pool_availability_zones
+//  default_node_pool_availability_zones     = var.default_node_pool_availability_zones
   default_node_pool_node_labels            = var.default_node_pool_node_labels
 //  default_node_pool_node_taints            = var.default_node_pool_node_taints
   default_node_pool_enable_auto_scaling    = var.default_node_pool_enable_auto_scaling

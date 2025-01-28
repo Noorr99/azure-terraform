@@ -80,13 +80,13 @@ variable "default_node_pool_vm_size" {
   default     = "Standard_F8s_v2"
   type        = string
 }
-
+/*
 variable "default_node_pool_availability_zones" {
   description = "Specifies the availability zones of the default node pool"
   default     = ["1", "2", "3"]
   type        = list(string)
 }
-
+*/
 variable "network_dns_service_ip" {
   description = "Specifies the DNS service IP"
   default     = "10.2.0.10"

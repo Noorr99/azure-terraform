@@ -332,12 +332,13 @@ variable "default_node_pool_vm_size" {
   default     = "Standard_D4ds_v4"
 }
 
+/*
 variable "default_node_pool_availability_zones" {
   description = "Availability zones for the default node pool."
   type        = list(string)
   default     = ["1"]
 }
-
+*/
 variable "default_node_pool_node_labels" {
   description = "A map of Kubernetes labels for nodes in this pool."
   type        = map(string)

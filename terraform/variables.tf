@@ -353,7 +353,7 @@ variable "default_node_pool_node_taints" {
 variable "default_node_pool_enable_auto_scaling" {
   description = "Enable autoscaling for the default node pool."
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "default_node_pool_enable_host_encryption" {

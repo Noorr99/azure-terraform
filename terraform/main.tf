@@ -173,7 +173,10 @@ module "sql_database" {
   sql_database_tier   = var.sql_database_tier
   sql_database_size_gb = var.sql_database_size_gb
   long_term_retention_backup = var.long_term_retention_backup
-  
+  zone_redundant = var.zone_redundant # false set to true if your region supports zone redundancy
+  geo_backup_enabled = var.geo_backup_enabled
+  storage_account_type = var.storage_account_type
+  sku_name   = var.sku_name  
   // re-use the shared subnet for SQL
   subnet_id           = module.vnet.subnet_ids[var.shared_subnet_name]
   private_dns_zone_id = module.sql_private_dns_zone.id

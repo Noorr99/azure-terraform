@@ -225,6 +225,37 @@ variable "long_term_retention_backup" {
   default     = 0
 }
 
+variable "geo_backup_enabled" {
+  description = "Specifies the size of the geo_backup_enabled "
+  type        = bool
+  default     = false
+}
+
+variable "storage_account_type" {
+  description = "Specifies the size of the storage_account_type."
+  type        = string
+  default     = "Local"
+}
+
+variable "sku_name" {
+  description = "Specifies the sku_name"
+  type        = string
+  default     = "P1"
+}
+
+variable "zone_redundant" {
+  description = "Specifies the zone_redundant"
+  type        = bool
+  default     = false
+}
+
+/*
+
+  zone_redundant = false  # set to true if your region supports zone redundancy
+
+/*
+
+
 variable "public_network_access_enabled" { 
   description = "(Optional) Whether public network access is allowed for this Key Vault."
   type        = bool
@@ -375,7 +406,7 @@ variable "default_node_pool_os_disk_type" {
 variable "network_plugin" {
   description = "AKS network plugin: 'azure' or 'kubenet'."
   type        = string
-  default     = "azure"
+  default     = "kubenet" #changed to kubenet
 }
 
 variable "outbound_type" {

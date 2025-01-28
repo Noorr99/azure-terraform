@@ -21,10 +21,11 @@ resource "azurerm_mssql_server" "sql_server" {
 resource "azurerm_mssql_database" "sql_database" {
   name       = var.sql_database_name
   server_id  = azurerm_mssql_server.sql_server.id
-  sku_name   = "P1" # Premium, P1: 125 DTUs equivalent
+  sku_name   = var.sku_name   #"P1"  Premium, P1: 125 DTUs equivalent
   max_size_gb = var.sql_database_size_gb
-  zone_redundant = false  # set to true if your region supports zone redundancy
-
+  zone_redundant = var.zone_redundant # false set to true if your region supports zone redundancy
+  geo_backup_enabled = var.geo_backup_enabled
+  storage_account_type = var.storage_account_type
   # Additional properties as needed:
   # collation      = "SQL_Latin1_General_CP1_CI_AS"
   # license_type   = "LicenseIncluded"
@@ -32,7 +33,6 @@ resource "azurerm_mssql_database" "sql_database" {
 
   tags = var.tags
 }
-
 
 #
 # Private Endpoint

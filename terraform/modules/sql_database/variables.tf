@@ -62,3 +62,23 @@ variable "long_term_retention_backup" {
   description = "Specifies the size of the long-term retention backup in GB."
   type        = number
 }
+
+variable "geo_backup_enabled" {
+  description = "Specifies the size of the geo_backup_enabled "
+  type        = bool
+}
+
+variable "storage_account_type" {
+  description = "Specifies the size of the storage_account_type."
+  type        = string
+}
+
+variable "sku_name" {
+  description = "Specifies the sku_name"
+  type        = string
+}
+
+variable "zone_redundant" {
+  description = "Specifies the zone_redundant"
+  type        = bool
+}

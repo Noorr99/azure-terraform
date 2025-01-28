@@ -376,14 +376,14 @@ variable "default_node_pool_max_pods" {
 
 variable "default_node_pool_max_count" {
   description = "Max number of nodes in the default node pool."
-  type        = number
-  default     = 10
+  type        = string
+  default     = "null"
 }
 
 variable "default_node_pool_min_count" {
   description = "Min number of nodes in the default node pool."
-  type        = number
-  default     = 1
+  type        = string
+  default     = "null"
 }
 
 variable "default_node_pool_node_count" {

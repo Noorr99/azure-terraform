@@ -178,15 +178,15 @@ variable "default_node_pool_os_disk_type" {
 } 
 
 variable "default_node_pool_max_count" {
-  description = "(Required) The maximum number of nodes which should exist within this Node Pool. Valid values are between 0 and 1000 and must be greater than or equal to min_count."
-  type          = number
-  default       = 10
+  description = "Max number of nodes in the default node pool."
+  type        = string
+  default     = "null"
 }
 
 variable "default_node_pool_min_count" {
-  description = "(Required) The minimum number of nodes which should exist within this Node Pool. Valid values are between 0 and 1000 and must be less than or equal to max_count."
-  type          = number
-  default       = 3
+  description = "Min number of nodes in the default node pool."
+  type        = string
+  default     = "null"
 }
 
 variable "default_node_pool_node_count" {

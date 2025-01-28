@@ -383,13 +383,13 @@ variable "default_node_pool_max_count" {
 variable "default_node_pool_min_count" {
   description = "Min number of nodes in the default node pool."
   type        = number
-  default     = 3
+  default     = 1
 }
 
 variable "default_node_pool_node_count" {
   description = "Initial node count in the default node pool."
   type        = number
-  default     = 3
+  default     = 1
 }
 
 variable "default_node_pool_os_disk_type" {

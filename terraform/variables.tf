@@ -335,7 +335,7 @@ variable "default_node_pool_vm_size" {
 variable "default_node_pool_availability_zones" {
   description = "Availability zones for the default node pool."
   type        = list(string)
-  default     = []
+  default     = ["1" , "3"]
 }
 
 variable "default_node_pool_node_labels" {
@@ -343,17 +343,17 @@ variable "default_node_pool_node_labels" {
   type        = map(string)
   default     = {}
 }
-
+/*
 variable "default_node_pool_node_taints" {
   description = "A list of Kubernetes taints for nodes in this pool."
-  type        = string
-  default     = "null"
+  type        = list(string)
+  default     = []
 }
-
+*/
 variable "default_node_pool_enable_auto_scaling" {
   description = "Enable autoscaling for the default node pool."
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "default_node_pool_enable_host_encryption" {

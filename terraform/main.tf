@@ -250,7 +250,7 @@ module "aks_cluster" {
   name                = var.aks_cluster_name
   location            = var.location
   resource_group_name = var.resource_group_name
-  resource_group_id   = azurerm_resource_group.rg.id
+  resource_group_id   = data.azurerm_resource_group.rg.id
 
   kubernetes_version        = var.kubernetes_version
   dns_prefix                = lower(var.aks_cluster_name)
@@ -319,7 +319,7 @@ module "aks_cluster" {
 //     Grants the AKS user-assigned identity permission to manage net resources
 ////////////////////////////////////////////////////////////////////////
 resource "azurerm_role_assignment" "aks_network_contributor" {
-  scope                = azurerm_resource_group.rg.id
+  scope                = data.azurerm_resource_group.rg.id
   role_definition_name = "Network Contributor"
   principal_id         = module.aks_cluster.aks_identity_principal_id
   skip_service_principal_aad_check = true

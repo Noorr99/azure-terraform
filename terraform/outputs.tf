@@ -53,5 +53,5 @@ output "databricks_workspace_id" {
 
 output "vm_id" {
   description = "The ID of the Windows virtual machine."
-  value       = azurerm_windows_virtual_machine.virtual_machine.id
+  value       = module.virtual_machine.id
 }

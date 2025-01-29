@@ -276,14 +276,14 @@ variable "databricks_public_subnet_name" {
 
 variable "public_subnet_address_prefixes" {
   description = "IP address of the public_subnet_address_prefixes for Databricks"
-  type        = string
-  default     = "192.168.71.32/28"
+  type        = list(string)
+  default     = ["192.168.71.32/28"]
 }
 
 variable "private_subnet_address_prefixes" {
   description = "IP address of the private_subnet_address_prefixes for Databricks"
-  type        = string
-  default     = "192.168.71.48/28"
+  type        = list(string)
+  default     = ["192.168.71.48/28"]
 }
 
 

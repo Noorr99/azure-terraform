@@ -51,7 +51,7 @@ output "databricks_workspace_id" {
   description = "ID of the Databricks workspace"
 }
 
-output "vm_id" {
-  description = "The ID of the Windows virtual machine."
-  value       = module.virtual_machine.vm_id
+output "vm_ids" {
+  description = "The IDs of the Windows virtual machines."
+  value       = [for vm in module.virtual_machine : vm.vm_id]
 }

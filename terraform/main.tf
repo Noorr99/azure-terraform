@@ -181,8 +181,8 @@ module "databricks_subnets" {
   subnet_name_prefix          = "databricks"
   vnet_name                   = var.aks_vnet_name // Changed to use variable
   vnet_resource_group_name    = var.resource_group_name
-  private_subnet_address_prefixes = ["10.0.2.0/24"] // Adjust as needed
-  public_subnet_address_prefixes  = ["10.0.3.0/24"] // Adjust as needed
+  private_subnet_address_prefixes = var.private_subnet_address_prefixes
+  public_subnet_address_prefixes  = var.public_subnet_address_prefixes
   service_delegation_actions  = [
     "Microsoft.Network/virtualNetworks/subnets/join/action",
     "Microsoft.Network/virtualNetworks/subnets/prepareNetworkPolicies/action",

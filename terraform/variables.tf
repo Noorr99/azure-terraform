@@ -36,7 +36,7 @@ variable "aks_vnet_name" {
 variable "aks_vnet_address_space" {
   description = "Specifies the address space for the Azure virtual network."
   type        = list(string)
-  default     = ["10.0.0.0/16"]
+  default     = ["192.168.71.0/26"]
 }
 
 //
@@ -51,7 +51,7 @@ variable "vm_subnet_name" {
 variable "vm_subnet_address_prefix" {
   description = "Specifies the address prefix for the VM subnet."
   type        = list(string)
-  default     = ["10.0.48.0/20"]
+  default     = ["192.168.71.0/28"]
 }
 
 variable "pe_subnet_name" {
@@ -63,7 +63,7 @@ variable "pe_subnet_name" {
 variable "pe_subnet_address_prefix" {
   description = "Specifies the address prefix for the private endpoint subnet."
   type        = list(string)
-  default     = ["10.0.1.0/24"]
+  default     = ["192.168.71.16/28"]
 }
 
 //
@@ -111,7 +111,7 @@ variable "vm_os_disk_image" {
   default     = {
     publisher = "MicrosoftWindowsServer"
     offer     = "WindowsServer"
-    sku       = "2019-Datacenter"
+    sku       = "2022-datacenter-azure-edition"
     version   = "latest"
   }
 }
@@ -125,7 +125,7 @@ variable "domain_name_label" {
 variable "vm_os_disk_storage_account_type" {
   description = "Specifies the storage account type for the OS disk of the virtual machine."
   type        = string
-  default     = "Premium_LRS"
+  default     = "StandardSSD_LRS"
 
   validation {
     condition     = contains(
@@ -274,11 +274,24 @@ variable "databricks_public_subnet_name" {
   default     = "snet-dbw-dev-qatar-002"
 }
 
+variable "public_subnet_address_prefixes" {
+  description = "IP address of the public_subnet_address_prefixes for Databricks"
+  type        = string
+  default     = "192.168.71.32/28"
+}
+
+variable "private_subnet_address_prefixes" {
+  description = "IP address of the private_subnet_address_prefixes for Databricks"
+  type        = string
+  default     = "192.168.71.48/28"
+}
+
+
 // Security Group Variables for Databricks
 variable "databricks_security_group_prefix" {
   description = "Prefix for the names of the security groups created by the Databricks module"
   type        = string
-  default     = "sg-databricks"
+  default     = "nsg-databricks"
 }
 
 // Tags for Databricks Resources

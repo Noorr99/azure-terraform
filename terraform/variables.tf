@@ -18,6 +18,9 @@ variable "tags" {
   type        = map(string)
   default     = {
     createdWith = "Terraform"
+    Environment = "dev"
+    Workload    = "Shared Resources"
+    Region      = "Qatar Central"
   }
 }
 

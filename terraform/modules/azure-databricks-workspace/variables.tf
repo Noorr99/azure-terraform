@@ -54,7 +54,7 @@ variable "managed_resource_group_name" {
   description = "Name of managed resource group which contains the virtual network"
 }
 
-variable "sku_dbw" {
+variable "sku" {
   type        = string
   description = "Specify sku for azure databricks"
 }

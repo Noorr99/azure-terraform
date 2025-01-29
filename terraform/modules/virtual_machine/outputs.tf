@@ -12,8 +12,3 @@ output "public_ip_address" {
   description = "The public IP address of the Windows virtual machine (if one was created)."
   value       = length(azurerm_public_ip.public_ip) > 0 ? azurerm_public_ip.public_ip[0].ip_address : ""
 }
-
-output "principal_ids" {
-  description = "The ID of the Windows virtual machine."
-  value       = azurerm_windows_virtual_machine.virtual_machine.principal_id
-}

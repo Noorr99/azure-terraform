@@ -294,16 +294,6 @@ variable "databricks_security_group_prefix" {
   default     = "nsg-databricks"
 }
 
-// Tags for Databricks Resources
-variable "databricks_tags" {
-  description = "Tags to apply to Databricks resources"
-  type        = map(string)
-  default     = {
-    environment = "production"
-    team        = "data-engineering"
-  }
-}
-
 
 // Datalake storage variables
 

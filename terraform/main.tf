@@ -189,7 +189,7 @@ module "databricks_subnets" {
     "Microsoft.Network/virtualNetworks/subnets/unprepareNetworkPolicies/action",
   ]
   additional_service_endpoints = ["Microsoft.Storage"]
-  tags                        = var.databricks_tags
+  tags                        = var.tags
   depends_on = [module.vnet]
 }
 
@@ -200,7 +200,7 @@ module "databricks_security_groups" {
   vnet_resource_group_name   = var.resource_group_name
   private_subnet_id          = module.databricks_subnets.private_subnet_id
   public_subnet_id           = module.databricks_subnets.public_subnet_id
-  tags                       = var.databricks_tags
+  tags                       = var.tags
   depends_on = [module.databricks_subnets]
 
 }
@@ -215,7 +215,7 @@ module "databricks_workspace" {
   public_subnet_name   = module.databricks_subnets.public_subnet_name
   public_subnet_network_security_group_association_id = module.databricks_security_groups.security_group_public_id
   private_subnet_network_security_group_association_id = module.databricks_security_groups.security_group_private_id
-  tags                 = var.databricks_tags
+  tags                 = var.tags
   vnet_name            = var.aks_vnet_name
   depends_on = [module.databricks_subnets, module.databricks_security_groups]
 }

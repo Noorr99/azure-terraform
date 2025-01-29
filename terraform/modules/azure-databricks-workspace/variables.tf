@@ -48,3 +48,13 @@ variable "vnet_name" {
   description = "The name of the virtual network"
   type        = string
 }
+
+variable "managed_resource_group_name" {
+  type        = string
+  description = "Name of managed resource group which contains the virtual network"
+}
+
+variable "sku_dbw" {
+  type        = string
+  description = "Specify sku for azure databricks"
+}

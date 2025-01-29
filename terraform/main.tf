@@ -217,6 +217,9 @@ module "databricks_workspace" {
   private_subnet_network_security_group_association_id = module.databricks_security_groups.security_group_private_id
   tags                 = var.tags
   vnet_name            = var.aks_vnet_name
+  sku                  = var.sku_dbw
+  managed_resource_group_name = var.managed_resource_group_name
+
   depends_on = [module.databricks_subnets, module.databricks_security_groups]
 }
 

@@ -51,3 +51,4 @@ variable "tags" {
   description = "Map of tags to attach to Databricks workspace"
   default     = {}
 }
+

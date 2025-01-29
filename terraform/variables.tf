@@ -294,6 +294,18 @@ variable "databricks_security_group_prefix" {
   default     = "nsg-databricks"
 }
 
+variable "managed_resource_group_name" {
+  type        = string
+  description = "Name of managed resource group which contains the virtual network"
+  default     = "rg-sr-dev-managed-dbw"
+}
+
+variable "sku_dbw" {
+  type        = string
+  description = "Specify sku for azure databricks"
+  default     = "standard"
+}
+
 
 // Datalake storage variables
 

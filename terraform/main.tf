@@ -73,6 +73,7 @@ module "virtual_machine" {
   os_disk_image       = var.vm_os_disk_image
   domain_name_label   = var.domain_name_label
   resource_group_name = var.resource_group_name
+  tags                = var.tags
 
   subnet_id                   = module.vnet.subnet_ids[var.vm_subnet_name]
   os_disk_storage_account_type = var.vm_os_disk_storage_account_type
@@ -231,6 +232,7 @@ resource "azurerm_storage_account" "datalake_storage_account" {
   account_replication_type = var.datalake_account_replication_type
   account_kind             = var.datalake_account_kind
   is_hns_enabled           = var.datalake_is_hns_enabled
+  tags                     = var.tags
 }
 
 data "azurerm_client_config" "current" {}

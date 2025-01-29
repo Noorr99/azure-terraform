@@ -55,3 +55,9 @@ output "vm_ids" {
   description = "The IDs of the Windows virtual machines."
   value       = [for vm in module.virtual_machine : vm.vm_id]
 }
+
+
+output "principal_ids" {
+  description = "The IDs of the Windows virtual machines."
+  value       = [for vm in module.virtual_machine : vm.principal_id]
+}

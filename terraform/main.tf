@@ -206,9 +206,7 @@ module "data_factory" {
   data_factory_name   = var.data_factory_name
   tags                = var.tags
   public_network_enabled = var.public_network_enabled
-  identity {
-    type = var.data_factory_identity_type
-  }
+  type = var.data_factory_identity_type
 }
 
 ////////////////////////////////////////////////////////////////////////

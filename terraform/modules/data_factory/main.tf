@@ -6,7 +6,5 @@ resource "azurerm_data_factory" "this" {
   # Now you can assign tags from the variable:
   tags = var.tags
   public_network_enabled = var.public_network_enabled
-  identity {
-    type = var.data_factory_identity_type
-  }
+  type = var.data_factory_identity_type
 }

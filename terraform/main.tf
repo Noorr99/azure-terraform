@@ -7,18 +7,17 @@ terraform {
   }
 
   backend "azurerm" {
-    # backend configuration details here (if any)
-    resource_group_name = "RG-QCH-JB-001"
+    # Backend configuration details (adjust as needed)
+    resource_group_name  = "RG-QCH-JB-001"
     storage_account_name = "stnihstate001"
-    container_name = "tfstatesrdev"
-    key = "terraform.tfstate"
+    container_name       = "tfstatesrdev"
+    key                  = "terraform.tfstate"
     subscription_id      = "751b8a58-5878-4c86-93dc-13c41b3a90cf"
   }
 }
 
 provider "azurerm" {
   features {}
-  
 }
 
 /*
@@ -28,6 +27,7 @@ resource "azurerm_resource_group" "rg" {
   tags     = var.tags
 }
 */
+
 //
 // Virtual Network Module – includes two subnets: one for VMs and one for private endpoints.
 //
@@ -58,7 +58,7 @@ module "vnet" {
 }
 
 //
-// Virtual Machine Module (unchanged)
+// Virtual Machine Module
 //
 module "virtual_machine" {
   count               = var.vm_count
@@ -69,7 +69,7 @@ module "virtual_machine" {
   location            = var.location
   public_ip           = var.vm_public_ip
   vm_user             = var.admin_username
-  admin_password      = var.admin_password
+  admin_password      = var.admin_password      // Provided at runtime
   os_disk_image       = var.vm_os_disk_image
   domain_name_label   = var.domain_name_label
   resource_group_name = var.resource_group_name
@@ -87,7 +87,7 @@ module "key_vault" {
   name                = var.key_vault_name
   resource_group_name = var.resource_group_name
   location            = var.location
-  tenant_id           = var.tenant_id
+  tenant_id           = var.tenant_id         // Provided at runtime
   sku_name            = var.key_vault_sku
   tags                = var.tags
 
@@ -121,7 +121,6 @@ module "acr" {
 
   georeplication_locations = var.acr_georeplication_locations
 }
-
 
 module "acr_private_dns_zone" {
   source                       = "./modules/private_dns_zone"
@@ -180,7 +179,7 @@ module "keyvault_private_endpoint" {
 module "databricks_subnets" {
   source                      = "./modules/azure-databricks-subnets"
   subnet_name_prefix          = "databricks"
-  vnet_name                   = var.aks_vnet_name // Changed to use variable
+  vnet_name                   = var.aks_vnet_name
   vnet_resource_group_name    = var.resource_group_name
   private_subnet_address_prefixes = var.private_subnet_address_prefixes
   public_subnet_address_prefixes  = var.public_subnet_address_prefixes
@@ -203,7 +202,6 @@ module "databricks_security_groups" {
   public_subnet_id           = module.databricks_subnets.public_subnet_id
   tags                       = var.tags
   depends_on = [module.databricks_subnets]
-
 }
 
 module "databricks_workspace" {
@@ -269,7 +267,7 @@ resource "azurerm_storage_data_lake_gen2_filesystem" "datalake_filesystem" {
   ]
 }
 
-// datalake endpoint and private dns
+// Datalake endpoint and private DNS
 
 module "datalake_private_dns_zone" {
   source                       = "./modules/private_dns_zone"

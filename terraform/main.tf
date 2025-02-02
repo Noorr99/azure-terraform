@@ -230,6 +230,7 @@ module "routetable" {
   }
 }
 
+/*
 ////////////////////////////////////////////////////////////////////////
 // 9. Private DNS Zone for private AKS control plane
 ////////////////////////////////////////////////////////////////////////
@@ -330,3 +331,5 @@ resource "azurerm_role_assignment" "aks_network_contributor" {
   principal_id         = module.aks_cluster.aks_identity_principal_id
   skip_service_principal_aad_check = true
 }
+
+*/

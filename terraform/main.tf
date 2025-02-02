@@ -6,15 +6,15 @@ terraform {
     azurerm = {
       source  = "hashicorp/azurerm"
       version = "3.50"
-      }
+    }
   }
   backend "azurerm" {
     # backend configuration details here (if any)
-    resource_group_name = "RG-QCH-JB-001"
-    storage_account_name = "stnihstate001"
-    container_name = "tfstatenihdev"
-    key = "terraform.tfstate"
-    subscription_id      = "751b8a58-5878-4c86-93dc-13c41b3a90cf"
+    resource_group_name  = "rg-terraform-storage"
+    storage_account_name = "terraformstgaks99"
+    container_name       = "tfstatenihdev"
+    key                  = "terraform.tfstate"
+//    subscription_id      = "751b8a58-5878-4c86-93dc-13c41b3a90cf"
   }
 }
 
@@ -58,8 +58,8 @@ module "vnet" {
       private_link_service_network_policies_enabled = true
     },
     {
-      name                                          = var.aks_subnet_name
-      address_prefixes                              = var.aks_subnet_address_prefix
+      name                  = var.aks_subnet_name
+      address_prefixes      = var.aks_subnet_address_prefix
       private_endpoint_network_policies_enabled     = false
       private_link_service_network_policies_enabled = false
     }
@@ -81,13 +81,13 @@ resource "azurerm_storage_account" "datalake_storage_account" {
 }
 
 module "datalake_private_dns_zone" {
-  source                    = "./modules/private_dns_zone"
-  name                      = "privatelink.dfs.core.windows.net"
-  resource_group_name       = var.resource_group_name
-  virtual_networks_to_link  = {
+  source                   = "./modules/private_dns_zone"
+  name                     = "privatelink.dfs.core.windows.net"
+  resource_group_name      = var.resource_group_name
+  virtual_networks_to_link = {
     (module.vnet.name) = {
-      subscription_id      = data.azurerm_client_config.current.subscription_id
-      resource_group_name  = var.resource_group_name
+      subscription_id     = data.azurerm_client_config.current.subscription_id
+      resource_group_name = var.resource_group_name
     }
   }
   tags = var.tags
@@ -114,7 +114,7 @@ module "key_vault" {
   name                = var.key_vault_name
   resource_group_name = var.resource_group_name
   location            = var.location
-  tenant_id           = var.tenant_id
+  tenant_id           = var.tenant_id            // Provided at runtime
   sku_name            = var.key_vault_sku
   tags                = var.tags
 
@@ -133,13 +133,13 @@ module "key_vault" {
 }
 
 module "keyvault_private_dns_zone" {
-  source                    = "./modules/private_dns_zone"
-  name                      = "privatelink.vaultcore.azure.net"
-  resource_group_name       = var.resource_group_name
-  virtual_networks_to_link  = {
+  source                   = "./modules/private_dns_zone"
+  name                     = "privatelink.vaultcore.azure.net"
+  resource_group_name      = var.resource_group_name
+  virtual_networks_to_link = {
     (module.vnet.name) = {
-      subscription_id      = data.azurerm_client_config.current.subscription_id
-      resource_group_name  = var.resource_group_name
+      subscription_id     = data.azurerm_client_config.current.subscription_id
+      resource_group_name = var.resource_group_name
     }
   }
   tags = var.tags
@@ -162,35 +162,35 @@ module "keyvault_private_endpoint" {
 // 6. SQL Database + Private Endpoint + DNS
 ////////////////////////////////////////////////////////////////////////
 module "sql_database" {
-  source              = "./modules/sql_database"
-  resource_group_name = var.resource_group_name
-  location            = var.location
-  sql_server_name     = var.sql_server_name
-  sql_admin_username  = var.sql_admin_username
-  sql_admin_password  = var.sql_admin_password
-  sql_database_name   = var.sql_database_name
-  sql_database_dtu    = var.sql_database_dtu
-  sql_database_tier   = var.sql_database_tier
-  sql_database_size_gb = var.sql_database_size_gb
+  source                   = "./modules/sql_database"
+  resource_group_name      = var.resource_group_name
+  location                 = var.location
+  sql_server_name          = var.sql_server_name
+  sql_admin_username       = var.sql_admin_username
+  sql_admin_password       = var.sql_admin_password   // Provided at runtime
+  sql_database_name        = var.sql_database_name
+  sql_database_dtu         = var.sql_database_dtu
+  sql_database_tier        = var.sql_database_tier
+  sql_database_size_gb     = var.sql_database_size_gb
   long_term_retention_backup = var.long_term_retention_backup
-  zone_redundant = var.zone_redundant # false set to true if your region supports zone redundancy
-  geo_backup_enabled = var.geo_backup_enabled
-  storage_account_type = var.storage_account_type
-  sku_name   = var.sku_name  
-  // re-use the shared subnet for SQL
-  subnet_id           = module.vnet.subnet_ids[var.shared_subnet_name]
-  private_dns_zone_id = module.sql_private_dns_zone.id
-  tags                = var.tags
+  zone_redundant           = var.zone_redundant
+  geo_backup_enabled       = var.geo_backup_enabled
+  storage_account_type     = var.storage_account_type
+  sku_name                 = var.sku_name  
+  # re-use the shared subnet for SQL
+  subnet_id                = module.vnet.subnet_ids[var.shared_subnet_name]
+  private_dns_zone_id      = module.sql_private_dns_zone.id
+  tags                     = var.tags
 }
 
 module "sql_private_dns_zone" {
-  source                    = "./modules/private_dns_zone"
-  name                      = "privatelink.database.windows.net"
-  resource_group_name       = var.resource_group_name
-  virtual_networks_to_link  = {
+  source                   = "./modules/private_dns_zone"
+  name                     = "privatelink.database.windows.net"
+  resource_group_name      = var.resource_group_name
+  virtual_networks_to_link = {
     (module.vnet.name) = {
-      subscription_id      = data.azurerm_client_config.current.subscription_id
-      resource_group_name  = var.resource_group_name
+      subscription_id     = data.azurerm_client_config.current.subscription_id
+      resource_group_name = var.resource_group_name
     }
   }
   tags = var.tags
@@ -200,12 +200,12 @@ module "sql_private_dns_zone" {
 // 7. Data Factory
 ////////////////////////////////////////////////////////////////////////
 module "data_factory" {
-  source              = "./modules/data_factory"
-  resource_group_name = var.resource_group_name
-  location            = var.location
-  data_factory_name   = var.data_factory_name
-  tags                = var.tags
-  public_network_enabled = var.public_network_enabled
+  source                     = "./modules/data_factory"
+  resource_group_name        = var.resource_group_name
+  location                   = var.location
+  data_factory_name          = var.data_factory_name
+  tags                       = var.tags
+  public_network_enabled     = var.public_network_enabled
   data_factory_identity_type = var.data_factory_identity_type
 }
 
@@ -229,7 +229,6 @@ module "routetable" {
     }
   }
 }
-
 
 ////////////////////////////////////////////////////////////////////////
 // 9. Private DNS Zone for private AKS control plane
@@ -272,15 +271,11 @@ module "aks_cluster" {
   // AKS node subnet
   vnet_subnet_id = module.vnet.subnet_ids[var.aks_subnet_name]
 
-//  default_node_pool_availability_zones     = var.default_node_pool_availability_zones
   default_node_pool_node_labels            = var.default_node_pool_node_labels
-//  default_node_pool_node_taints            = var.default_node_pool_node_taints
   default_node_pool_enable_auto_scaling    = var.default_node_pool_enable_auto_scaling
   default_node_pool_enable_host_encryption = var.default_node_pool_enable_host_encryption
   default_node_pool_enable_node_public_ip  = var.default_node_pool_enable_node_public_ip
   default_node_pool_max_pods               = var.default_node_pool_max_pods
-//  default_node_pool_max_count              = var.default_node_pool_max_count
-//  default_node_pool_min_count              = var.default_node_pool_min_count
   default_node_pool_node_count             = var.default_node_pool_node_count
   default_node_pool_os_disk_type           = var.default_node_pool_os_disk_type
 
@@ -290,22 +285,22 @@ module "aks_cluster" {
   network_service_cidr   = var.network_service_cidr
   network_dns_service_ip = var.network_dns_service_ip
 
-  log_analytics_workspace_id = null // No Log Analytics for now
+  log_analytics_workspace_id = var.log_analytics_workspace_id
 
   // RBAC / AAD
   role_based_access_control_enabled = var.role_based_access_control_enabled
-  tenant_id                         = var.tenant_id
+  tenant_id                         = var.tenant_id           // Provided at runtime
   admin_group_object_ids            = var.admin_group_object_ids
-  azure_rbac_enabled               = var.azure_rbac_enabled
+  azure_rbac_enabled                = var.azure_rbac_enabled
 
   // AKS node access
   admin_username = var.admin_username
-  ssh_public_key = var.ssh_public_key
+  ssh_public_key = var.ssh_public_key    // Provided at runtime
 
   // Add-ons
-  keda_enabled                      = var.keda_enabled
+  keda_enabled                     = var.keda_enabled
   vertical_pod_autoscaler_enabled  = var.vertical_pod_autoscaler_enabled
-  workload_identity_enabled         = var.workload_identity_enabled
+  workload_identity_enabled        = var.workload_identity_enabled
   oidc_issuer_enabled              = var.oidc_issuer_enabled
   open_service_mesh_enabled        = var.open_service_mesh_enabled
   image_cleaner_enabled            = var.image_cleaner_enabled
@@ -314,7 +309,6 @@ module "aks_cluster" {
 
   tags = var.tags
 
-  // Ensure the route table and the private DNS zone are created first
   depends_on = [
     module.routetable,
     module.aks_private_dns_zone
@@ -326,9 +320,8 @@ module "aks_cluster" {
 //     Grants the AKS user-assigned identity permission to manage net resources
 ////////////////////////////////////////////////////////////////////////
 resource "azurerm_role_assignment" "aks_network_contributor" {
-  scope                = data.azurerm_resource_group.rg.id
-  role_definition_name = "Network Contributor"
-  principal_id         = module.aks_cluster.aks_identity_principal_id
+  scope                            = data.azurerm_resource_group.rg.id
+  role_definition_name             = "Network Contributor"
+  principal_id                     = module.aks_cluster.aks_identity_principal_id
   skip_service_principal_aad_check = true
 }
-

@@ -260,8 +260,21 @@ variable "public_network_access_enabled" {
 variable "data_factory_name" {
   description = "Specifies the name of the Azure Data Factory."
   type        = string
-  default     = "adf-nih-dev-test"
+  default     = "adf-nih-dev"
 }
+
+variable "public_network_enabled" {
+  description = "Specifies whether the Data Factory is visible to the public network."
+  type        = bool
+  default     = false
+}
+
+variable "data_factory_identity_type" {
+  description = "Specifies the identity type for the Data Factory. Valid values include 'SystemAssigned', 'UserAssigned' or 'SystemAssigned, UserAssigned' (for both)."
+  type        = string
+  default     = "SystemAssigned"
+}
+
 
 ////////////////////////////////////////////////////////////////////////
 // Route Table Variables (for AKS Subnet)

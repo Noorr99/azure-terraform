@@ -18,3 +18,13 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "public_network_enabled" {
+  description = "Specifies whether the Data Factory is visible to the public network."
+  type        = bool
+}
+
+variable "data_factory_identity_type" {
+  description = "Specifies the identity type for the Data Factory. Valid values include 'SystemAssigned', 'UserAssigned' or 'SystemAssigned, UserAssigned' (for both)."
+  type        = string
+}

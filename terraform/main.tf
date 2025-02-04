@@ -245,7 +245,7 @@ module "databricks_private_endpoint" {
   resource_group_name            = var.resource_group_name
   subnet_id                      = module.vnet.subnet_ids[var.pe_subnet_name]
   tags                           = var.tags
-  private_connection_resource_id = module.databricks_workspace.id
+  private_connection_resource_id = module.databricks_workspace.workspace_id
   is_manual_connection           = false
   subresource_name               = "databricks"
   private_dns_zone_group_name    = "DatabricksPrivateDnsZoneGroup"

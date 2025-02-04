@@ -79,7 +79,7 @@ default_node_pool_enable_auto_scaling    = false
 default_node_pool_enable_host_encryption = false
 default_node_pool_enable_node_public_ip  = false
 default_node_pool_max_pods               = 50
-default_node_pool_node_count             = 1
+default_node_pool_node_count             = 3
 default_node_pool_os_disk_type           = "Managed"
 
 network_plugin         = "kubenet"

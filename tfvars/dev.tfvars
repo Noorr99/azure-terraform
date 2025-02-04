@@ -62,7 +62,7 @@ data_factory_identity_type = "SystemAssigned"
 # Route Table (for AKS subnet)
 route_table_name = "rt-aks"
 route_name       = "default-route-0-0-0-0"
-firewall_private_ip = "192.168.64.70"
+firewall_private_ip = "192.168.71.129" // old value = "192.168.64.70"
 
 # Private DNS Zone for AKS Control Plane
 aks_private_dns_zone_name = "privatelink.qatarcentral.azmk8s.io"

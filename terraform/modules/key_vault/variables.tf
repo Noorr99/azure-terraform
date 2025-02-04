@@ -105,8 +105,16 @@ variable "virtual_network_subnet_ids" {
 
 variable "public_network_access_enabled" { 
   description = "(Optional) Whether public network access is allowed for this Key Vault."
+  type        = string
+  default     = "false"
+}
+
+/*
+variable "public_network_access_enabled" { 
+  description = "(Optional) Whether public network access is allowed for this Key Vault."
   default     = []
 }
+*/
 /* 
 variable "log_analytics_workspace_id" {
   description = "Specifies the log analytics workspace id"

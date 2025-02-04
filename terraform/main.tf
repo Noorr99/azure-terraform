@@ -261,7 +261,7 @@ resource "azurerm_storage_account" "datalake_storage_account" {
   account_replication_type = var.datalake_account_replication_type
   account_kind             = var.datalake_account_kind
   is_hns_enabled           = var.datalake_is_hns_enabled
-  tags                     = var.tags
+//  tags                     = var.tags
 }
 
 data "azurerm_client_config" "current" {}

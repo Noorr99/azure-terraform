@@ -49,6 +49,7 @@ variable "log_analytics_workspace_id" {
 }
 */
 variable "public_network_access_enabled" { 
-  description = "(Optional) Whether public network access is allowed for this Key Vault."
-  default     = []
+  description = "(Optional) Whether public network access is allowed for this container registry."
+  type        = string
+  default     = "false"
 }

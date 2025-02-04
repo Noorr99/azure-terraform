@@ -220,7 +220,7 @@ module "routetable" {
   route_table_name    = var.route_table_name
   route_name          = var.route_name
   firewall_private_ip = var.firewall_private_ip
-
+/*
   subnets_to_associate = {
     (var.aks_subnet_name) = {
       subscription_id      = data.azurerm_client_config.current.subscription_id
@@ -228,6 +228,7 @@ module "routetable" {
       virtual_network_name = module.vnet.name
     }
   }
+*/
 }
 
 ////////////////////////////////////////////////////////////////////////

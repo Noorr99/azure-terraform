@@ -55,3 +55,7 @@ output "vm_ids" {
   description = "The IDs of the Windows virtual machines."
   value       = [for vm in module.virtual_machine : vm.vm_id]
 }
+
+output "id" {
+  value = azurerm_databricks_workspace.this.id
+}

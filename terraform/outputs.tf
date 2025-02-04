@@ -57,5 +57,6 @@ output "vm_ids" {
 }
 
 output "id" {
-  value = azurerm_databricks_workspace.this.id
+  value       = module.databricks_workspace.workspace_id
+  description = "ID of the Databricks workspace"
 }

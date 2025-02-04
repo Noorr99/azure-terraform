@@ -224,49 +224,30 @@ module "databricks_workspace" {
 
 //add pe for dbw:
 
-###############################################################################
-# Databricks Private DNS Zone
-###############################################################################
-module "databricks_private_dns_zone" {
-  source              = "./modules/private_dns_zone"
-  name                = "privatelink.azuredatabricks.net"  # Or make it a var if you prefer
-  resource_group_name = var.resource_group_name
 
-  # Link to the same VNet from your vnet module
-  virtual_networks_to_link = {
+module "databricks_private_dns_zone" {
+  source                       = "./modules/private_dns_zone"
+  name                         = "privatelink.azuredatabricks.net"
+  resource_group_name          = var.resource_group_name
+  virtual_networks_to_link     = {
     (module.vnet.name) = {
-      subscription_id     = data.azurerm_client_config.current.subscription_id
+      subscription_id    = data.azurerm_client_config.current.subscription_id
       resource_group_name = var.resource_group_name
     }
   }
-
-  tags = var.tags
+  tags                         = var.tags
 }
 
-###############################################################################
-# Databricks Private Endpoint
-###############################################################################
 module "databricks_private_endpoint" {
   source                         = "./modules/private_endpoint"
-  name                           = "pe-${module.databricks_workspace.workspace_name}"
+  name                           = "pe-${module.azure-databricks-workspace.workspace_name}"
   location                       = var.location
   resource_group_name            = var.resource_group_name
-
-  # Use the private endpoint subnet you already defined
   subnet_id                      = module.vnet.subnet_ids[var.pe_subnet_name]
-
   tags                           = var.tags
-
-  # This is the Databricks workspace resource ID
-  private_connection_resource_id = module.databricks_workspace.id
-
-  # Typically not manual for Databricks
+  private_connection_resource_id = module.azure-databricks-workspace.id
   is_manual_connection           = false
-
-  # Subresource name for the Databricks workspace traffic
-  subresource_name               = "databricks_ui_api"
-
-  # DNS zone group
+  subresource_name               = "databricks"
   private_dns_zone_group_name    = "DatabricksPrivateDnsZoneGroup"
   private_dns_zone_group_ids     = [module.databricks_private_dns_zone.id]
 }

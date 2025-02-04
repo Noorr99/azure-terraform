@@ -83,7 +83,7 @@ default_node_pool_node_count             = 3
 default_node_pool_os_disk_type           = "Managed"
 
 network_plugin         = "kubenet"
-outbound_type          = "userDefinedRouting"
+outbound_type          = "loadBalancer" // old value: "userDefinedRouting"
 network_service_cidr   = "10.1.0.0/24"
 network_dns_service_ip = "10.1.0.10"
 role_based_access_control_enabled = true

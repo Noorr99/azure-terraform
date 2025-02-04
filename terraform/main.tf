@@ -212,6 +212,7 @@ module "data_factory" {
 ////////////////////////////////////////////////////////////////////////
 // 8. Route Table for the AKS Subnet (User-Defined Routing)
 ////////////////////////////////////////////////////////////////////////
+/*
 module "routetable" {
   source              = "./modules/route_table"
   resource_group_name = var.resource_group_name
@@ -220,7 +221,7 @@ module "routetable" {
   route_table_name    = var.route_table_name
   route_name          = var.route_name
   firewall_private_ip = var.firewall_private_ip
-/*
+
   subnets_to_associate = {
     (var.aks_subnet_name) = {
       subscription_id      = data.azurerm_client_config.current.subscription_id
@@ -311,7 +312,7 @@ module "aks_cluster" {
   tags = var.tags
 
   depends_on = [
-    module.routetable,
+//    module.routetable,
     module.aks_private_dns_zone
   ]
 }

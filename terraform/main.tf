@@ -237,7 +237,7 @@ module "databricks_private_dns_zone" {
   }
   tags                         = var.tags
 }
-
+/*
 module "databricks_private_endpoint" {
   source                         = "./modules/private_endpoint"
   name                           = "pe-${module.databricks_workspace.workspace_name}"
@@ -250,6 +250,31 @@ module "databricks_private_endpoint" {
   subresource_name               = "databricks"
   private_dns_zone_group_name    = "DatabricksPrivateDnsZoneGroup"
   private_dns_zone_group_ids     = [module.databricks_private_dns_zone.id]
+}
+*/
+# Create a Private Endpoint for the Azure Databricks workspace
+resource "azurerm_private_endpoint" "databricks" {
+  name                = "pe-${module.databricks_workspace.workspace_name}"
+  location            = var.location
+  resource_group_name = var.resource_group_name
+  subnet_id           = module.vnet.subnet_ids[var.pe_subnet_name]
+
+  # Use a custom network interface name as seen in the manual creation
+  custom_network_interface_name = "pe-${module.databricks_workspace.workspace_name}-nic"
+
+  private_service_connection {
+    name                           = "pe-${module.databricks_workspace.workspace_name}-conn"
+    private_connection_resource_id = module.databricks_workspace.workspace_id
+    is_manual_connection           = false
+    # Use the same subresource that the portal requested (adjust if necessary)
+    subresource_names              = ["databricks_ui_api"]
+
+    private_link_service_connection_state {
+      status           = "Approved"
+      description      = "Auto-approved"
+      actions_required = "None"
+    }
+  }
 }
 
 

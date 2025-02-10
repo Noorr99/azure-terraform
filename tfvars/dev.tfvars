@@ -22,7 +22,7 @@ pe_subnet_address_prefix = ["192.168.71.16/28"]
 # Virtual Machine
 vm_name                      = "vm-sr-dev"
 vm_count                     = 3
-vm_size                      = "Standard_DS1_v2"
+vm_size                      = "Standard_D4s_v3"  #old value Standard_DS1_v2
 vm_public_ip                 = false
 admin_username               = "azadmin"
 # admin_password is not set here so that it is provided at runtime.

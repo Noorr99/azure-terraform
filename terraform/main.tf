@@ -266,14 +266,8 @@ resource "azurerm_private_endpoint" "databricks" {
     name                           = "pe-${module.databricks_workspace.workspace_name}-conn"
     private_connection_resource_id = module.databricks_workspace.workspace_id
     is_manual_connection           = false
-    # Use the same subresource that the portal requested (adjust if necessary)
+    # This subresource name ("databricks_ui_api") is taken from your JSON example.
     subresource_names              = ["databricks_ui_api"]
-
-    private_link_service_connection_state {
-      status           = "Approved"
-      description      = "Auto-approved"
-      actions_required = "None"
-    }
   }
 }
 

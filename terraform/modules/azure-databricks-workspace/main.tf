@@ -5,6 +5,7 @@ resource "azurerm_databricks_workspace" "module-databricks" {
   location            = var.location
   sku                 = var.sku
   managed_resource_group_name = var.managed_resource_group_name
+  public_network_access_enabled = var.public_network_access_enabled
 
   custom_parameters {
     no_public_ip        = false

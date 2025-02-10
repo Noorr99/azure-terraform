@@ -25,7 +25,7 @@ resource "azurerm_public_ip" "public_ip" {
 }
 
 #############################
-# Network Security Group (allow RDP)
+# Network Security Group (allow RDP and Oracle On-Prem outbound)
 #############################
 resource "azurerm_network_security_group" "nsg" {
   name                = "nsg-${var.name}"
@@ -43,6 +43,18 @@ resource "azurerm_network_security_group" "nsg" {
     destination_port_range     = "3389"
     source_address_prefix      = "*"
     destination_address_prefix = "*"
+  }
+
+  security_rule {
+    name                       = "Outbound_Oracle_Onprem"
+    priority                   = 1011
+    direction                  = "Outbound"
+    access                     = "Allow"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_range     = "1521"
+    source_address_prefix      = "*"
+    destination_address_prefix = "192.168.6.88/32"
   }
 
   lifecycle {

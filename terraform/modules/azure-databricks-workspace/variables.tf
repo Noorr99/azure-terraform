@@ -58,3 +58,9 @@ variable "sku" {
   type        = string
   description = "Specify sku for azure databricks"
 }
+
+variable "public_network_access_enabled" { 
+  description = "(Optional) Whether public network access is allowed for this container registry."
+  type        = string
+  default     = "false"
+}

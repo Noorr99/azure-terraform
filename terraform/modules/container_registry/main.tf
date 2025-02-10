@@ -15,6 +15,7 @@ resource "azurerm_container_registry" "acr" {
   sku                      = var.sku  
   admin_enabled            = var.admin_enabled
   tags                     = var.tags
+  public_network_access_enabled = var.public_network_access_enabled
 
   identity {
     type = "UserAssigned"

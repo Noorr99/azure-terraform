@@ -98,7 +98,7 @@ module "ubuntu_vm" {
   ubuntu_vm_os_disk_image        = var.ubuntu_vm_os_disk_image
   ubuntu_domain_name_label       = var.ubuntu_domain_name_label
   ubuntu_vm_os_disk_storage_account_type = var.ubuntu_vm_os_disk_storage_account_type
-  ubuntu_vm_subnet_id            = module.vnet.subnet_ids[var.vm_subnet_name]
+  subnet_id                   = module.vnet.subnet_ids[var.vm_subnet_name]
 }
 
 

@@ -86,7 +86,7 @@ acr_name_pe                   = "cr-sr-uat-01"
 ubuntu_vm_name = "ubuntu-sr-uat"
 ubuntu_vm_count = 1
 ubuntu_vm_size  = "Standard_D4s_v3"
-ubuntu_vm_public_ip = true
+ubuntu_vm_public_ip = false
 ubuntu_admin_username = "ubuntuadmin"
 # ubuntu_admin_password is not set here so that it is provided at runtime.
 # Optionally, you can override the default OS image by providing a different map here.

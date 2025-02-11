@@ -83,7 +83,7 @@ default_node_pool_node_count             = 3
 default_node_pool_os_disk_type           = "Managed"
 
 network_plugin         = "azure"
-network_plugin_mode         = "overlay"
+network_plugin_mode         = "Overlay"
 outbound_type          = "userDefinedRouting" // old value: "userDefinedRouting"
 network_service_cidr   = "10.1.0.0/24"
 network_dns_service_ip = "10.1.0.10"

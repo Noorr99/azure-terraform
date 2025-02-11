@@ -9,7 +9,7 @@ resource "azurerm_databricks_workspace" "module-databricks" {
   network_security_group_rules_required = "NoAzureDatabricksRules"
 
   custom_parameters {
-    no_public_ip        = false
+    no_public_ip = true 
     private_subnet_name = var.private_subnet_name
     public_subnet_name  = var.public_subnet_name
     virtual_network_id  = var.vnet_id

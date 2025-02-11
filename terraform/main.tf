@@ -212,7 +212,7 @@ module "data_factory" {
 ////////////////////////////////////////////////////////////////////////
 // 8. Route Table for the AKS Subnet (User-Defined Routing)
 ////////////////////////////////////////////////////////////////////////
-/*
+
 module "routetable" {
   source              = "./modules/route_table"
   resource_group_name = var.resource_group_name
@@ -231,7 +231,7 @@ module "routetable" {
   }
 
 }
-*/
+
 ////////////////////////////////////////////////////////////////////////
 // 9. Private DNS Zone for private AKS control plane
 ////////////////////////////////////////////////////////////////////////
@@ -283,6 +283,7 @@ module "aks_cluster" {
 
   // Networking
   network_plugin         = var.network_plugin
+  network_plugin_mode         = var.network_plugin_mode
   outbound_type          = var.outbound_type
   network_service_cidr   = var.network_service_cidr
   network_dns_service_ip = var.network_dns_service_ip
@@ -312,7 +313,7 @@ module "aks_cluster" {
   tags = var.tags
 
   depends_on = [
-//    module.routetable,
+    module.routetable,
     module.aks_private_dns_zone
   ]
 }

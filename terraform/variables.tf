@@ -325,6 +325,11 @@ variable "network_plugin" {
   type        = string
 }
 
+variable "network_plugin_mode" {
+  description = "AKS network plugin mode"
+  type        = string
+}
+
 variable "outbound_type" {
   description = "Outbound (egress) type: 'loadBalancer' or 'userDefinedRouting'."
   type        = string

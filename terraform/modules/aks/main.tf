@@ -72,6 +72,7 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
   network_profile {
     dns_service_ip     = var.network_dns_service_ip
     network_plugin     = var.network_plugin
+    network_plugin_mode     = var.network_plugin_mode
     outbound_type      = var.outbound_type
     service_cidr       = var.network_service_cidr
   }

@@ -53,52 +53,51 @@ variable "pe_subnet_address_prefix" {
 }
 
 //
-// Virtual Machine (VM) Variables
+// Virtual Machine (VM) Variables (Windows)
 //
 variable "vm_name" {
-  description = "Specifies the base name of the virtual machine."
+  description = "Specifies the base name of the Windows virtual machine."
   type        = string
 }
 
 variable "vm_count" {
-  description = "The number of virtual machines to create."
+  description = "The number of Windows virtual machines to create."
   type        = number
 }
 
 variable "vm_size" {
-  description = "Specifies the size of the virtual machine."
+  description = "Specifies the size of the Windows virtual machine."
   type        = string
 }
 
 variable "vm_public_ip" {
-  description = "Specifies whether to create a public IP for the virtual machine."
+  description = "Specifies whether to create a public IP for the Windows virtual machine."
   type        = bool
 }
 
 variable "admin_username" {
-  description = "Specifies the admin username for the virtual machine."
+  description = "Specifies the admin username for the Windows virtual machine."
   type        = string
 }
 
 variable "admin_password" {
-  description = "Specifies the administrator password for the virtual machine."
+  description = "Specifies the administrator password for the Windows virtual machine."
   type        = string
   sensitive   = true
-  # No default – will be provided at runtime.
 }
 
 variable "vm_os_disk_image" {
-  description = "Specifies the OS disk image for the virtual machine."
+  description = "Specifies the OS disk image for the Windows virtual machine."
   type        = map(string)
 }
 
 variable "domain_name_label" {
-  description = "Specifies the domain name label for the virtual machine."
+  description = "Specifies the domain name label for the Windows virtual machine."
   type        = string
 }
 
 variable "vm_os_disk_storage_account_type" {
-  description = "Specifies the storage account type for the OS disk of the virtual machine."
+  description = "Specifies the storage account type for the OS disk of the Windows virtual machine."
   type        = string
 
   validation {
@@ -122,7 +121,6 @@ variable "tenant_id" {
   description = "Specifies the tenant ID for the Key Vault."
   type        = string
   sensitive   = true
-  # No default – will be provided at runtime.
 }
 
 variable "key_vault_sku" {
@@ -203,36 +201,41 @@ variable "acr_georeplication_locations" {
   type        = list(string)
 }
 
+variable "acr_name_pe" {
+  description = "The name of the container registry private endpoint."
+  type        = string
+}
+
 //
 // Databricks Workspace Variables
 //
 variable "workspace_name" {
-  description = "Name of Databricks workspace"
+  description = "Name of Databricks workspace."
   type        = string
 }
 
 variable "databricks_vnet_resource_group_name" {
-  description = "Name of the resource group containing the virtual network for Databricks"
+  description = "Name of the resource group containing the virtual network for Databricks."
   type        = string
 }
 
 variable "databricks_private_subnet_name" {
-  description = "Name of the private subnet for Databricks"
+  description = "Name of the private subnet for Databricks."
   type        = string
 }
 
 variable "databricks_public_subnet_name" {
-  description = "Name of the public subnet for Databricks"
+  description = "Name of the public subnet for Databricks."
   type        = string
 }
 
 variable "public_subnet_address_prefixes" {
-  description = "IP address prefixes for the public subnet for Databricks"
+  description = "IP address prefixes for the public subnet for Databricks."
   type        = list(string)
 }
 
 variable "private_subnet_address_prefixes" {
-  description = "IP address prefixes for the private subnet for Databricks"
+  description = "IP address prefixes for the private subnet for Databricks."
   type        = list(string)
 }
 
@@ -240,17 +243,17 @@ variable "private_subnet_address_prefixes" {
 // Security Group Variables for Databricks
 //
 variable "databricks_security_group_prefix" {
-  description = "Prefix for the names of the security groups created by the Databricks module"
+  description = "Prefix for the names of the security groups created by the Databricks module."
   type        = string
 }
 
 variable "managed_resource_group_name" {
-  description = "Name of managed resource group which contains the virtual network"
+  description = "Name of managed resource group which contains the virtual network."
   type        = string
 }
 
 variable "sku_dbw" {
-  description = "Specify sku for azure databricks"
+  description = "Specify sku for azure databricks."
   type        = string
 }
 
@@ -258,36 +261,111 @@ variable "sku_dbw" {
 // Datalake Storage Variables
 //
 variable "datalake_storage_account_name" {
-  description = "The name of the Data Lake Storage account"
+  description = "The name of the Data Lake Storage account."
+  type        = string
+}
+
+variable "datalake_storage_account_pe" {
+  description = "The name of the Data Lake Storage account private endpoint."
   type        = string
 }
 
 variable "datalake_account_tier" {
-  description = "The tier of the Data Lake Storage account"
+  description = "The tier of the Data Lake Storage account."
   type        = string
 }
 
 variable "datalake_account_replication_type" {
-  description = "The replication type of the Data Lake Storage account"
+  description = "The replication type of the Data Lake Storage account."
   type        = string
 }
 
 variable "datalake_account_kind" {
-  description = "The kind of the Data Lake Storage account"
+  description = "The kind of the Data Lake Storage account."
   type        = string
 }
 
 variable "datalake_is_hns_enabled" {
-  description = "Whether the hierarchical namespace is enabled"
+  description = "Whether the hierarchical namespace is enabled."
   type        = bool
 }
 
 variable "datalake_filesystem_name" {
-  description = "The name of the Data Lake Storage Gen2 filesystem"
+  description = "The name of the Data Lake Storage Gen2 filesystem."
   type        = string
 }
 
 variable "datalake_filesystem_properties" {
-  description = "The properties of the Data Lake Storage Gen2 filesystem"
+  description = "The properties of the Data Lake Storage Gen2 filesystem."
   type        = map(string)
+}
+
+//////////////////////////////////////
+// Ubuntu Virtual Machine Variables (Separate from Windows)
+//////////////////////////////////////
+variable "ubuntu_vm_name" {
+  description = "Specifies the base name of the Ubuntu virtual machine."
+  type        = string
+}
+
+variable "ubuntu_vm_count" {
+  description = "The number of Ubuntu virtual machines to create."
+  type        = number
+  default     = 1
+}
+
+variable "ubuntu_vm_size" {
+  description = "Specifies the size of the Ubuntu virtual machine."
+  type        = string
+}
+
+variable "ubuntu_vm_public_ip" {
+  description = "Specifies whether to create a public IP for the Ubuntu virtual machine."
+  type        = bool
+}
+
+variable "ubuntu_admin_username" {
+  description = "Specifies the admin username for the Ubuntu virtual machine."
+  type        = string
+}
+
+variable "ubuntu_admin_password" {
+  description = "Specifies the administrator password for the Ubuntu virtual machine."
+  type        = string
+  sensitive   = true
+}
+
+variable "ubuntu_vm_os_disk_image" {
+  description = "Specifies the OS disk image for the Ubuntu virtual machine."
+  type        = map(string)
+  default = {
+    publisher = "Canonical"
+    offer     = "UbuntuServer"
+    sku       = "18.04-LTS"
+    version   = "latest"
+  }
+}
+
+variable "ubuntu_domain_name_label" {
+  description = "Specifies the domain name label for the Ubuntu virtual machine."
+  type        = string
+}
+
+variable "ubuntu_vm_os_disk_storage_account_type" {
+  description = "Specifies the storage account type for the OS disk of the Ubuntu virtual machine."
+  type        = string
+  default     = "StandardSSD_LRS"
+
+  validation {
+    condition     = contains(
+      ["Premium_LRS", "Premium_ZRS", "StandardSSD_LRS", "StandardSSD_ZRS", "Standard_LRS"],
+      var.ubuntu_vm_os_disk_storage_account_type
+    )
+    error_message = "The storage account type for the Ubuntu OS disk is invalid. Valid options are Premium_LRS, Premium_ZRS, StandardSSD_LRS, StandardSSD_ZRS, Standard_LRS."
+  }
+}
+
+variable "ubuntu_vm_subnet_id" {
+  description = "Specifies the resource ID of the subnet for the Ubuntu VM."
+  type        = string
 }

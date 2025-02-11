@@ -10,7 +10,7 @@ terraform {
     # Backend configuration details (adjust as needed)
     resource_group_name  = "RG-QCH-JB-001"
     storage_account_name = "stnihstate001"
-    container_name       = "tfstatesrdev"
+    container_name       = "tfstatesruat"
     key                  = "terraform.tfstate"
     subscription_id      = "751b8a58-5878-4c86-93dc-13c41b3a90cf"
   }
@@ -78,6 +78,29 @@ module "virtual_machine" {
   subnet_id                   = module.vnet.subnet_ids[var.vm_subnet_name]
   os_disk_storage_account_type = var.vm_os_disk_storage_account_type
 }
+
+
+// Virtual Machine Ubuntu
+
+module "ubuntu_vm" {
+  source              = "./modules/virtual_machine_ubuntu"  # Adjust the path accordingly
+
+  resource_group_name            = var.resource_group_name
+  location                       = var.location
+  tags                           = var.tags
+
+  ubuntu_vm_name                 = var.ubuntu_vm_name
+  ubuntu_vm_count                = var.ubuntu_vm_count
+  ubuntu_vm_size                 = var.ubuntu_vm_size
+  ubuntu_vm_public_ip            = var.ubuntu_vm_public_ip
+  ubuntu_admin_username          = var.ubuntu_admin_username
+  ubuntu_admin_password          = var.ubuntu_admin_password
+  ubuntu_vm_os_disk_image        = var.ubuntu_vm_os_disk_image
+  ubuntu_domain_name_label       = var.ubuntu_domain_name_label
+  ubuntu_vm_os_disk_storage_account_type = var.ubuntu_vm_os_disk_storage_account_type
+  ubuntu_vm_subnet_id            = module.vnet.subnet_ids[var.vm_subnet_name]
+}
+
 
 //
 // Key Vault Module Deployment
@@ -335,7 +358,7 @@ module "datalake_private_dns_zone" {
 
 module "datalake_private_endpoint" {
   source                         = "./modules/private_endpoint"
-  name                           = "pe-${azurerm_storage_account.datalake_storage_account.name}"
+  name                           = "pe-${var.datalake_storage_account_pe}"
   location                       = var.location
   resource_group_name            = var.resource_group_name
   subnet_id                      = module.vnet.subnet_ids[var.pe_subnet_name]

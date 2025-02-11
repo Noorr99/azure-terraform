@@ -53,3 +53,8 @@ variable "public_network_access_enabled" {
   type        = string
   default     = "false"
 }
+
+variable "acr_name_pe" {
+  description = "The name of the container registry private endpoint"
+  type        = string
+}

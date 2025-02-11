@@ -37,7 +37,7 @@ resource "azurerm_network_interface" "ubuntu_nic" {
     name                          = "internal"
     subnet_id                     = var.subnet_id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = try(azurerm_public_ip.ubuntu_public_ip[0].id, null)
+//    public_ip_address_id          = try(azurerm_public_ip.ubuntu_public_ip[0].id, null)
   }
 
   lifecycle {

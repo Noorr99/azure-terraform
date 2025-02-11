@@ -1,5 +1,5 @@
 resource "azurerm_subnet" "private-subnet" {
-  name                 = "${var.subnet_name_prefix}-private-subnet"
+  name                 = "${var.subnet_name_prefix}-private"
   resource_group_name  = var.vnet_resource_group_name
   virtual_network_name = var.vnet_name
 
@@ -23,7 +23,7 @@ resource "azurerm_subnet" "private-subnet" {
 }
 
 resource "azurerm_subnet" "public-subnet" {
-  name                 = "${var.subnet_name_prefix}-public-subnet"
+  name                 = "${var.subnet_name_prefix}-public"
   resource_group_name  = var.vnet_resource_group_name
   virtual_network_name = var.vnet_name
 

@@ -160,7 +160,7 @@ module "acr_private_dns_zone" {
 
 module "acr_private_endpoint" {
   source                         = "./modules/private_endpoint"
-  name                           = "pe-${module.acr.name}"
+  name                           = "pe-${var.acr_name_pe}"
   location                       = var.location
   resource_group_name            = var.resource_group_name
   subnet_id                      = module.vnet.subnet_ids[var.pe_subnet_name]
@@ -201,7 +201,7 @@ module "keyvault_private_endpoint" {
 
 module "databricks_subnets" {
   source                      = "./modules/azure-databricks-subnets"
-  subnet_name_prefix          = "databricks"
+  subnet_name_prefix          = "snet-dbw"
   vnet_name                   = var.aks_vnet_name
   vnet_resource_group_name    = var.resource_group_name
   private_subnet_address_prefixes = var.private_subnet_address_prefixes

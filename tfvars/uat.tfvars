@@ -10,14 +10,14 @@ tags = {
 
 # Virtual Network
 aks_vnet_name          = "vnet-sr-uat-001"
-aks_vnet_address_space = ["192.168.71.0/26"]
+aks_vnet_address_space = ["172.40.1.0/26"]
 
 # Subnets
 vm_subnet_name           = "snet-vm-qatar-001"
-vm_subnet_address_prefix = ["192.168.71.0/28"]
+vm_subnet_address_prefix = ["172.40.1.48/28"]
 
 pe_subnet_name           = "snet-pe-qatar-001"
-pe_subnet_address_prefix = ["192.168.71.16/28"]
+pe_subnet_address_prefix = ["172.40.1.32/28"]
 
 # Virtual Machine
 vm_name                      = "vm-sr-uat"
@@ -61,8 +61,8 @@ workspace_name                              = "dbw-sr-uat-01"
 databricks_vnet_resource_group_name           = "rg-sr-uat-001"
 databricks_private_subnet_name                = "snet-dbw-uat-qatar-001"
 databricks_public_subnet_name                 = "snet-dbw-uat-qatar-002"
-public_subnet_address_prefixes                = ["192.168.71.32/28"]
-private_subnet_address_prefixes               = ["192.168.71.48/28"]
+public_subnet_address_prefixes                = ["172.40.1.16/28"]
+private_subnet_address_prefixes               = ["172.40.1.0/28"]
 databricks_security_group_prefix              = "nsg-databricks"
 managed_resource_group_name                   = "rg-sr-uat-managed-dbw"
 sku_dbw                                       = "premium"

@@ -365,7 +365,4 @@ variable "ubuntu_vm_os_disk_storage_account_type" {
   }
 }
 
-variable "ubuntu_vm_subnet_id" {
-  description = "Specifies the resource ID of the subnet for the Ubuntu VM."
-  type        = string
-}
+

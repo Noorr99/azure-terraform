@@ -6,6 +6,7 @@ resource "azurerm_databricks_workspace" "module-databricks" {
   sku                 = var.sku
   managed_resource_group_name = var.managed_resource_group_name
   public_network_access_enabled = var.public_network_access_enabled
+  network_security_group_rules_required = "NoAzureDatabricksRules"
 
   custom_parameters {
     no_public_ip        = false

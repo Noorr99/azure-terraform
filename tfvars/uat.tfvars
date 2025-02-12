@@ -18,7 +18,7 @@ shared_subnet_address_prefix = ["172.40.1.64/28"]
 
 # AKS Subnet
 aks_subnet_name           = "snet-nih-aks-qatar-001"
-aks_subnet_address_prefix = ["172.40.1.80/27"]
+aks_subnet_address_prefix = ["172.40.1.96/27"]
 
 # Key Vault
 key_vault_name = "kv-nih-uat-001"

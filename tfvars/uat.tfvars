@@ -10,7 +10,7 @@ tags = {
 
 # Virtual Network
 aks_vnet_name          = "vnet-uat-qatar-001"
-aks_vnet_address_space = ["172.40.1.0/26"]
+aks_vnet_address_space = ["172.40.1.64/26"]
 
 # Shared Subnet (for SQL, Key Vault, Data Lake)
 shared_subnet_name           = "snet-nih-pe-qatar-001"
@@ -79,7 +79,7 @@ default_node_pool_enable_auto_scaling    = false
 default_node_pool_enable_host_encryption = false
 default_node_pool_enable_node_public_ip  = false
 default_node_pool_max_pods               = 50
-default_node_pool_node_count             = 3
+default_node_pool_node_count             = 5
 default_node_pool_os_disk_type           = "Managed"
 
 network_plugin         = "azure"

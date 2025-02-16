@@ -12,7 +12,7 @@ terraform {
     # backend configuration details here (if any)
     resource_group_name  = "RG-QCH-JB-001"
     storage_account_name = "stnihstate001"
-    container_name       = "tfstatenihuat"
+    container_name       = "tfstatenihprod"
     key                  = "terraform.tfstate"
     subscription_id      = "751b8a58-5878-4c86-93dc-13c41b3a90cf"
   }
@@ -78,6 +78,16 @@ resource "azurerm_storage_account" "datalake_storage_account" {
   account_kind             = var.datalake_account_kind
   is_hns_enabled           = var.datalake_is_hns_enabled
   tags                     = var.tags
+  blob_properties {
+    delete_retention_policy {
+      days = 7  # Adjust retention period as needed
+    }
+    container_delete_retention_policy {
+      days = 7  # Adjust retention period as needed
+    }
+    versioning_enabled = true
+    change_feed_enabled = true
+  }
 }
 
 module "datalake_private_dns_zone" {
@@ -91,6 +101,20 @@ module "datalake_private_dns_zone" {
     }
   }
   tags = var.tags
+}
+
+# Added to enable soft delete
+
+resource "azurerm_role_assignment" "datalake_blob_contributor" {
+  scope                = azurerm_storage_account.datalake_storage_account.id
+  role_definition_name = "Storage Blob Data Contributor"
+  principal_id         = data.azurerm_client_config.current.object_id
+}
+
+resource "azurerm_role_assignment" "datalake_owner" {
+  scope                = azurerm_storage_account.datalake_storage_account.id
+  role_definition_name = "Storage Blob Data Owner"
+  principal_id         = data.azurerm_client_config.current.object_id
 }
 
 module "datalake_private_endpoint" {

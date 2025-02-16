@@ -144,6 +144,24 @@ variable "datalake_is_hns_enabled" {
   type        = bool
 }
 
+variable "soft_delete_retention_days" {
+  description = "Number of days to retain deleted blobs"
+  type        = number
+  default     = 7
+}
+
+variable "enable_versioning" {
+  description = "Enable versioning for blobs"
+  type        = bool
+  default     = true
+}
+
+variable "enable_change_feed" {
+  description = "Enable change feed for blobs"
+  type        = bool
+  default     = true
+}
+
 ////////////////////////////////////////////////////////////////////////
 // SQL Database Variables
 ////////////////////////////////////////////////////////////////////////
@@ -408,6 +426,12 @@ variable "azure_policy_enabled" {
 variable "http_application_routing_enabled" {
   description = "Enable HTTP Application Routing add-on."
   type        = bool
+}
+
+variable "default_node_pool_availability_zones" {
+  description = "Specifies the availability zones of the default node pool"
+  default     = ["1", "2", "3"]
+  type        = list(string)
 }
 
 ////////////////////////////////////////////////////////////////////////

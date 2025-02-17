@@ -3,17 +3,9 @@ variable "resource_group_name" {
   type        = string
 }
 
-/*
 variable "name" {
   description = "(Required) Specifies the name of the virtual machine"
   type        = string
-}
-*/
-
-variable "vm_names" {
-  description = "List of specific names for the VMs"
-  type        = list(string)
-  default     = ["vm-name-1", "vm-name-2", "vm-name-3"]
 }
 
 variable "size" {
@@ -93,4 +85,9 @@ variable "zones" {
   description = "Specifies the availability zones of the default node pool"
   default     = ["1", "2", "3"]
   type        = list(string)
+}
+
+variable "availability_set_id" {
+  type        = string
+  description = "The ID of the Availability Set in which VMs will be placed."
 }

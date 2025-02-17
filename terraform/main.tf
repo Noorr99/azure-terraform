@@ -58,14 +58,30 @@ module "vnet" {
 }
 
 //
+// Availability Set Module
+//
+/*
+resource "azurerm_availability_set" "vm_avset" {
+  name                = var.availability_set_name
+  location            = var.location
+  resource_group_name = var.resource_group_name
+
+  platform_fault_domain_count  = 2
+  platform_update_domain_count = 5
+  managed                      = true
+  tags                         = var.tags
+}
+*/
+//
 // Virtual Machine Module
 //
 module "virtual_machine" {
 //  count               = var.vm_count
-  count               = length(var.vm_names)
+//  count               = length(var.vm_names)
+  for_each = var.vm_names
   source              = "./modules/virtual_machine"
 
-  name                = var.vm_names[count.index]
+  name                = each.value
   size                = var.vm_size
   location            = var.location
   public_ip           = var.vm_public_ip
@@ -79,6 +95,8 @@ module "virtual_machine" {
   subnet_id                   = module.vnet.subnet_ids[var.vm_subnet_name]
   os_disk_storage_account_type = var.vm_os_disk_storage_account_type
   zones                 = var.zones
+  # Pass the ID of the availability set
+  availability_set_id = azurerm_availability_set.vm_avset.id
 }
 
 
@@ -309,6 +327,7 @@ resource "azurerm_storage_account" "datalake_storage_account" {
   account_kind             = var.datalake_account_kind
   is_hns_enabled           = var.datalake_is_hns_enabled
   tags                     = var.tags
+  public_network_access_enabled = var.public_network_access_enabled
   blob_properties {
     delete_retention_policy {
       days = 7  # Adjust retention period as needed

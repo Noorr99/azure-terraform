@@ -60,19 +60,34 @@ variable "vm_name" {
   description = "Specifies the base name of the Windows virtual machine."
   type        = string
 }
-*/
+
 
 variable "vm_names" {
   description = "List of specific names for the VMs"
   type        = list(string)
   default     = ["vm-name-1", "vm-name-2", "vm-name-3"]
 }
+*/
+variable "availability_set_name" {
+  type        = string
+  description = "The full name of the Availability Set. (e.g., 'myorg-web-prod-qat-as-01')"
+}
 
+
+variable "vm_names" {
+  type = map(string)
+  default = {
+    "vm0"    = "sr-prod-shir-01"
+    "vm1"    = "sr-prod-jb-informatica-01"
+    "vm3"    = "sr-prod-pbi-gw-01"
+  }
+}
+/*
 variable "vm_count" {
   description = "The number of Windows virtual machines to create."
   type        = number
 }
-
+*/
 variable "vm_size" {
   description = "Specifies the size of the Windows virtual machine."
   type        = string

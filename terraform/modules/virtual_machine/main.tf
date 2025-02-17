@@ -110,6 +110,7 @@ resource "azurerm_windows_virtual_machine" "virtual_machine" {
   computer_name         = var.name
   tags                  = var.tags
   zones                 = var.zones
+  availability_set_id = var.availability_set_id
 
   os_disk {
     name                 = "${var.name}OsDisk"

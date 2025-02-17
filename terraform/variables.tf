@@ -147,7 +147,7 @@ variable "zones" {
 
 variable "zone" {
   description = "Specifies the availability zones of the default node pool"
-  default     = ["1", "2", "3"]
+  default     = ["2", "3"]
   type        = list(string)
 }
 //

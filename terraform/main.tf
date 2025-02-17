@@ -75,13 +75,38 @@ resource "azurerm_availability_set" "vm_avset" {
 //
 // Virtual Machine Module
 //
+
+locals {
+  # This creates a list of objects. Each object has:
+  # - map_key  = a unique string to use for for_each
+  # - name     = the VM name
+  # - zone     = the zone (e.g. "2" or "3")
+  cross_vm_names_zones = flatten([
+    for k, vm_name in var.vm_names : [
+      for z in var.zone : {
+        # Construct a unique key for the for_each
+        map_key = "${k}-zone${z}"
+
+        # The actual data we need to pass to the module
+        name = vm_name
+        zone = z
+      }
+    ]
+  ])
+}
+
 module "virtual_machine" {
 //  count               = var.vm_count
 //  count               = length(var.vm_names)
-  for_each = var.vm_names
+//  for_each = var.vm_names
+  for_each = {
+    for combo in local.cross_vm_names_zones :
+    combo.map_key => combo
+  }
   source              = "./modules/virtual_machine"
 
-  name                = each.value
+  name                = each.value.name
+  zone                = each.value.zone
   size                = var.vm_size
   location            = var.location
   public_ip           = var.vm_public_ip
@@ -94,7 +119,6 @@ module "virtual_machine" {
 
   subnet_id                   = module.vnet.subnet_ids[var.vm_subnet_name]
   os_disk_storage_account_type = var.vm_os_disk_storage_account_type
-  zone                = var.zone
   # Pass the ID of the availability set
 //  availability_set_id = azurerm_availability_set.vm_avset.id
 }

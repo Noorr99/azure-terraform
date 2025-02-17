@@ -145,22 +145,20 @@ variable "datalake_is_hns_enabled" {
 }
 
 variable "soft_delete_retention_days" {
-  description = "Number of days to retain deleted blobs"
+  description = "The number of days to retain soft deleted data"
   type        = number
-  default     = 7
 }
 
 variable "enable_versioning" {
-  description = "Enable versioning for blobs"
+  description = "Flag to enable versioning"
   type        = bool
-  default     = true
 }
 
 variable "enable_change_feed" {
-  description = "Enable change feed for blobs"
+  description = "Flag to enable change feed"
   type        = bool
-  default     = true
 }
+
 
 ////////////////////////////////////////////////////////////////////////
 // SQL Database Variables

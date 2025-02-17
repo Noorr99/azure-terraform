@@ -78,16 +78,18 @@ resource "azurerm_storage_account" "datalake_storage_account" {
   account_kind             = var.datalake_account_kind
   is_hns_enabled           = var.datalake_is_hns_enabled
   tags                     = var.tags
+  public_network_access_enabled = var.public_network_access_enabled
   blob_properties {
     delete_retention_policy {
-      days = 7  # Adjust retention period as needed
+      days = var.soft_delete_retention_days   # Adjust retention period as needed
     }
     container_delete_retention_policy {
-      days = 7  # Adjust retention period as needed
+      days = var.soft_delete_retention_days   # Adjust retention period as needed
     }
-    versioning_enabled = true
-    change_feed_enabled = true
+    versioning_enabled = var.enable_versioning
+    change_feed_enabled = var.enable_change_feed
   }
+}
 }
 
 module "datalake_private_dns_zone" {

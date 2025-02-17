@@ -1,27 +1,27 @@
 # Resource Group & Location
-resource_group_name = "rg-nih-uat-001"
+resource_group_name = "rg-nih-prod-001"
 location            = "qatarcentral"
 tags = {
   createdWith = "Terraform"
-  Environment = "uat"
+  Environment = "prod"
   Workload    = "nih"
   Region      = "Qatar Central"
 }
 
 # Virtual Network
-aks_vnet_name          = "vnet-uat-qatar-001"
-aks_vnet_address_space = ["172.40.1.64/26"]
+aks_vnet_name          = "vnet-prod-qatar-001"
+aks_vnet_address_space = ["172.40.2.128/25"]
 
 # Shared Subnet (for SQL, Key Vault, Data Lake)
 shared_subnet_name           = "snet-nih-pe-qatar-001"
-shared_subnet_address_prefix = ["172.40.1.64/28"]
+shared_subnet_address_prefix = ["172.40.2.128/26"]
 
 # AKS Subnet
 aks_subnet_name           = "snet-nih-aks-qatar-001"
-aks_subnet_address_prefix = ["172.40.1.96/27"]
+aks_subnet_address_prefix = ["172.40.2.192/26"]
 
 # Key Vault
-key_vault_name = "kv-nih-uat-001"
+key_vault_name = "kv-nih-prod-001"
 key_vault_sku  = "standard"
 key_vault_enabled_for_deployment          = false
 key_vault_enabled_for_disk_encryption     = false
@@ -34,8 +34,8 @@ key_vault_default_action   = "Allow"
 key_vault_ip_rules         = []
 
 # Data Lake Storage
-datalake_storage_account_name   = "dlsnihuat01"
-datalake_account_tier             = "Standard"
+datalake_storage_account_name   = "dlsnihprod01"
+datalake_account_tier             = "Premium"
 datalake_account_replication_type = "ZRS"  #changed from "LRS" to "ZRS"
 datalake_account_kind             = "StorageV2"
 datalake_is_hns_enabled           = true
@@ -44,12 +44,12 @@ enable_versioning                 = true
 enable_change_feed                = true
 
 # SQL Database
-sql_server_name     = "sql-server-nih-uat"
+sql_server_name     = "sql-server-nih-prod"
 sql_admin_username  = "sqladmin"
 # sql_admin_password must be provided at runtime.
-sql_database_name   = "sql-db-uat"
+sql_database_name   = "sql-db-prod"
 sql_database_dtu    = "100"
-sql_database_tier   = "Standard"
+sql_database_tier   = "Premium"
 sql_database_size_gb = 250
 long_term_retention_backup = 0
 geo_backup_enabled  = false
@@ -58,7 +58,7 @@ sku_name            = "P1"
 zone_redundant      = true
 
 # Data Factory
-data_factory_name        = "adf-nih-uat"
+data_factory_name        = "adf-nih-prod"
 public_network_enabled   = false
 data_factory_identity_type = "SystemAssigned"
 
@@ -71,7 +71,7 @@ firewall_private_ip = "10.100.100.4" // old value = "192.168.64.70"
 aks_private_dns_zone_name = "privatelink.qatarcentral.azmk8s.io"
 
 # AKS Cluster
-aks_cluster_name        = "aks-nih-uat-001"
+aks_cluster_name        = "aks-nih-prod-001"
 kubernetes_version      = "1.30.7"
 sku_tier                = "Free"
 automatic_channel_upgrade = "stable"
@@ -84,7 +84,7 @@ default_node_pool_enable_node_public_ip  = false
 default_node_pool_max_pods               = 50
 default_node_pool_node_count             = 5
 default_node_pool_os_disk_type           = "Managed"
-default_node_pool_availability_zones = ["1", "2", "3"]
+default_node_pool_availability_zones = ["2", "3"]
 
 network_plugin         = "azure"
 network_plugin_mode         = "Overlay"

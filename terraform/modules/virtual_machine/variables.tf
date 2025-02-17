@@ -81,10 +81,17 @@ variable "tags" {
   default     = {}
 }
 
+/*
 variable "zone" {
   description = "Specifies the availability zones of the default node pool"
   default     = ["1", "2", "3"]
   type        = list(string)
+}
+*/
+
+variable "zone" {
+  type = string
+  # no default; each VM needs a single zone
 }
 
 /*

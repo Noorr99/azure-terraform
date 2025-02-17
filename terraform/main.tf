@@ -77,17 +77,13 @@ resource "azurerm_availability_set" "vm_avset" {
 //
 
 locals {
-  # This creates a list of objects. Each object has:
-  # - map_key  = a unique string to use for for_each
-  # - name     = the VM name
-  # - zone     = the zone (e.g. "2" or "3")
+  # Build a list of objects from the cross product of vm_names and zone
   cross_vm_names_zones = flatten([
     for k, vm_name in var.vm_names : [
       for z in var.zone : {
-        # Construct a unique key for the for_each
+        # We'll build a unique key
         map_key = "${k}-zone${z}"
 
-        # The actual data we need to pass to the module
         name = vm_name
         zone = z
       }

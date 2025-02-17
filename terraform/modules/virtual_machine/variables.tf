@@ -90,12 +90,7 @@ variable "tags" {
 }
 
 variable "zones" {
-  description = "The Availability Zone where the VM should be created. Valid values are 1, 2, or 3."
-  type        = number
-  default     = 1
-  
-  validation {
-    condition     = contains([1, 2, 3], var.zone)
-    error_message = "Zone must be 1, 2, or 3."
-  }
+  description = "Specifies the availability zones of the default node pool"
+  default     = ["1", "2", "3"]
+  type        = list(string)
 }

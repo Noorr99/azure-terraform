@@ -117,6 +117,7 @@ variable "vm_os_disk_storage_account_type" {
   }
 }
 
+/*
 variable "zones" {
   description = "The Availability Zone where the VM should be created. Valid values are 1, 2, or 3."
   type        = number
@@ -127,7 +128,13 @@ variable "zones" {
     error_message = "Zone must be 1, 2, or 3."
   }
 }
+*/
 
+variable "zones" {
+  description = "Specifies the availability zones of the default node pool"
+  default     = ["1", "2", "3"]
+  type        = list(string)
+}
 //
 // Key Vault Variables
 //

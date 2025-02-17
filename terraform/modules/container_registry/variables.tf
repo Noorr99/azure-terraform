@@ -54,3 +54,8 @@ variable "public_network_access_enabled" {
   default     = "false"
 }
 
+variable "zone_redundancy_enabled" {
+  description = "(Optional) Enable zone redundancy for ACR"
+  type        = bool
+  default     = true
+}

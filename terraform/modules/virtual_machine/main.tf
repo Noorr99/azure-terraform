@@ -109,6 +109,7 @@ resource "azurerm_windows_virtual_machine" "virtual_machine" {
   admin_password        = var.admin_password
   computer_name         = var.name
   tags                  = var.tags
+  zones                 = var.zones
 
   os_disk {
     name                 = "${var.name}OsDisk"

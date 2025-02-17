@@ -55,9 +55,17 @@ variable "pe_subnet_address_prefix" {
 //
 // Virtual Machine (VM) Variables (Windows)
 //
+/*
 variable "vm_name" {
   description = "Specifies the base name of the Windows virtual machine."
   type        = string
+}
+*/
+
+variable "vm_names" {
+  description = "List of specific names for the VMs"
+  type        = list(string)
+  default     = ["vm-name-1", "vm-name-2", "vm-name-3"]
 }
 
 variable "vm_count" {
@@ -106,6 +114,17 @@ variable "vm_os_disk_storage_account_type" {
       var.vm_os_disk_storage_account_type
     )
     error_message = "The storage account type for the OS disk is invalid. Valid options are Premium_LRS, Premium_ZRS, StandardSSD_LRS, StandardSSD_ZRS, Standard_LRS."
+  }
+}
+
+variable "zones" {
+  description = "The Availability Zone where the VM should be created. Valid values are 1, 2, or 3."
+  type        = number
+  default     = 3
+  
+  validation {
+    condition     = contains([1, 2, 3], var.zone)
+    error_message = "Zone must be 1, 2, or 3."
   }
 }
 
@@ -204,6 +223,12 @@ variable "acr_georeplication_locations" {
 variable "acr_name_pe" {
   description = "The name of the container registry private endpoint."
   type        = string
+}
+
+variable "zone_redundancy_enabled" {
+  description = "Enable zone redundancy for ACR"
+  type        = bool
+  default     = true
 }
 
 //

@@ -10,7 +10,7 @@ terraform {
     # Backend configuration details (adjust as needed)
     resource_group_name  = "RG-QCH-JB-001"
     storage_account_name = "stnihstate001"
-    container_name       = "tfstatesruat"
+    container_name       = "tfstatesrprod"
     key                  = "terraform.tfstate"
     subscription_id      = "751b8a58-5878-4c86-93dc-13c41b3a90cf"
   }
@@ -61,10 +61,11 @@ module "vnet" {
 // Virtual Machine Module
 //
 module "virtual_machine" {
-  count               = var.vm_count
+//  count               = var.vm_count
+  count               = length(var.vm_names)
   source              = "./modules/virtual_machine"
 
-  name                = "${var.vm_name}-${count.index}"
+  name                = var.vm_names[count.index]
   size                = var.vm_size
   location            = var.location
   public_ip           = var.vm_public_ip
@@ -77,6 +78,7 @@ module "virtual_machine" {
 
   subnet_id                   = module.vnet.subnet_ids[var.vm_subnet_name]
   os_disk_storage_account_type = var.vm_os_disk_storage_account_type
+  zones                 = var.zones
 }
 
 
@@ -99,6 +101,7 @@ module "ubuntu_vm" {
   ubuntu_domain_name_label       = var.ubuntu_domain_name_label
   ubuntu_vm_os_disk_storage_account_type = var.ubuntu_vm_os_disk_storage_account_type
   subnet_id                   = module.vnet.subnet_ids[var.vm_subnet_name]
+  zones                 = var.zones
 }
 
 
@@ -143,6 +146,7 @@ module "acr" {
   public_network_access_enabled = var.public_network_access_enabled
 
   georeplication_locations = var.acr_georeplication_locations
+  zone_redundancy_enabled = var.acr_zone_redundancy_enabled
 }
 
 module "acr_private_dns_zone" {
@@ -304,7 +308,17 @@ resource "azurerm_storage_account" "datalake_storage_account" {
   account_replication_type = var.datalake_account_replication_type
   account_kind             = var.datalake_account_kind
   is_hns_enabled           = var.datalake_is_hns_enabled
-//  tags                     = var.tags
+  tags                     = var.tags
+  blob_properties {
+    delete_retention_policy {
+      days = 7  # Adjust retention period as needed
+    }
+    container_delete_retention_policy {
+      days = 7  # Adjust retention period as needed
+    }
+    versioning_enabled = true
+    change_feed_enabled = true
+  }
 }
 
 data "azurerm_client_config" "current" {}

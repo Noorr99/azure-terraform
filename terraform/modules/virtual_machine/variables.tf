@@ -3,9 +3,17 @@ variable "resource_group_name" {
   type        = string
 }
 
+/*
 variable "name" {
   description = "(Required) Specifies the name of the virtual machine"
   type        = string
+}
+*/
+
+variable "vm_names" {
+  description = "List of specific names for the VMs"
+  type        = list(string)
+  default     = ["vm-name-1", "vm-name-2", "vm-name-3"]
 }
 
 variable "size" {
@@ -79,4 +87,15 @@ variable "boot_diagnostics_storage_account" {
 variable "tags" {
   description = "(Optional) Specifies the tags of the virtual machine"
   default     = {}
+}
+
+variable "zones" {
+  description = "The Availability Zone where the VM should be created. Valid values are 1, 2, or 3."
+  type        = number
+  default     = 1
+  
+  validation {
+    condition     = contains([1, 2, 3], var.zone)
+    error_message = "Zone must be 1, 2, or 3."
+  }
 }

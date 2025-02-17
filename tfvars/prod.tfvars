@@ -21,10 +21,17 @@ pe_subnet_address_prefix = ["172.40.2.64/27"]
 
 # Virtual Machine
 //availability_set_name = "sr-prod-qat-as-01"
+/*
 vm_names = {
   "vm0" = "sr-prod-shir-01"
   "vm1" = "sr-prod-jb-informatica-01"
   "vm3" = "sr-prod-pbi-gw-01"
+}
+*/
+vm_names = {
+    "vm0" = "sr-shir"   # was "sr-shir-01", shortened
+    "vm1" = "sr-info"   # was "sr-infa-01", shortened
+    "vm3" = "sr-pbi-gw"    # was "sr-pbi-01", shortened
 }
 //vm_count                     = 3
 vm_size                      = "Standard_D8s_v3"  #old value Standard_DS1_v2 D8s v3

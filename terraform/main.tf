@@ -77,15 +77,13 @@ resource "azurerm_availability_set" "vm_avset" {
 //
 
 locals {
-  # Build a list of objects from the cross product of vm_names and zone
+  # Build a list of objects from all vm_names × zones
   cross_vm_names_zones = flatten([
     for k, vm_name in var.vm_names : [
       for z in var.zone : {
-        # We'll build a unique key
-        map_key = "${k}-zone${z}"
-
-        name = vm_name
-        zone = z
+        map_key = "${k}-z${z}"   # Unique key for each combination
+        name    = vm_name        # e.g. "sr-shir"
+        zone    = z              # e.g. "2"
       }
     ]
   ])

@@ -347,13 +347,13 @@ resource "azurerm_storage_account" "datalake_storage_account" {
   public_network_access_enabled = var.public_network_access_enabled
   blob_properties {
     delete_retention_policy {
-      days = 7  # Adjust retention period as needed
+      days = var.soft_delete_retention_days   # Adjust retention period as needed
     }
     container_delete_retention_policy {
-      days = 7  # Adjust retention period as needed
+      days = var.soft_delete_retention_days   # Adjust retention period as needed
     }
-    versioning_enabled = true
-    change_feed_enabled = true
+    versioning_enabled = var.enable_versioning
+    change_feed_enabled = var.enable_change_feed
   }
 }
 

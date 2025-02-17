@@ -81,13 +81,15 @@ variable "tags" {
   default     = {}
 }
 
-variable "zones" {
+variable "zone" {
   description = "Specifies the availability zones of the default node pool"
   default     = ["1", "2", "3"]
   type        = list(string)
 }
 
+/*
 variable "availability_set_id" {
   type        = string
   description = "The ID of the Availability Set in which VMs will be placed."
 }
+*/

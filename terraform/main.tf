@@ -94,9 +94,9 @@ module "virtual_machine" {
 
   subnet_id                   = module.vnet.subnet_ids[var.vm_subnet_name]
   os_disk_storage_account_type = var.vm_os_disk_storage_account_type
-  zones                 = var.zones
+  zone                = var.zone
   # Pass the ID of the availability set
-  availability_set_id = azurerm_availability_set.vm_avset.id
+//  availability_set_id = azurerm_availability_set.vm_avset.id
 }
 
 

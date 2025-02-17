@@ -20,7 +20,7 @@ pe_subnet_name           = "snet-pe-qatar-001"
 pe_subnet_address_prefix = ["172.40.2.64/27"]
 
 # Virtual Machine
-availability_set_name = "sr-prod-qat-as-01"
+//availability_set_name = "sr-prod-qat-as-01"
 vm_names = {
   "vm0" = "sr-prod-shir-01"
   "vm1" = "sr-prod-jb-informatica-01"
@@ -31,7 +31,7 @@ vm_size                      = "Standard_D8s_v3"  #old value Standard_DS1_v2 D8s
 vm_public_ip                 = false
 admin_username               = "azadmin"
 # admin_password is not set here so that it is provided at runtime.
-zones                        = ["2", "3"]
+zone                         = ["2", "3"]
 vm_os_disk_image             = {
   publisher = "MicrosoftWindowsServer"
   offer     = "WindowsServer"

@@ -67,12 +67,12 @@ variable "vm_names" {
   type        = list(string)
   default     = ["vm-name-1", "vm-name-2", "vm-name-3"]
 }
-*/
+
 variable "availability_set_name" {
   type        = string
   description = "The full name of the Availability Set. (e.g., 'myorg-web-prod-qat-as-01')"
 }
-
+*/
 
 variable "vm_names" {
   type = map(string)
@@ -145,7 +145,7 @@ variable "zones" {
 }
 */
 
-variable "zones" {
+variable "zone" {
   description = "Specifies the availability zones of the default node pool"
   default     = ["1", "2", "3"]
   type        = list(string)

@@ -347,6 +347,22 @@ variable "datalake_filesystem_properties" {
   type        = map(string)
 }
 
+variable "soft_delete_retention_days" {
+  description = "The number of days to retain soft deleted data"
+  type        = number
+}
+
+variable "enable_versioning" {
+  description = "Flag to enable versioning"
+  type        = bool
+}
+
+variable "enable_change_feed" {
+  description = "Flag to enable change feed"
+  type        = bool
+}
+
+
 //////////////////////////////////////
 // Ubuntu Virtual Machine Variables (Separate from Windows)
 //////////////////////////////////////

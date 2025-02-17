@@ -119,7 +119,6 @@ module "ubuntu_vm" {
   ubuntu_domain_name_label       = var.ubuntu_domain_name_label
   ubuntu_vm_os_disk_storage_account_type = var.ubuntu_vm_os_disk_storage_account_type
   subnet_id                   = module.vnet.subnet_ids[var.vm_subnet_name]
-  zones                 = var.zones
 }
 
 
@@ -164,7 +163,7 @@ module "acr" {
   public_network_access_enabled = var.public_network_access_enabled
 
   georeplication_locations = var.acr_georeplication_locations
-  zone_redundancy_enabled = var.acr_zone_redundancy_enabled
+  zone_redundancy_enabled = var.zone_redundancy_enabled
 }
 
 module "acr_private_dns_zone" {

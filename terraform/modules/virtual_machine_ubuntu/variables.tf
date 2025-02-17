@@ -79,9 +79,3 @@ variable "subnet_id" {
   description = "(Required) Specifies the resource ID of the subnet hosting the virtual machine"
   type        = string
 }
-
-variable "zones" {
-  description = "Specifies the availability zones of the default node pool"
-  default     = ["1", "2", "3"]
-  type        = list(string)
-}

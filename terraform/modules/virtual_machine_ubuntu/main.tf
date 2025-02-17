@@ -92,7 +92,6 @@ resource "azurerm_linux_virtual_machine" "ubuntu_vm" {
   admin_password       = var.ubuntu_admin_password
   disable_password_authentication = false
   network_interface_ids = [azurerm_network_interface.ubuntu_nic.id]
-  zones                 = var.zones
   
   os_disk {
     name                 = "${var.ubuntu_vm_name}-osdisk"

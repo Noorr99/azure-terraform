@@ -398,6 +398,7 @@ variable "ubuntu_admin_password" {
   sensitive   = true
 }
 
+/*
 variable "ubuntu_vm_os_disk_image" {
   description = "Specifies the OS disk image for the Ubuntu virtual machine."
   type        = map(string)
@@ -408,7 +409,18 @@ variable "ubuntu_vm_os_disk_image" {
     version   = "latest"
   }
 }
+*/
 
+variable "ubuntu_vm_os_disk_image" {
+  description = "Specifies the OS disk image for the Ubuntu virtual machine."
+  type        = map(string)
+  default = {
+    publisher = "Canonical"
+    offer     = "ubuntu-24_04-lts"
+    sku       = "ubuntu-pro"
+    version   = "latest"
+  }
+}
 variable "ubuntu_domain_name_label" {
   description = "Specifies the domain name label for the Ubuntu virtual machine."
   type        = string

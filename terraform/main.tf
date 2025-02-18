@@ -375,7 +375,7 @@ resource "azurerm_storage_account" "datalake_storage_account" {
   account_kind             = var.datalake_account_kind
   is_hns_enabled           = var.datalake_is_hns_enabled
   tags                     = var.tags
-  public_network_access_enabled = var.public_network_access_enabled
+//  public_network_access_enabled = var.public_network_access_enabled
 
 /*
   blob_properties {

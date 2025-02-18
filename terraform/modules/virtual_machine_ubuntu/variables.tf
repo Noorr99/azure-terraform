@@ -50,8 +50,8 @@ variable "ubuntu_vm_os_disk_image" {
   type        = map(string)
   default = {
     publisher = "Canonical"
-    offer     = "UbuntuServer"
-    sku       = "18.04-LTS"
+    offer     = "ubuntu-24_04-lts"
+    sku       = "ubuntu-pro"
     version   = "latest"
   }
 }

@@ -46,7 +46,7 @@ vm_os_disk_image             = {
   version   = "latest"
 }
 domain_name_label            = "windowsnpcvmtrial"
-vm_os_disk_storage_account_type = "StandardSSD_LRS"
+vm_os_disk_storage_account_type = "StandardSSD_ZRS"
 
 # Key Vault
 key_vault_name = "kv-sr-prod-01"

@@ -94,6 +94,9 @@ variable "zone" {
   # no default; each VM needs a single zone
 }
 
+variable "index_str" {
+  type = string
+}
 /*
 variable "availability_set_id" {
   type        = string

@@ -75,6 +75,7 @@ resource "azurerm_availability_set" "vm_avset" {
 //
 // Virtual Machine Module
 //
+/*
 
 locals {
   # Build a list of objects from all vm_names × zones
@@ -88,19 +89,49 @@ locals {
     ]
   ])
 }
+*/
+
+locals {
+  # (A) Cross product of vm_names and zone, no index yet.
+  cross_vm_names_zones_no_index = flatten([
+    for k, vm_name in var.vm_names : [
+      for z in var.zone : {
+        # We'll store the original base name and the zone
+        base_name = vm_name
+        zone      = z
+      }
+    ]
+  ])
+
+  # (B) Add a 2-digit index to each item (01, 02, 03, ...).
+  # i starts at 0, so we do (i+1) for 1-based counting.
+  cross_vm_names_zones_indexed = [
+    for i, combo in local.cross_vm_names_zones_no_index : merge(combo, {
+      index_str = format("%02d", i + 1)
+    })
+  ]
+}
 
 module "virtual_machine" {
 //  count               = var.vm_count
 //  count               = length(var.vm_names)
 //  for_each = var.vm_names
+/*
   for_each = {
     for combo in local.cross_vm_names_zones :
     combo.map_key => combo
   }
+*/
+  for_each = {
+    for combo in local.cross_vm_names_zones_indexed :
+    # For uniqueness: combine the base_name + index
+    "${combo.base_name}-${combo.index_str}" => combo
+  }
   source              = "./modules/virtual_machine"
 
-  name                = each.value.name
+  name                = each.value.base_name
   zone                = each.value.zone
+  index_str           = each.value.index_str
   size                = var.vm_size
   location            = var.location
   public_ip           = var.vm_public_ip

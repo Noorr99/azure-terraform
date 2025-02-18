@@ -100,7 +100,7 @@ resource "azurerm_network_interface_security_group_association" "nsg_association
 # Windows Virtual Machine
 #############################
 resource "azurerm_windows_virtual_machine" "virtual_machine" {
-  name                  = "${var.name}-z${var.zone}"
+  name                  = "${var.name}-${var.index_str}"
   location              = var.location
   resource_group_name   = var.resource_group_name
   network_interface_ids = [azurerm_network_interface.nic.id]

@@ -49,7 +49,7 @@ resource "azurerm_network_interface" "ubuntu_nic" {
 # Network Security Group for Ubuntu VM (Allow SSH)
 #############################
 resource "azurerm_network_security_group" "ubuntu_nsg" {
-  name                = "${var.ubuntu_vm_name}-nsg"
+  name                = "nsg-${var.ubuntu_vm_name}"
   location            = var.location
   resource_group_name = var.resource_group_name
   tags                = var.tags

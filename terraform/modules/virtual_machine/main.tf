@@ -28,7 +28,7 @@ resource "azurerm_public_ip" "public_ip" {
 # Network Security Group (allow RDP and Oracle On-Prem outbound)
 #############################
 resource "azurerm_network_security_group" "nsg" {
-  name                = "nsg-${var.name}"
+  name                = "nsg-${var.name}-${var.index_str}"
   location            = var.location
   resource_group_name = var.resource_group_name
   tags                = var.tags
@@ -66,7 +66,7 @@ resource "azurerm_network_security_group" "nsg" {
 # Network Interface
 #############################
 resource "azurerm_network_interface" "nic" {
-  name                = "${var.name}Nic"
+  name                = "${var.name}-${var.index_str}-nic"
   location            = var.location
   resource_group_name = var.resource_group_name
   tags                = var.tags
@@ -107,7 +107,7 @@ resource "azurerm_windows_virtual_machine" "virtual_machine" {
   size                  = var.size
   admin_username        = var.vm_user
   admin_password        = var.admin_password
-  computer_name         = var.name
+  computer_name         = "${var.name}-${var.index_str}"
   tags                  = var.tags
   zone                  = var.zone
 //  availability_set_id = var.availability_set_id
@@ -119,7 +119,7 @@ resource "azurerm_windows_virtual_machine" "virtual_machine" {
   secure_boot_enabled = true
   vtpm_enabled = true
   os_disk {
-    name                 = "${var.name}OsDisk"
+    name                 = "${var.name}-${var.index_str}-osdisk"
     caching              = "ReadWrite"
     storage_account_type = var.os_disk_storage_account_type
   }

@@ -92,9 +92,11 @@ datalake_filesystem_properties    = {
 }
 datalake_storage_account_pe = "dls-sr-prod-01" 
 acr_name_pe                   = "cr-sr-prod-01"
+/*
 soft_delete_retention_days        = 7
 enable_versioning                 = true
 enable_change_feed                = true
+*/
 #########################################
 # Ubuntu Virtual Machine (New Variables)
 #########################################

@@ -116,12 +116,8 @@ resource "azurerm_windows_virtual_machine" "virtual_machine" {
   enable_secure_boot  = true
   enable_vtpm         = true
 */
-  security_type = "TrustedLaunch"
-
-  uefi_settings {
-    secure_boot_enabled = true
-    vtpm_enabled        = true
-  }
+  secure_boot_enabled = true
+  vtpm_enabled = true
   os_disk {
     name                 = "${var.name}OsDisk"
     caching              = "ReadWrite"

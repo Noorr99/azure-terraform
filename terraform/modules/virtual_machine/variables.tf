@@ -104,17 +104,13 @@ variable "availability_set_id" {
 }
 */
 
-variable "security_type" {
-  type    = string
-  default = "TrustedLaunch"
-}
 
-variable "enable_secure_boot" {
+variable "secure_boot_enabled" {
   type    = bool
   default = true
 }
 
-variable "enable_vtpm" {
+variable "vtpm_enabled" {
   type    = bool
   default = true
 }

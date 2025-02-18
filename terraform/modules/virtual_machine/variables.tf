@@ -103,3 +103,18 @@ variable "availability_set_id" {
   description = "The ID of the Availability Set in which VMs will be placed."
 }
 */
+
+variable "security_type" {
+  type    = string
+  default = "TrustedLaunch"
+}
+
+variable "enable_secure_boot" {
+  type    = bool
+  default = true
+}
+
+variable "enable_vtpm" {
+  type    = bool
+  default = true
+}

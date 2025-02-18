@@ -111,7 +111,17 @@ resource "azurerm_windows_virtual_machine" "virtual_machine" {
   tags                  = var.tags
   zone                  = var.zone
 //  availability_set_id = var.availability_set_id
+/*
+  security_type       = "TrustedLaunch"
+  enable_secure_boot  = true
+  enable_vtpm         = true
+*/
+  security_type = "TrustedLaunch"
 
+  uefi_settings {
+    secure_boot_enabled = true
+    vtpm_enabled        = true
+  }
   os_disk {
     name                 = "${var.name}OsDisk"
     caching              = "ReadWrite"

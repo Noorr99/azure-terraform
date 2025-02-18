@@ -376,6 +376,7 @@ resource "azurerm_storage_account" "datalake_storage_account" {
   is_hns_enabled           = var.datalake_is_hns_enabled
   tags                     = var.tags
   public_network_access_enabled = var.public_network_access_enabled
+
 /*
   blob_properties {
     delete_retention_policy {

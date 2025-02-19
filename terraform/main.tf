@@ -396,7 +396,7 @@ module "aks_cluster" {
   default_node_pool_max_pods               = var.default_node_pool_max_pods
   default_node_pool_node_count             = var.default_node_pool_node_count
   default_node_pool_os_disk_type           = var.default_node_pool_os_disk_type
-  zones                                    = var.default_node_pool_availability_zones
+  default_node_pool_availability_zones     = var.default_node_pool_availability_zones
   // Networking
   network_plugin         = var.network_plugin
   network_plugin_mode         = var.network_plugin_mode
@@ -444,7 +444,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "user" {
 
   enable_auto_scaling   = var.user_node_pool_enable_auto_scaling
   max_pods              = var.user_node_pool_max_pods
-  zones                   = var.default_node_pool_availability_zones
+  default_node_pool_availability_zones     = var.default_node_pool_availability_zones
 
   # Use the same subnet as the default node pool
   vnet_subnet_id        = module.vnet.subnet_ids[var.aks_subnet_name]

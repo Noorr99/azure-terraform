@@ -56,7 +56,7 @@ sql_database_size_gb = 500
 long_term_retention_backup = 0
 geo_backup_enabled  = false
 storage_account_type = "Zone"
-//sku_name            = "P1"
+sku_name            = "P1"
 zone_redundant      = false
 
 # Data Factory

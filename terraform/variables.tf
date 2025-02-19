@@ -214,12 +214,12 @@ variable "storage_account_type" {
   type        = string
 }
 
-/*
+
 variable "sku_name" {
   description = "Specifies the sku name."
   type        = string
 }
-*/
+
 variable "zone_redundant" {
   description = "Specifies whether zone redundancy is enabled."
   type        = bool

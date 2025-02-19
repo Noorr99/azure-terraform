@@ -73,11 +73,12 @@ variable "storage_account_type" {
   type        = string
 }
 
+/*
 variable "sku_name" {
   description = "Specifies the sku_name"
   type        = string
 }
-
+*/
 variable "zone_redundant" {
   description = "Specifies the zone_redundant"
   type        = bool

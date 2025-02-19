@@ -52,12 +52,12 @@ sql_admin_username  = "sqladmin"
 sql_database_name   = "sql-db-prod"
 sql_database_dtu    = "125"
 sql_database_tier   = "Premium"
-sql_database_size_gb = 250
+sql_database_size_gb = 500
 long_term_retention_backup = 0
 geo_backup_enabled  = false
 storage_account_type = "Zone"
-sku_name            = "P1"
-zone_redundant      = true
+//sku_name            = "P1"
+zone_redundant      = false
 
 # Data Factory
 data_factory_name        = "adf-nih-prod"

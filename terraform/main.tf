@@ -78,20 +78,6 @@ resource "azurerm_availability_set" "vm_avset" {
 /*
 
 locals {
-  # Build a list of objects from all vm_names × zones
-  cross_vm_names_zones = flatten([
-    for k, vm_name in var.vm_names : [
-      for z in var.zone : {
-        map_key = "${k}-z${z}"   # Unique key for each combination
-        name    = vm_name        # e.g. "sr-shir"
-        zone    = z              # e.g. "2"
-      }
-    ]
-  ])
-}
-*/
-
-locals {
   # (A) Cross product of vm_names and zone, no index yet.
   cross_vm_names_zones_no_index = flatten([
     for k, vm_name in var.vm_names : [
@@ -111,6 +97,23 @@ locals {
     })
   ]
 }
+*/
+
+locals {
+  cross_vm_names_zones_indexed = flatten([
+    // For each VM name in var.vm_names...
+    for k, vm_name in var.vm_names : [
+      // ...loop over var.zone with an index (zone_index).
+      // zone_index starts at 0 for the first zone, 1 for the second, etc.
+      for zone_index, z in var.zone : {
+        base_name = vm_name
+        zone      = z
+        // index_str => "01" if zone_index=0, "02" if zone_index=1, etc.
+        index_str = format("%02d", zone_index + 1)
+      }
+    ]
+  ])
+}
 
 module "virtual_machine" {
 //  count               = var.vm_count
@@ -118,15 +121,16 @@ module "virtual_machine" {
 //  for_each = var.vm_names
 /*
   for_each = {
-    for combo in local.cross_vm_names_zones :
-    combo.map_key => combo
-  }
-*/
-  for_each = {
     for combo in local.cross_vm_names_zones_indexed :
     # For uniqueness: combine the base_name + index
     "${combo.base_name}-${combo.index_str}" => combo
   }
+*/
+
+for_each = {
+  for combo in local.cross_vm_names_zones_indexed :
+  "${combo.base_name}-${combo.index_str}" => combo
+}
   source              = "./modules/virtual_machine"
 
   name                = each.value.base_name

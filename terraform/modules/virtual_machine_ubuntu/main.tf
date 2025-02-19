@@ -92,7 +92,8 @@ resource "azurerm_linux_virtual_machine" "ubuntu_vm" {
   admin_password       = var.ubuntu_admin_password
   disable_password_authentication = false
   network_interface_ids = [azurerm_network_interface.ubuntu_nic.id]
-  
+  secure_boot_enabled = true
+  vtpm_enabled = true  
   os_disk {
     name                 = "${var.ubuntu_vm_name}-osdisk"
     caching              = "ReadWrite"

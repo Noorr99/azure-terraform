@@ -449,7 +449,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "user" {
   # Use the same subnet as the default node pool
   vnet_subnet_id        = module.vnet.subnet_ids[var.aks_subnet_name]
   depends_on = [
-    aks_cluster
+    module.aks_cluster
   ]
 }
 

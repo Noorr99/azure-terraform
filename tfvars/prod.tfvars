@@ -100,7 +100,7 @@ enable_change_feed                = true
 #########################################
 # Ubuntu Virtual Machine (New Variables)
 #########################################
-ubuntu_vm_name = "sr-prod-devops-01"
+ubuntu_vm_name = "vm-sr-devops-01"
 ubuntu_vm_count = 1
 ubuntu_vm_size  = "Standard_D4s_v3"
 ubuntu_vm_public_ip = false

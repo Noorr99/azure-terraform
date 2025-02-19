@@ -78,6 +78,95 @@ resource "azurerm_storage_account" "datalake_storage_account" {
   account_kind             = var.datalake_account_kind
   is_hns_enabled           = var.datalake_is_hns_enabled
   tags                     = var.tags
+//  public_network_access_enabled = var.public_network_access_enabled
+
+/*
+  blob_properties {
+    delete_retention_policy {
+      days = var.soft_delete_retention_days   # Adjust retention period as needed
+    }
+    container_delete_retention_policy {
+      days = var.soft_delete_retention_days   # Adjust retention period as needed
+    }
+    versioning_enabled = var.enable_versioning
+    change_feed_enabled = var.enable_change_feed
+  }
+*/
+}
+
+data "azurerm_client_config" "current" {}
+
+resource "azurerm_role_assignment" "storage_blob_data_owner" {
+  scope                = azurerm_storage_account.datalake_storage_account.id
+  role_definition_name = "Storage Blob Data Owner"
+  principal_id         = data.azurerm_client_config.current.object_id
+}
+
+resource "azurerm_role_assignment" "contributor" {
+  scope                = azurerm_storage_account.datalake_storage_account.id
+  role_definition_name = "Contributor"
+  principal_id         = data.azurerm_client_config.current.object_id
+}
+
+resource "time_sleep" "role_assignment_sleep" {
+  create_duration = "60s"
+
+  triggers = {
+    role_assignment = azurerm_role_assignment.storage_blob_data_owner.id
+  }
+}
+
+resource "azurerm_storage_data_lake_gen2_filesystem" "datalake_filesystem" {
+  name               = var.datalake_filesystem_name
+  storage_account_id = azurerm_storage_account.datalake_storage_account.id
+
+  properties = var.datalake_filesystem_properties
+
+  depends_on = [
+    azurerm_storage_account.datalake_storage_account,
+    time_sleep.role_assignment_sleep
+  ]
+}
+
+// Datalake endpoint and private DNS
+
+module "datalake_private_dns_zone" {
+  source                       = "./modules/private_dns_zone"
+  name                         = "privatelink.dfs.core.windows.net"
+  resource_group_name          = var.resource_group_name
+  virtual_networks_to_link     = {
+    (module.vnet.name) = {
+      subscription_id    = data.azurerm_client_config.current.subscription_id
+      resource_group_name = var.resource_group_name
+    }
+  }
+  tags                         = var.tags
+}
+
+module "datalake_private_endpoint" {
+  source                         = "./modules/private_endpoint"
+  name                           = "pe-${var.datalake_storage_account_pe}"
+  location                       = var.location
+  resource_group_name            = var.resource_group_name
+  subnet_id                      = module.vnet.subnet_ids[var.pe_subnet_name]
+  tags                           = var.tags
+  private_connection_resource_id = azurerm_storage_account.datalake_storage_account.id
+  is_manual_connection           = false
+  subresource_name               = "dfs"
+  private_dns_zone_group_name    = "DatalakePrivateDnsZoneGroup"
+  private_dns_zone_group_ids     = [module.datalake_private_dns_zone.id]
+}
+
+/*
+resource "azurerm_storage_account" "datalake_storage_account" {
+  name                     = var.datalake_storage_account_name
+  resource_group_name      = var.resource_group_name
+  location                 = var.location
+  account_tier             = var.datalake_account_tier
+  account_replication_type = var.datalake_account_replication_type
+  account_kind             = var.datalake_account_kind
+  is_hns_enabled           = var.datalake_is_hns_enabled
+  tags                     = var.tags
   public_network_access_enabled = var.public_network_access_enabled
   blob_properties {
     delete_retention_policy {
@@ -131,6 +220,7 @@ module "datalake_private_endpoint" {
   private_dns_zone_group_ids     = [module.datalake_private_dns_zone.id]
   tags                           = var.tags
 }
+*/
 
 ////////////////////////////////////////////////////////////////////////
 // 5. Key Vault + Private Endpoint + DNS
@@ -275,6 +365,7 @@ module "aks_private_dns_zone" {
   }
 }
 
+
 ////////////////////////////////////////////////////////////////////////
 // 10. AKS (Private Cluster) Using the New Subnet
 ////////////////////////////////////////////////////////////////////////
@@ -343,6 +434,23 @@ module "aks_cluster" {
     module.aks_private_dns_zone
   ]
 }
+
+resource "azurerm_kubernetes_cluster_node_pool" "user" {
+  name                  = var.user_node_pool_name
+  kubernetes_cluster_id = module.aks_cluster.id
+  vm_size               = var.user_node_pool_vm_size
+  node_count            = var.user_node_pool_node_count
+  os_disk_type          = var.user_node_pool_os_disk_type
+  node_labels           = var.user_node_pool_node_labels
+
+  enable_auto_scaling   = var.user_node_pool_enable_auto_scaling
+  max_pods              = var.user_node_pool_max_pods
+  availability_zones    = var.user_node_pool_availability_zones
+
+  # Use the same subnet as the default node pool
+  vnet_subnet_id        = module.vnet.subnet_ids[var.aks_subnet_name]
+}
+
 
 ////////////////////////////////////////////////////////////////////////
 // 11. (Optional) Role Assignment: Network Contributor

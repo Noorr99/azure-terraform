@@ -37,23 +37,25 @@ key_vault_ip_rules         = []
 datalake_storage_account_name   = "dlsnihprod01"
 datalake_account_tier             = "Premium"
 datalake_account_replication_type = "ZRS"  #changed from "LRS" to "ZRS"
-datalake_account_kind             = "StorageV2"
+datalake_account_kind             = "BlockBlobStorage"
 datalake_is_hns_enabled           = true
-soft_delete_retention_days        = 7
-enable_versioning                 = true
-enable_change_feed                = true
+datalake_filesystem_name          = "dlsfsnihprod"
+datalake_filesystem_properties    = {
+  hello = "aGVsbG8="
+}
+datalake_storage_account_pe = "dls-nih-prod-01" 
 
 # SQL Database
 sql_server_name     = "sql-server-nih-prod"
 sql_admin_username  = "sqladmin"
 # sql_admin_password must be provided at runtime.
 sql_database_name   = "sql-db-prod"
-sql_database_dtu    = "100"
+sql_database_dtu    = "125"
 sql_database_tier   = "Premium"
 sql_database_size_gb = 250
 long_term_retention_backup = 0
 geo_backup_enabled  = false
-storage_account_type = "Local"
+storage_account_type = "ZRS"
 sku_name            = "P1"
 zone_redundant      = true
 
@@ -65,15 +67,15 @@ data_factory_identity_type = "SystemAssigned"
 # Route Table (for AKS subnet)
 route_table_name = "rt-aks"
 route_name       = "default-route-0-0-0-0"
-firewall_private_ip = "10.100.100.4" // old value = "192.168.64.70"
+firewall_private_ip = "10.100.100.4" // old value = "192.168.64.70" 
 
 # Private DNS Zone for AKS Control Plane
 aks_private_dns_zone_name = "privatelink.qatarcentral.azmk8s.io"
 
 # AKS Cluster
 aks_cluster_name        = "aks-nih-prod-001"
-kubernetes_version      = "1.30.7"
-sku_tier                = "Free"
+kubernetes_version      = "1.30.9"
+sku_tier                = "Premium"
 automatic_channel_upgrade = "stable"
 default_node_pool_name  = "system"
 default_node_pool_vm_size = "Standard_D4ds_v4"
@@ -82,7 +84,7 @@ default_node_pool_enable_auto_scaling    = false
 default_node_pool_enable_host_encryption = false
 default_node_pool_enable_node_public_ip  = false
 default_node_pool_max_pods               = 50
-default_node_pool_node_count             = 5
+default_node_pool_node_count             = 2
 default_node_pool_os_disk_type           = "Managed"
 default_node_pool_availability_zones = ["2", "3"]
 
@@ -105,6 +107,18 @@ open_service_mesh_enabled        = true
 image_cleaner_enabled            = true
 azure_policy_enabled             = true
 http_application_routing_enabled = false
+
+
+# User Node Vars
+
+user_node_pool_name              = "user"
+user_node_pool_vm_size           = "Standard_D4ds_v4"
+user_node_pool_node_count        = 5
+user_node_pool_os_disk_type      = "Managed"
+user_node_pool_node_labels       = {}
+user_node_pool_enable_auto_scaling = false
+user_node_pool_max_pods          = 50
+user_node_pool_availability_zones = ["2", "3"]
 
 # (Optional) Log Analytics Workspace
 log_analytics_workspace_id = null

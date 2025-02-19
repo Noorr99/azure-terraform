@@ -432,6 +432,57 @@ variable "default_node_pool_availability_zones" {
   type        = list(string)
 }
 
+// User Node Vars
+
+variable "user_node_pool_name" {
+  description = "Name of the user node pool"
+  type        = string
+  default     = "user"
+}
+
+variable "user_node_pool_vm_size" {
+  description = "VM size for the user node pool"
+  type        = string
+  default     = "Standard_D4ds_v4"
+}
+
+variable "user_node_pool_node_count" {
+  description = "Initial node count for the user node pool"
+  type        = number
+  default     = 5
+}
+
+variable "user_node_pool_os_disk_type" {
+  description = "OS disk type for the user node pool"
+  type        = string
+  default     = "Managed"
+}
+
+variable "user_node_pool_node_labels" {
+  description = "Labels for the user node pool nodes"
+  type        = map(string)
+  default     = {}
+}
+
+variable "user_node_pool_enable_auto_scaling" {
+  description = "Whether auto-scaling is enabled for the user node pool"
+  type        = bool
+  default     = false
+}
+
+variable "user_node_pool_max_pods" {
+  description = "Maximum number of pods per node for the user node pool"
+  type        = number
+  default     = 50
+}
+
+variable "user_node_pool_availability_zones" {
+  description = "Availability zones for the user node pool"
+  type        = list(string)
+  default     = ["2", "3"]
+}
+
+
 ////////////////////////////////////////////////////////////////////////
 // Log Analytics Workspace (Optional)
 ////////////////////////////////////////////////////////////////////////

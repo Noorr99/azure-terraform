@@ -94,7 +94,6 @@ resource "azurerm_storage_account" "datalake_storage_account" {
 */
 }
 
-data "azurerm_client_config" "current" {}
 
 resource "azurerm_role_assignment" "storage_blob_data_owner" {
   scope                = azurerm_storage_account.datalake_storage_account.id

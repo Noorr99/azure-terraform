@@ -119,8 +119,14 @@ variable "key_vault_ip_rules" {
 ////////////////////////////////////////////////////////////////////////
 // Data Lake Storage Variables
 ////////////////////////////////////////////////////////////////////////
+
 variable "datalake_storage_account_name" {
   description = "The name of the Data Lake Storage account."
+  type        = string
+}
+
+variable "datalake_storage_account_pe" {
+  description = "The name of the Data Lake Storage account private endpoint."
   type        = string
 }
 
@@ -140,25 +146,19 @@ variable "datalake_account_kind" {
 }
 
 variable "datalake_is_hns_enabled" {
-  description = "Specifies whether hierarchical namespace is enabled for the Data Lake."
+  description = "Whether the hierarchical namespace is enabled."
   type        = bool
 }
 
-variable "soft_delete_retention_days" {
-  description = "The number of days to retain soft deleted data"
-  type        = number
+variable "datalake_filesystem_name" {
+  description = "The name of the Data Lake Storage Gen2 filesystem."
+  type        = string
 }
 
-variable "enable_versioning" {
-  description = "Flag to enable versioning"
-  type        = bool
+variable "datalake_filesystem_properties" {
+  description = "The properties of the Data Lake Storage Gen2 filesystem."
+  type        = map(string)
 }
-
-variable "enable_change_feed" {
-  description = "Flag to enable change feed"
-  type        = bool
-}
-
 
 ////////////////////////////////////////////////////////////////////////
 // SQL Database Variables

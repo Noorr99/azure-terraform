@@ -444,7 +444,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "user" {
 
   enable_auto_scaling   = var.user_node_pool_enable_auto_scaling
   max_pods              = var.user_node_pool_max_pods
-  default_node_pool_availability_zones     = var.default_node_pool_availability_zones
+  zones                 = var.default_node_pool_availability_zones
 
   # Use the same subnet as the default node pool
   vnet_subnet_id        = module.vnet.subnet_ids[var.aks_subnet_name]

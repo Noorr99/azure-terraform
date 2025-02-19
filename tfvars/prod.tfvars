@@ -55,7 +55,7 @@ sql_database_tier   = "Premium"
 sql_database_size_gb = 250
 long_term_retention_backup = 0
 geo_backup_enabled  = false
-storage_account_type = "ZRS"
+storage_account_type = "Zone"
 sku_name            = "P1"
 zone_redundant      = true
 
@@ -75,7 +75,7 @@ aks_private_dns_zone_name = "privatelink.qatarcentral.azmk8s.io"
 # AKS Cluster
 aks_cluster_name        = "aks-nih-prod-001"
 kubernetes_version      = "1.30.9"
-sku_tier                = "Premium"
+sku_tier                = "Paid"
 automatic_channel_upgrade = "stable"
 default_node_pool_name  = "system"
 default_node_pool_vm_size = "Standard_D4ds_v4"

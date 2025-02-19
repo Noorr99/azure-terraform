@@ -476,12 +476,13 @@ variable "user_node_pool_max_pods" {
   default     = 50
 }
 
+/*
 variable "user_node_pool_availability_zones" {
   description = "Availability zones for the user node pool"
   type        = list(string)
   default     = ["2", "3"]
 }
-
+*/
 
 ////////////////////////////////////////////////////////////////////////
 // Log Analytics Workspace (Optional)

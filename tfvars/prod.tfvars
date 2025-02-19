@@ -118,7 +118,7 @@ user_node_pool_os_disk_type      = "Managed"
 user_node_pool_node_labels       = {}
 user_node_pool_enable_auto_scaling = false
 user_node_pool_max_pods          = 50
-user_node_pool_availability_zones = ["2", "3"]
+//user_node_pool_availability_zones = ["2", "3"]
 
 # (Optional) Log Analytics Workspace
 log_analytics_workspace_id = null

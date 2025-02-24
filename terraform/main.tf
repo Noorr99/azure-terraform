@@ -172,7 +172,7 @@ resource "random_string" "cognitive_account_suffix" {
 resource "azurerm_cognitive_account" "cognitive_service" {
   name                = "cog-${random_string.cognitive_account_suffix.result}"
   resource_group_name = var.resource_group_name
-  location            = var.location
+  location            = "eastus"
   kind                = var.cognitive_service_kind    // Now "CognitiveServices"
   sku_name            = var.cognitive_service_sku     // e.g., "S0"
   tags                = var.tags
@@ -196,7 +196,7 @@ module "cognitive_dns_zone" {
 module "cognitive_private_endpoint" {
   source                         = "./modules/private_endpoint"
   name                           = "cog-${random_string.cognitive_account_suffix.result}-pe"
-  location                       = var.location
+  location                       = "eastus"
   resource_group_name            = var.resource_group_name
   subnet_id                      = module.vnet.subnet_ids[var.shared_subnet_name]
   private_connection_resource_id = azurerm_cognitive_account.cognitive_service.id

@@ -196,7 +196,7 @@ module "cognitive_dns_zone" {
 module "cognitive_private_endpoint" {
   source                         = "./modules/private_endpoint"
   name                           = "cog-${random_string.cognitive_account_suffix.result}-pe"
-  location                       = "eastus"
+  location                       = var.location
   resource_group_name            = var.resource_group_name
   subnet_id                      = module.vnet.subnet_ids[var.shared_subnet_name]
   private_connection_resource_id = azurerm_cognitive_account.cognitive_service.id

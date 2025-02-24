@@ -149,7 +149,7 @@ module "datafactory_private_endpoint" {
   location                       = var.location
   resource_group_name            = var.resource_group_name
   subnet_id                      = module.vnet.subnet_ids[var.shared_subnet_name]
-  private_connection_resource_id = module.data_factory.id
+  private_connection_resource_id = module.data_factory.data_factory_id
   subresource_name               = "dataFactory"
   private_dns_zone_group_name    = "DataFactoryPrivateDnsZoneGroup"
   private_dns_zone_group_ids     = [module.datafactory_private_dns_zone.id]

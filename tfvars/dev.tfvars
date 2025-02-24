@@ -42,7 +42,7 @@ data_factory_identity_type = "SystemAssigned"
 cognitive_service_kind = "CognitiveServices"
 cognitive_service_sku  = "S0"
 cognitive_public_network_access_enabled = false
-cognitive_custom_sub_domain_name          = "cogcustomsubdomain"  # Adjust to a unique value in your region.
+cognitive_custom_subdomain_name = "cogcustomsubdomain"  # Adjust to a unique value in your region.
 
 # (Optional) Log Analytics Workspace
 log_analytics_workspace_id = null

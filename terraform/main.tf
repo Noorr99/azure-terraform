@@ -176,7 +176,7 @@ resource "azurerm_cognitive_account" "cognitive_service" {
   kind                = var.cognitive_service_kind    // Now "CognitiveServices"
   sku_name            = var.cognitive_service_sku     // e.g., "S0"
   tags                = var.tags
-  custom_sub_domain_name = var.cognitive_custom_sub_domain_name
+  custom_subdomain_name = var.cognitive_custom_subdomain_name
   public_network_access_enabled = var.cognitive_public_network_access_enabled
 }
 

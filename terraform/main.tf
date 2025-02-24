@@ -160,7 +160,7 @@ module "datafactory_private_endpoint" {
 // 6. Cognitive Service (Azure AI Custom Vision, Standard Tier)
 //    + Private Endpoint + DNS
 ////////////////////////////////////////////////////////////////////////
-
+/*
 resource "random_string" "cognitive_account_suffix" {
   length  = 13
   lower   = true
@@ -168,9 +168,9 @@ resource "random_string" "cognitive_account_suffix" {
   special = false
   upper   = false
 }
-
+*/
 resource "azurerm_cognitive_account" "cognitive_service" {
-  name                = "cog-${random_string.cognitive_account_suffix.result}"
+  name                = var.cognitive_service_name     // Was: "cog-${random_string.cognitive_account_suffix.result}"
   resource_group_name = var.resource_group_name
   location            = "eastus"
   kind                = var.cognitive_service_kind    // Now "CognitiveServices"

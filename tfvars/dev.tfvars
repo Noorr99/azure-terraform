@@ -4,24 +4,24 @@ location            = "qatarcentral"
 tags = {
   createdWith = "Terraform"
   Environment = "dev"
-  Workload    = "nih"
+  Workload    = "census"
   Region      = "Qatar Central"
 }
 
 # Virtual Network
 vnet_name          = "vnet-dev-qatar-001"
-vnet_address_space = ["192.168.71.128/26"]
+vnet_address_space = ["172.40.0.192/26"]
 
 # Shared Subnet (for SQL, Key Vault, Data Lake)
-shared_subnet_name           = "snet-nih-pe-qatar-001"
-shared_subnet_address_prefix = ["192.168.71.128/28"]
+shared_subnet_name           = "snet-census-pe-qatar-001"
+shared_subnet_address_prefix = ["172.40.0.128/27"]
 
 # Secondary Subnet
-secondary_subnet_name           = "snet-nih-secondary-qatar-001"
-secondary_subnet_address_prefix = ["192.168.71.160/27"]
+secondary_subnet_name           = "snet-census-secondary-qatar-001"
+secondary_subnet_address_prefix = ["172.40.0.160/27"]
 
 # Key Vault
-key_vault_name = "kv-noor-dev-001"
+key_vault_name = "kv-census-dev-001"
 key_vault_sku  = "standard"
 key_vault_enabled_for_deployment          = false
 key_vault_enabled_for_disk_encryption     = false
@@ -34,11 +34,12 @@ key_vault_default_action   = "Allow"
 key_vault_ip_rules         = []
 
 # Data Factory
-data_factory_name          = "adf-noor-dev"
+data_factory_name          = "adf-census-dev"
 public_network_enabled     = false
 data_factory_identity_type = "SystemAssigned"
 
 # Cognitive Service
+cognitive_service_name = "cog-census-dev-001"  // "cog-customvision-dev-001"
 cognitive_service_kind = "CognitiveServices"
 cognitive_service_sku  = "S0"
 cognitive_public_network_access_enabled = false

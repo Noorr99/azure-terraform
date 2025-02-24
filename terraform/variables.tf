@@ -137,6 +137,10 @@ variable "data_factory_identity_type" {
 ////////////////////////////////////////////////////////////////////////
 // Cognitive Service Variables
 ////////////////////////////////////////////////////////////////////////
+variable "cognitive_service_name" {
+  description = "Specifies the name of the Azure Cognitive Service."
+  type        = string
+}
 
 variable "cognitive_service_kind" {
   description = "Specifies the kind of the Cognitive Service. For a multi-service Azure AI resource (including Custom Vision), use 'CognitiveServices'."

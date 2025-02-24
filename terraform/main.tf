@@ -172,7 +172,7 @@ resource "random_string" "cognitive_account_suffix" {
 resource "azurerm_cognitive_account" "cognitive_service" {
   name                = var.cognitive_service_name     // Was: "cog-${random_string.cognitive_account_suffix.result}"
   resource_group_name = var.resource_group_name
-  location            = "eastus"
+  location            = var.location                  // Was: "eastus"
   kind                = var.cognitive_service_kind    // Now "CognitiveServices"
   sku_name            = var.cognitive_service_sku     // e.g., "S0"
   tags                = var.tags

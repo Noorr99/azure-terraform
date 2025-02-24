@@ -139,7 +139,7 @@ variable "data_factory_identity_type" {
 ////////////////////////////////////////////////////////////////////////
 
 variable "cognitive_service_kind" {
-  description = "Specifies the kind of the Cognitive Service. For Azure AI Custom Vision Training, use 'CustomVision.Training'."
+  description = "Specifies the kind of the Cognitive Service. For a multi-service Azure AI resource (including Custom Vision), use 'CognitiveServices'."
   type        = string
 }
 

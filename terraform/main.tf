@@ -173,7 +173,7 @@ resource "azurerm_cognitive_account" "cognitive_service" {
   name                = "cog-${random_string.cognitive_account_suffix.result}"
   resource_group_name = var.resource_group_name
   location            = var.location
-  kind                = var.cognitive_service_kind    // e.g., "CustomVision.Training"
+  kind                = var.cognitive_service_kind    // Now "CognitiveServices"
   sku_name            = var.cognitive_service_sku     // e.g., "S0"
   tags                = var.tags
 

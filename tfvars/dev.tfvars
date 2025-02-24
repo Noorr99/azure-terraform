@@ -39,7 +39,7 @@ public_network_enabled     = false
 data_factory_identity_type = "SystemAssigned"
 
 # Cognitive Service
-cognitive_service_kind = "CustomVision.Training"
+cognitive_service_kind = "CognitiveServices"
 cognitive_service_sku  = "S0"
 cognitive_public_network_access_enabled = false
 

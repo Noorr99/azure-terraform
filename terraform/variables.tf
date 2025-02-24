@@ -153,6 +153,12 @@ variable "cognitive_public_network_access_enabled" {
   type        = bool
 }
 
+variable "cognitive_custom_sub_domain_name" {
+  description = "Custom subdomain name for the Cognitive Service account (required for private endpoint connectivity). Must be unique within the region."
+  type        = string
+}
+
+
 
 ////////////////////////////////////////////////////////////////////////
 // Log Analytics Workspace (Optional)

@@ -137,18 +137,14 @@ variable "data_factory_identity_type" {
 ////////////////////////////////////////////////////////////////////////
 // Cognitive Service Variables
 ////////////////////////////////////////////////////////////////////////
-variable "cognitive_service_name" {
-  description = "Specifies the name of the Azure Cognitive Service."
-  type        = string
-}
 
 variable "cognitive_service_kind" {
-  description = "Specifies the kind of the Cognitive Service (e.g., 'CognitiveServices')."
+  description = "Specifies the kind of the Cognitive Service. For Azure AI Custom Vision Training, use 'CustomVision.Training'."
   type        = string
 }
 
 variable "cognitive_service_sku" {
-  description = "Specifies the SKU of the Cognitive Service (e.g., 'S0' or 'F0')."
+  description = "Specifies the SKU of the Cognitive Service. For the Standard tier of Custom Vision, use 'S0'."
   type        = string
 }
 
@@ -156,6 +152,7 @@ variable "cognitive_public_network_access_enabled" {
   description = "Specifies if the Cognitive Service has public network access enabled."
   type        = bool
 }
+
 
 ////////////////////////////////////////////////////////////////////////
 // Log Analytics Workspace (Optional)

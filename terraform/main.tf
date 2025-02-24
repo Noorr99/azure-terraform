@@ -157,6 +157,58 @@ module "datafactory_private_endpoint" {
 }
 
 ////////////////////////////////////////////////////////////////////////
+// 6. Cognitive Service (Azure AI Custom Vision, Standard Tier)
+//    + Private Endpoint + DNS
+////////////////////////////////////////////////////////////////////////
+
+resource "random_string" "cognitive_account_suffix" {
+  length  = 13
+  lower   = true
+  numeric = false
+  special = false
+  upper   = false
+}
+
+resource "azurerm_cognitive_account" "cognitive_service" {
+  name                = "cog-${random_string.cognitive_account_suffix.result}"
+  resource_group_name = var.resource_group_name
+  location            = var.location
+  kind                = var.cognitive_service_kind    // e.g., "CustomVision.Training"
+  sku_name            = var.cognitive_service_sku     // e.g., "S0"
+  tags                = var.tags
+
+  public_network_access_enabled = var.cognitive_public_network_access_enabled
+}
+
+module "cognitive_dns_zone" {
+  source                   = "./modules/private_dns_zone"
+  name                     = "privatelink.cognitiveservices.azure.com"
+  resource_group_name      = var.resource_group_name
+  virtual_networks_to_link = {
+    (module.vnet.name) = {
+      subscription_id     = data.azurerm_client_config.current.subscription_id
+      resource_group_name = var.resource_group_name
+    }
+  }
+  tags = var.tags
+}
+
+module "cognitive_private_endpoint" {
+  source                         = "./modules/private_endpoint"
+  name                           = "cog-${random_string.cognitive_account_suffix.result}-pe"
+  location                       = var.location
+  resource_group_name            = var.resource_group_name
+  subnet_id                      = module.vnet.subnet_ids[var.shared_subnet_name]
+  private_connection_resource_id = azurerm_cognitive_account.cognitive_service.id
+  subresource_name               = "cognitiveServices"
+  private_dns_zone_group_name    = "CognitivePrivateDnsZoneGroup"
+  private_dns_zone_group_ids     = [module.cognitive_dns_zone.id]
+  tags                           = var.tags
+}
+
+
+/*
+////////////////////////////////////////////////////////////////////////
 // 6. Cognitive Service + Private Endpoint + DNS
 ////////////////////////////////////////////////////////////////////////
 resource "azurerm_cognitive_account" "cognitive_service" {
@@ -195,3 +247,4 @@ module "cognitive_private_endpoint" {
   private_dns_zone_group_ids     = [module.cognitive_dns_zone.id]
   tags                           = var.tags
 }
+*/

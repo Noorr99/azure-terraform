@@ -13,11 +13,11 @@ vnet_name          = "vnet-census-dev-001"
 vnet_address_space = ["172.40.0.128/26"]
 
 # Shared Subnet (for SQL, Key Vault, Data Lake)
-shared_subnet_name           = "snet-census-pe-qatar-001"
+shared_subnet_name           = "snet-census-pe-001"
 shared_subnet_address_prefix = ["172.40.0.128/27"]
 
 # Secondary Subnet Free
-secondary_subnet_name           = "snet-census-secondary-qatar-001"
+secondary_subnet_name           = "snet-census-secondary-001"
 secondary_subnet_address_prefix = ["172.40.0.160/27"]
 
 # Key Vault

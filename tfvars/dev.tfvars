@@ -10,7 +10,7 @@ tags = {
 
 # Virtual Network
 vnet_name          = "vnet-dev-qatar-001"
-vnet_address_space = ["172.40.0.192/26"]
+vnet_address_space = ["172.40.0.128/26"]
 
 # Shared Subnet (for SQL, Key Vault, Data Lake)
 shared_subnet_name           = "snet-census-pe-qatar-001"

@@ -16,7 +16,7 @@ vnet_address_space = ["172.40.0.192/26"]
 shared_subnet_name           = "snet-census-pe-qatar-001"
 shared_subnet_address_prefix = ["172.40.0.128/27"]
 
-# Secondary Subnet
+# Secondary Subnet Free
 secondary_subnet_name           = "snet-census-secondary-qatar-001"
 secondary_subnet_address_prefix = ["172.40.0.160/27"]
 
@@ -38,12 +38,13 @@ data_factory_name          = "adf-census-dev"
 public_network_enabled     = false
 data_factory_identity_type = "SystemAssigned"
 
+/*
 # Cognitive Service
 cognitive_service_name = "cv-census-dev-001"  // "cog-customvision-dev-001"
 cognitive_service_kind = "ComputerVision"    // Was "CognitiveServices"
 cognitive_service_sku  = "S0"
 cognitive_public_network_access_enabled = false
 cognitive_custom_subdomain_name =  "cvcustomsubdomain"// "cogcustomsubdomain"  # Adjust to a unique value in your region.
-
+*/
 # (Optional) Log Analytics Workspace
 log_analytics_workspace_id = null

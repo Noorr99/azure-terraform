@@ -9,12 +9,12 @@ terraform {
     }
   }
   backend "azurerm" {
-    # backend configuration details here (if any)
-    resource_group_name  = "rg-terraform-storage"
-    storage_account_name = "terraformstgaks99"
+    # Backend configuration details (adjust as needed)
+    resource_group_name  = "RG-QCH-JB-001"
+    storage_account_name = "stnihstate001"
     container_name       = "tfstatecensus"
     key                  = "terraform.tfstate"
-    subscription_id      = "3e169b7b-edb6-4452-94b0-847f2917971a"
+    subscription_id      = "751b8a58-5878-4c86-93dc-13c41b3a90cf"
   }
 }
 
@@ -169,6 +169,8 @@ resource "random_string" "cognitive_account_suffix" {
   upper   = false
 }
 */
+
+/*
 resource "azurerm_cognitive_account" "cognitive_service" {
   name                = var.cognitive_service_name     // Was: "cog-${random_string.cognitive_account_suffix.result}"
   resource_group_name = var.resource_group_name
@@ -221,7 +223,6 @@ resource "azurerm_cognitive_account" "cognitive_service" {
 
   public_network_access_enabled = var.cognitive_public_network_access_enabled
 }
-
 module "cognitive_dns_zone" {
   source                   = "./modules/private_dns_zone"
   name                     = "privatelink.cognitiveservices.azure.com"

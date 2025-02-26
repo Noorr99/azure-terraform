@@ -34,7 +34,7 @@ key_vault_default_action   = "Allow"
 key_vault_ip_rules         = []
 
 # Data Factory
-data_factory_name          = "adf-census-dev"
+data_factory_name          = "adf-census-dev-001"
 public_network_enabled     = false
 data_factory_identity_type = "SystemAssigned"
 

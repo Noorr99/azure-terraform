@@ -83,5 +83,5 @@ cognitive_service_name                    = "lang-dev-dtm-001"   // Updated name
 cognitive_service_kind                    = "TextAnalytics"       // Allowed value for Language capabilities
 cognitive_service_sku                     = "S"
 cognitive_public_network_access_enabled   = false
-cognitive_custom_subdomain_name           = "langcustomsubdomain"   // Must be unique in your region
+cognitive_custom_subdomain_name           = "langcustomsubdomaindev"   // Must be unique in your region
 cognitive_service_identity_type         = "SystemAssigned"

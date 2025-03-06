@@ -171,7 +171,7 @@ variable "data_disk_managed_disk_type" {
 ////////////////////////////////////////////////////////////////////////
 // LB Variables
 ////////////////////////////////////////////////////////////////////////
-
+/*
 variable "lb_name" {
   description = "The name of the load balancer."
   type        = string
@@ -254,7 +254,7 @@ variable "vm_count" {
   type        = number
 }
 
-
+*/
 /*
 variable "zone" {
   description = "Specifies the availability zones of the default node pool"

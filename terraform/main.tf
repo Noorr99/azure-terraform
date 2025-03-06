@@ -156,7 +156,7 @@ resource "azurerm_virtual_machine_data_disk_attachment" "data_disk_attachment" {
 ////////////////////////////////////////////////////////////////////////
 // Load Balancer Resources
 ////////////////////////////////////////////////////////////////////////
-
+/*
 resource "azurerm_lb" "lb" {
   name                = var.lb_name
   location            = var.location
@@ -211,7 +211,7 @@ resource "azurerm_network_interface_backend_address_pool_association" "nic_lb_as
   network_interface_id    = module.virtual_machine[count.index].network_interface_id
   backend_address_pool_id = azurerm_lb_backend_address_pool.backend_pool.id
 }
-
+*/
 
 
 ////////////////////////////////////////////////////////////////////////

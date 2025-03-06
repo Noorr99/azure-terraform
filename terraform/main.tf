@@ -153,9 +153,6 @@ resource "azurerm_virtual_machine_data_disk_attachment" "data_disk_attachment" {
 ##########################
 # Internal Load Balancer #
 ##########################
-##########################
-# Internal Load Balancer #
-##########################
 
 resource "azurerm_lb" "lb" {
   name                = var.lb_name
@@ -172,15 +169,13 @@ resource "azurerm_lb" "lb" {
 
 # Backend Address Pool for the VMs
 resource "azurerm_lb_backend_address_pool" "backend_pool" {
-  name                = var.lb_backend_pool_name
-  loadbalancer_id     = azurerm_lb.lb.id
-  resource_group_name = var.resource_group_name
+  name            = var.lb_backend_pool_name
+  loadbalancer_id = azurerm_lb.lb.id
 }
 
 # Health Probe (using TCP on the specified probe port)
 resource "azurerm_lb_probe" "lb_probe" {
   name                = var.lb_probe_name
-  resource_group_name = var.resource_group_name
   loadbalancer_id     = azurerm_lb.lb.id
   protocol            = "Tcp"
   port                = var.lb_probe_port

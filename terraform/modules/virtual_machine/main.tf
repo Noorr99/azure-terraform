@@ -66,7 +66,7 @@ resource "azurerm_network_security_group" "nsg" {
 # Network Interface
 #############################
 resource "azurerm_network_interface" "nic" {
-  name                = "${var.name}-${var.index_str}-nic"
+  name                = "${var.name}-nic"
   location            = var.location
   resource_group_name = var.resource_group_name
   tags                = var.tags

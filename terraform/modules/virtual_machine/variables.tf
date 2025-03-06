@@ -82,12 +82,6 @@ variable "tags" {
 }
 
 /*
-variable "zone" {
-  description = "Specifies the availability zones of the default node pool"
-  default     = ["1", "2", "3"]
-  type        = list(string)
-}
-*/
 
 variable "zone" {
   type = string
@@ -113,4 +107,10 @@ variable "secure_boot_enabled" {
 variable "vtpm_enabled" {
   type    = bool
   default = true
+}
+
+variable "os_disk_size_gb" {
+  type        = number
+  default     = 20
+  description = "Specifies the size (in gigabytes) of the OS disk for the virtual machine."
 }

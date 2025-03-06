@@ -120,16 +120,17 @@ variable "vm_os_disk_storage_account_type" {
   }
 }
 
-
+/*
 variable "zone" {
   description = "Specifies the availability zones of the default node pool"
   default     = ["2", "3"]
   type        = list(string)
 }
-
+*/
 variable "os_disk_size_gb" {
-  type    = number
-  default = 20
+  type        = number
+  default     = 20
+  description = "Specifies the size (in gigabytes) of the OS disk for the virtual machine."
 }
 
 ////////////////////////////////////////////////////////////////////////

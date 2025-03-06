@@ -10,7 +10,7 @@ tags = {
 
 # Virtual Network
 dtm_vnet_name          = "vnet-dtm-dev"
-dtm_vnet_address_space = ["172.40.0.0/27"]
+dtm_vnet_address_space = ["172.40.0.0/26"]
 
 # Subnets
 vm_subnet_name           = "snet-dtm-dev-fe"
@@ -70,8 +70,8 @@ sku_name            = "S4"
 zone_redundant      = false
 
 # Cognitive Service configuration for Azure AI Language (using TextAnalytics)
-cognitive_service_name                    = "ta-dtm-dev-001"   // Updated name to indicate TextAnalytics
-cognitive_service_kind                    = "TextAnalytics"       // Allowed value for Language capabilities
-cognitive_service_sku                     = "S0"
+cognitive_service_name                    = "lang-dtm-dev-001"   // Updated name to indicate TextAnalytics
+cognitive_service_kind                    = "CognitiveServices"       // Allowed value for Language capabilities
+cognitive_service_sku                     = "S"
 cognitive_public_network_access_enabled   = false
-cognitive_custom_subdomain_name           = "tacustomsubdomain"   // Must be unique in your region
+cognitive_custom_subdomain_name           = "langcustomsubdomain"   // Must be unique in your region

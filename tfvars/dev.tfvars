@@ -52,7 +52,7 @@ vm_os_disk_image             = {
   version   = "latest"
 }
 domain_name_label            = "windowsnpcvmtrial"
-vm_os_disk_storage_account_type = "Premium_LRS"
+vm_os_disk_storage_account_type = "StandardSSD_LRS"
 os_disk_size_gb = 512
 
 # SQL Database

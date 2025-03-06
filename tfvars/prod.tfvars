@@ -88,13 +88,22 @@ cognitive_service_identity_type         = "SystemAssigned"
 
 
 # Load Balancer Variables
-lb_name              = "lb-prod-dtm-01"
-lb_sku               = "Standard"
-lb_frontend_name     = "lb-frontend"
-lb_backend_pool_name = "lb-backend-pool"
-lb_probe_name        = "lb-probe"
-lb_probe_port        = 80
-lb_probe_interval    = 5
-lb_probe_count       = 2
-lb_rule_count        = 5
-lb_rule_start_port   = 80
+# Load Balancer Settings
+lb_name               = "lb-prod-dtm-01"
+lb_sku                = "Standard"
+lb_frontend_name      = "lb-frontend"
+lb_private_ip_allocation = "Dynamic"
+lb_backend_pool_name  = "lb-backend-pool"
+lb_probe_name         = "lb-probe"
+lb_probe_protocol     = "Tcp"
+lb_probe_port         = 80
+lb_probe_interval     = 5
+lb_probe_count        = 2
+lb_rule_count         = 5
+lb_rule_name_prefix   = "lb-rule"
+lb_rule_protocol      = "Tcp"
+lb_rule_start_port    = 80
+lb_ip_configuration_name = "ipconfig1"
+
+# Virtual Machines Count
+vm_count = 2

@@ -168,67 +168,91 @@ variable "data_disk_managed_disk_type" {
   default     = "StandardSSD_LRS"
 }
 
+////////////////////////////////////////////////////////////////////////
+// LB Variables
+////////////////////////////////////////////////////////////////////////
 
 variable "lb_name" {
-  description = "Name of the load balancer"
+  description = "The name of the load balancer."
   type        = string
-  default     = "lb-prod-dtm-01"
 }
 
 variable "lb_sku" {
-  description = "SKU of the load balancer"
+  description = "The SKU of the load balancer (e.g., Standard)."
   type        = string
-  default     = "Standard"
 }
 
 variable "lb_frontend_name" {
-  description = "Name of the LB frontend IP configuration"
+  description = "The name of the load balancer frontend configuration."
   type        = string
-  default     = "lb-frontend"
+}
+
+
+variable "lb_private_ip_allocation" {
+  description = "The allocation method for the LB's private IP address (Dynamic or Static)."
+  type        = string
 }
 
 variable "lb_backend_pool_name" {
-  description = "Name of the LB backend address pool"
+  description = "The name of the load balancer backend address pool."
   type        = string
-  default     = "lb-backend-pool"
 }
 
 variable "lb_probe_name" {
-  description = "Name of the LB probe"
+  description = "The name of the load balancer health probe."
   type        = string
-  default     = "lb-probe"
+}
+
+variable "lb_probe_protocol" {
+  description = "The protocol for the LB probe (e.g., Tcp)."
+  type        = string
 }
 
 variable "lb_probe_port" {
-  description = "Port used by the LB health probe"
+  description = "The port number for the LB probe."
   type        = number
-  default     = 80
 }
 
 variable "lb_probe_interval" {
-  description = "Interval in seconds for the LB health probe"
+  description = "The interval (in seconds) for the LB probe."
   type        = number
-  default     = 5
 }
 
 variable "lb_probe_count" {
-  description = "Number of unsuccessful probes before the LB considers the endpoint unhealthy"
+  description = "The number of probes before an endpoint is considered unhealthy."
   type        = number
-  default     = 2
 }
 
 variable "lb_rule_count" {
-  description = "Number of load balancing rules to create"
+  description = "The number of load balancing rules to create."
   type        = number
-  default     = 5
+}
+
+variable "lb_rule_name_prefix" {
+  description = "Optional prefix for LB rule names. If left empty, defaults to lb-rule-."
+  type        = string
+  default     = ""
+}
+
+variable "lb_rule_protocol" {
+  description = "The protocol used in LB rules (e.g., Tcp)."
+  type        = string
 }
 
 variable "lb_rule_start_port" {
-  description = "Starting port number for LB rules (incremented for each rule)"
+  description = "The starting port number for the LB rules. Each subsequent rule will increment this value."
   type        = number
-  default     = 80
 }
 
+variable "lb_ip_configuration_name" {
+  description = "The NIC IP configuration name to associate with the LB (usually 'ipconfig1')."
+  type        = string
+}
+
+variable "vm_count" {
+  description = "The number of VMs to provision."
+  type        = number
+}
 
 
 /*

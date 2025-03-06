@@ -162,49 +162,46 @@ resource "azurerm_lb" "lb" {
 
   frontend_ip_configuration {
     name                          = var.lb_frontend_name
-    subnet_id                     = module.vnet.subnet_ids[var.vm_subnet_name]
-    private_ip_address_allocation = "Dynamic"
+    subnet_id                     = module.vnet.subnet_ids[var.vm_subnet_name ]
+    private_ip_address_allocation = var.lb_private_ip_allocation
   }
 }
 
-# Backend Address Pool for the VMs
 resource "azurerm_lb_backend_address_pool" "backend_pool" {
   name            = var.lb_backend_pool_name
   loadbalancer_id = azurerm_lb.lb.id
 }
 
-# Health Probe (using TCP on the specified probe port)
 resource "azurerm_lb_probe" "lb_probe" {
   name                = var.lb_probe_name
   loadbalancer_id     = azurerm_lb.lb.id
-  protocol            = "Tcp"
+  protocol            = var.lb_probe_protocol
   port                = var.lb_probe_port
   interval_in_seconds = var.lb_probe_interval
   number_of_probes    = var.lb_probe_count
 }
 
-# Create LB Rules (each on an incremented port starting from lb_rule_start_port)
 resource "azurerm_lb_rule" "lb_rule" {
   count = var.lb_rule_count
 
-  name                           = "lb-rule-${count.index + 1}"
-  resource_group_name            = var.resource_group_name
+  name                           = var.lb_rule_name_prefix != "" ? "${var.lb_rule_name_prefix}-${count.index + 1}" : "lb-rule-${count.index + 1}"
   loadbalancer_id                = azurerm_lb.lb.id
-  protocol                       = "Tcp"
+  protocol                       = var.lb_rule_protocol
   frontend_port                  = var.lb_rule_start_port + count.index
   backend_port                   = var.lb_rule_start_port + count.index
   frontend_ip_configuration_name = var.lb_frontend_name
-  backend_address_pool_id        = azurerm_lb_backend_address_pool.backend_pool.id
+  backend_address_pool_ids       = [azurerm_lb_backend_address_pool.backend_pool.id]
   probe_id                       = azurerm_lb_probe.lb_probe.id
 }
 
-# Associate each VM's NIC with the LB backend pool.
 resource "azurerm_network_interface_backend_address_pool_association" "nic_lb_assoc" {
-  count                   = var.vm_count  # Ensure this matches the number of VMs you provision
-  network_interface_id    = module.virtual_machine[count.index].nic_id
-  ip_configuration_name   = "ipconfig1"   # Update if your NIC configuration name is different
-  backend_address_pool_id = azurerm_lb_backend_address_pool.backend_pool.id
+  count = var.vm_count
+
+  network_interface_id     = module.virtual_machine[count.index].network_interface_ids[0]
+  ip_configuration_name    = var.lb_ip_configuration_name
+  backend_address_pool_ids = [azurerm_lb_backend_address_pool.backend_pool.id]
 }
+
 
 
 ////////////////////////////////////////////////////////////////////////

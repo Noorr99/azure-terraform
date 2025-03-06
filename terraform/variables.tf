@@ -87,10 +87,7 @@ variable "vm_count" {
   type        = number
 }
 */
-variable "vm_size" {
-  description = "Specifies the size of the Windows virtual machine."
-  type        = string
-}
+
 
 variable "vm_public_ip" {
   description = "Specifies whether to create a public IP for the Windows virtual machine."

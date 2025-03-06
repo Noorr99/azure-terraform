@@ -38,7 +38,7 @@ vm_names = {
     "vm0" = "vm-dtm-dev-fe-01"   # was "sr-shir-01", shortened
 }
 */
-vm_name = "vm-dtm-dev-fe-01"
+vm_name = "vm-dtm-dev-01"
 //vm_count                     = 3
 vm_size                      = "Standard_D2s_v5"  #old value Standard_DS1_v2 D8s v3
 vm_public_ip                 = false

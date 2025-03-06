@@ -153,6 +153,21 @@ resource "azurerm_virtual_machine_data_disk_attachment" "data_disk_attachment" {
 ##########################
 # Internal Load Balancer #
 ##########################
+
+resource "azurerm_lb" "lb" {
+  name                = var.lb_name
+  location            = var.location
+  resource_group_name = var.resource_group_name
+  sku                 = var.lb_sku
+
+  frontend_ip_configuration {
+    name                          = var.lb_frontend_name
+    # Attaching the LB to the VM subnet provided by the virtual network module.
+    subnet_id                     = module.vnet.subnet_ids[var.vm_subnet_name]
+    private_ip_address_allocation = var.lb_private_ip_allocation
+  }
+}
+
 ////////////////////////////////////////////////////////////////////////
 // Load Balancer Resources
 ////////////////////////////////////////////////////////////////////////

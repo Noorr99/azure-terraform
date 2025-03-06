@@ -171,6 +171,30 @@ variable "data_disk_managed_disk_type" {
 ////////////////////////////////////////////////////////////////////////
 // LB Variables
 ////////////////////////////////////////////////////////////////////////
+
+variable "lb_name" {
+  description = "Name of the load balancer."
+  type        = string
+}
+
+variable "lb_sku" {
+  description = "SKU for the load balancer (e.g., Standard)."
+  type        = string
+  default     = "Standard"
+}
+
+variable "lb_frontend_name" {
+  description = "Name of the load balancer's frontend IP configuration."
+  type        = string
+}
+
+variable "lb_private_ip_allocation" {
+  description = "Allocation method for the LB's private IP (Dynamic or Static)."
+  type        = string
+  default     = "Dynamic"
+}
+
+
 /*
 variable "lb_name" {
   description = "The name of the load balancer."

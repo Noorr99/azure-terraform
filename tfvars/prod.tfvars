@@ -86,8 +86,13 @@ cognitive_public_network_access_enabled   = false
 cognitive_custom_subdomain_name           = "langcustomsubdomainprod"   // Must be unique in your region
 cognitive_service_identity_type         = "SystemAssigned"
 
-/*
+
 # Load Balancer Variables
+
+lb_name           = "lb-prod-dtm-01"
+lb_frontend_name  = "lb-frontend"
+
+/*
 lb_name               = "lb-prod-dtm-01"
 lb_sku                = "Standard"
 lb_frontend_name      = "lb-frontend"

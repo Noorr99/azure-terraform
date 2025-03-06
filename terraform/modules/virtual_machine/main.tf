@@ -140,13 +140,4 @@ resource "azurerm_windows_virtual_machine" "virtual_machine" {
     azurerm_network_interface.nic,
     azurerm_network_security_group.nsg,
   ]
-  storage_data_disk {
-    name                      = var.data_disk_name
-    caching                   = var.data_disk_caching
-    create_option             = var.data_disk_create_option
-    disk_size_gb              = var.data_disk_size_gb
-    lun                       = var.data_disk_lun
-    write_accelerator_enabled = var.data_disk_write_accelerator_enabled
-    managed_disk_type         = var.data_disk_managed_disk_type
-  }
 }

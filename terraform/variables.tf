@@ -136,7 +136,7 @@ variable "data_disk_name" {
 variable "data_disk_caching" {
   description = "Caching option for the data disk. Valid values: 'None', 'ReadOnly', or 'ReadWrite'."
   type        = string
-  default     = "None"  # You can change this default as needed.
+  default     = "None"
 }
 
 variable "data_disk_create_option" {
@@ -148,7 +148,7 @@ variable "data_disk_create_option" {
 variable "data_disk_size_gb" {
   description = "Specifies the size of the additional data disk in gigabytes."
   type        = number
-  default     = 128  # Adjust this as needed.
+  default     = 128
 }
 
 variable "data_disk_lun" {
@@ -167,6 +167,7 @@ variable "data_disk_managed_disk_type" {
   type        = string
   default     = "StandardSSD_LRS"
 }
+
 
 
 /*

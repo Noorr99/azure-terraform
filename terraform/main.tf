@@ -100,21 +100,9 @@ locals {
 */
 
 module "virtual_machine" {
-//  count               = var.vm_count
-//  count               = length(var.vm_names)
-//  for_each = var.vm_names
-
-/*
-for_each = {
-  for combo in local.cross_vm_names_zones_indexed :
-  "${combo.base_name}-${combo.index_str}" => combo
-}
-*/
   source              = "./modules/virtual_machine"
 
   name                = var.vm_name
-//  zone                = each.value.zone
-//  index_str           = each.value.index_str
   size                = var.vm_size
   location            = var.location
   public_ip           = var.vm_public_ip
@@ -127,11 +115,9 @@ for_each = {
 
   subnet_id                   = module.vnet.subnet_ids[var.vm_subnet_name]
   os_disk_storage_account_type = var.vm_os_disk_storage_account_type
-  os_disk_size_gb = var.os_disk_size_gb
-  # Pass the ID of the availability set
-//  availability_set_id = azurerm_availability_set.vm_avset.id
+  os_disk_size_gb             = var.os_disk_size_gb
 
-  // Additional Data Disk Variables
+  # Additional Data Disk Variables
   data_disk_name                      = var.data_disk_name
   data_disk_caching                   = var.data_disk_caching
   data_disk_create_option             = var.data_disk_create_option
@@ -139,9 +125,27 @@ for_each = {
   data_disk_lun                       = var.data_disk_lun
   data_disk_write_accelerator_enabled = var.data_disk_write_accelerator_enabled
   data_disk_managed_disk_type         = var.data_disk_managed_disk_type
-  
 }
 
+# Create the managed disk resource for the additional data disk.
+resource "azurerm_managed_disk" "data_disk" {
+  name                 = var.data_disk_name
+  location             = var.location
+  resource_group_name  = var.resource_group_name
+  storage_account_type = var.data_disk_managed_disk_type
+  create_option        = var.data_disk_create_option  # Typically "Empty"
+  disk_size_gb         = var.data_disk_size_gb
+  tags                 = var.tags
+}
+
+# Attach the managed disk to the VM using the VM ID output from the module.
+resource "azurerm_virtual_machine_data_disk_attachment" "data_disk_attachment" {
+  managed_disk_id          = azurerm_managed_disk.data_disk.id
+  virtual_machine_id       = module.virtual_machine.vm_id
+  lun                      = var.data_disk_lun
+  caching                  = var.data_disk_caching
+  write_accelerator_enabled = var.data_disk_write_accelerator_enabled
+}
 
 
 ////////////////////////////////////////////////////////////////////////

@@ -169,6 +169,67 @@ variable "data_disk_managed_disk_type" {
 }
 
 
+variable "lb_name" {
+  description = "Name of the load balancer"
+  type        = string
+  default     = "lb-prod-dtm-01"
+}
+
+variable "lb_sku" {
+  description = "SKU of the load balancer"
+  type        = string
+  default     = "Standard"
+}
+
+variable "lb_frontend_name" {
+  description = "Name of the LB frontend IP configuration"
+  type        = string
+  default     = "lb-frontend"
+}
+
+variable "lb_backend_pool_name" {
+  description = "Name of the LB backend address pool"
+  type        = string
+  default     = "lb-backend-pool"
+}
+
+variable "lb_probe_name" {
+  description = "Name of the LB probe"
+  type        = string
+  default     = "lb-probe"
+}
+
+variable "lb_probe_port" {
+  description = "Port used by the LB health probe"
+  type        = number
+  default     = 80
+}
+
+variable "lb_probe_interval" {
+  description = "Interval in seconds for the LB health probe"
+  type        = number
+  default     = 5
+}
+
+variable "lb_probe_count" {
+  description = "Number of unsuccessful probes before the LB considers the endpoint unhealthy"
+  type        = number
+  default     = 2
+}
+
+variable "lb_rule_count" {
+  description = "Number of load balancing rules to create"
+  type        = number
+  default     = 5
+}
+
+variable "lb_rule_start_port" {
+  description = "Starting port number for LB rules (incremented for each rule)"
+  type        = number
+  default     = 80
+}
+
+
 
 /*
 variable "zone" {

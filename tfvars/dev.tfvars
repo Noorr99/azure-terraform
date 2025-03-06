@@ -31,9 +31,14 @@ vm_names = {
   "vm3" = "sr-prod-pbi-gw-01"
 }
 */
+
+
+/*
 vm_names = {
     "vm0" = "vm-dtm-dev-fe-01"   # was "sr-shir-01", shortened
 }
+*/
+vm_name = "vm-dtm-dev-fe-01"
 //vm_count                     = 3
 vm_size                      = "Standard_D2s_v5"  #old value Standard_DS1_v2 D8s v3
 vm_public_ip                 = false
@@ -47,8 +52,8 @@ vm_os_disk_image             = {
   version   = "latest"
 }
 domain_name_label            = "windowsnpcvmtrial"
-vm_os_disk_storage_account_type = "PremiumSSD_V2"
-os_disk_size_gb = 20
+vm_os_disk_storage_account_type = "Premium_LRS"
+os_disk_size_gb = 512
 
 # SQL Database
 sql_server_name     = "dtm-dev-db-01"

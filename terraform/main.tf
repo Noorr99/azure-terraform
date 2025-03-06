@@ -87,6 +87,7 @@ locals {
 }
 */
 
+/*
 locals {
   cross_vm_names_zones_indexed = [
     for i, vm_name in var.vm_names : {
@@ -96,23 +97,24 @@ locals {
     }
   ]
 }
+*/
 
 module "virtual_machine" {
 //  count               = var.vm_count
 //  count               = length(var.vm_names)
 //  for_each = var.vm_names
 
-
+/*
 for_each = {
   for combo in local.cross_vm_names_zones_indexed :
   "${combo.base_name}-${combo.index_str}" => combo
 }
-
+*/
   source              = "./modules/virtual_machine"
 
-  name                = each.value.base_name
+  name                = vm_name
 //  zone                = each.value.zone
-  index_str           = each.value.index_str
+//  index_str           = each.value.index_str
   size                = var.vm_size
   location            = var.location
   public_ip           = var.vm_public_ip

@@ -63,12 +63,23 @@ variable "data_subnet_address_prefix" {
 }
 
 
-
+/*
 variable "vm_names" {
   type = map(string)
   default = {
     "vm0"    = "vm-dtm-dev-fe-01"
   }
+}
+*/
+
+variable "vm_name" {
+  description = "(Required) Specifies the name of the virtual machine"
+  type        = string
+}
+
+variable "vm_size" {
+  description = "Specifies the size of the Windows virtual machine."
+  type        = string
 }
 /*
 variable "vm_count" {

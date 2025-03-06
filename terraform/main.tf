@@ -20,6 +20,12 @@ provider "azurerm" {
   features {}
 }
 
+data "azurerm_client_config" "current" {}
+
+data "azurerm_resource_group" "rg" {
+  name = var.resource_group_name
+}
+
 /*
 resource "azurerm_resource_group" "rg" {
   name     = var.resource_group_name
@@ -206,7 +212,7 @@ module "cognitive_dns_zone" {
 
 module "cognitive_private_endpoint" {
   source                         = "./modules/private_endpoint"
-  name                           = "cog-${random_string.cognitive_account_suffix.result}-pe"
+  name                           = var.cognitive_service_name
   location                       = var.location
   resource_group_name            = var.resource_group_name
   // For private endpoints, it’s recommended to use a subnet with private endpoint network policies disabled.

@@ -197,6 +197,9 @@ resource "azurerm_cognitive_account" "cognitive_service" {
   tags                          = var.tags
   custom_subdomain_name         = var.cognitive_custom_subdomain_name
   public_network_access_enabled = var.cognitive_public_network_access_enabled
+  identity {
+    type = var.cognitive_service_identity_type
+  }
 }
 
 module "cognitive_dns_zone" {

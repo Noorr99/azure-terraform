@@ -71,7 +71,8 @@ zone_redundant      = false
 
 # Cognitive Service configuration for Azure AI Language (using TextAnalytics)
 cognitive_service_name                    = "lang-dtm-dev-001"   // Updated name to indicate TextAnalytics
-cognitive_service_kind                    = "CognitiveServices"       // Allowed value for Language capabilities
-cognitive_service_sku                     = "S"
+cognitive_service_kind                    = "Language"       // Allowed value for Language capabilities
+cognitive_service_sku                     = "S1"
 cognitive_public_network_access_enabled   = false
 cognitive_custom_subdomain_name           = "langcustomsubdomain"   // Must be unique in your region
+cognitive_service_identity_type         = "SystemAssigned"

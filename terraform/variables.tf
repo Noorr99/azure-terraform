@@ -233,3 +233,9 @@ variable "cognitive_custom_subdomain_name" {
   description = "Custom subdomain name for the Cognitive Service account (required for private endpoint connectivity). Must be unique within the region."
   type        = string
 }
+
+variable "cognitive_service_identity_type" {
+  type        = string
+  description = "The managed identity type: 'SystemAssigned', 'UserAssigned' or 'SystemAssigned,UserAssigned'."
+  default     = "SystemAssigned"
+}

@@ -106,7 +106,7 @@ module "virtual_machine" {
   source = "./modules/virtual_machine"
   count  = 2
 
-  name                = "${var.vm_name}-${count.index + 1}"  # e.g., my-vm-1, my-vm-2
+  name                = "${var.vm_name}${count.index + 1}"  # e.g., my-vm-1, my-vm-2
   size                = var.vm_size
   location            = var.location
   public_ip           = var.vm_public_ip

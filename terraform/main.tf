@@ -63,7 +63,7 @@ module "vnet" {
   ]
 }
 
-
+/*
 locals {
   cross_vm_names_zones_indexed = flatten([
     // For each VM name in var.vm_names...
@@ -78,6 +78,17 @@ locals {
       }
     ]
   ])
+}
+*/
+
+locals {
+  cross_vm_names_zones_indexed = [
+    for i, vm_name in var.vm_names : {
+      base_name = vm_name
+      // index_str => "01" if i=0, "02" if i=1, etc.
+      index_str = format("%02d", i + 1)
+    }
+  ]
 }
 
 module "virtual_machine" {

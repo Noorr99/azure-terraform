@@ -197,3 +197,31 @@ variable "zone_redundant" {
   description = "Specifies whether zone redundancy is enabled."
   type        = bool
 }
+
+////////////////////////////////////////////////////////////////////////
+// Cognitive Service Variables
+////////////////////////////////////////////////////////////////////////
+variable "cognitive_service_name" {
+  description = "Specifies the name of the Azure Cognitive Service."
+  type        = string
+}
+
+variable "cognitive_service_kind" {
+  description = "Specifies the kind of the Cognitive Service. For a multi-service Azure AI resource (including Custom Vision), use 'CognitiveServices'."
+  type        = string
+}
+
+variable "cognitive_service_sku" {
+  description = "Specifies the SKU of the Cognitive Service. For the Standard tier of Custom Vision, use 'S0'."
+  type        = string
+}
+
+variable "cognitive_public_network_access_enabled" {
+  description = "Specifies if the Cognitive Service has public network access enabled."
+  type        = bool
+}
+
+variable "cognitive_custom_subdomain_name" {
+  description = "Custom subdomain name for the Cognitive Service account (required for private endpoint connectivity). Must be unique within the region."
+  type        = string
+}

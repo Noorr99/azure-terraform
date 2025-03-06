@@ -79,7 +79,7 @@ sku_name            = "S4"
 zone_redundant      = false
 
 # Cognitive Service configuration for Azure AI Language (using TextAnalytics)
-cognitive_service_name                    = "lang-dtm-uat-001"   // Updated name to indicate TextAnalytics
+cognitive_service_name                    = "lang-uat-dtm-001"   // Updated name to indicate TextAnalytics
 cognitive_service_kind                    = "TextAnalytics"       // Allowed value for Language capabilities
 cognitive_service_sku                     = "S"
 cognitive_public_network_access_enabled   = false

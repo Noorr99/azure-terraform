@@ -130,6 +130,16 @@ for_each = {
   os_disk_size_gb = var.os_disk_size_gb
   # Pass the ID of the availability set
 //  availability_set_id = azurerm_availability_set.vm_avset.id
+
+  // Additional Data Disk Variables
+  data_disk_name                      = var.data_disk_name
+  data_disk_caching                   = var.data_disk_caching
+  data_disk_create_option             = var.data_disk_create_option
+  data_disk_size_gb                   = var.data_disk_size_gb
+  data_disk_lun                       = var.data_disk_lun
+  data_disk_write_accelerator_enabled = var.data_disk_write_accelerator_enabled
+  data_disk_managed_disk_type         = var.data_disk_managed_disk_type
+  
 }
 
 

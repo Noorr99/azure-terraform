@@ -53,7 +53,16 @@ vm_os_disk_image             = {
 }
 domain_name_label            = "windowsnpcvmtrial"
 vm_os_disk_storage_account_type = "StandardSSD_LRS"
-os_disk_size_gb = 512
+os_disk_size_gb = 128
+
+# New Data Disk Variables
+data_disk_name                      = "additional-datadisk-01"
+data_disk_caching                   = "None"
+data_disk_create_option             = "Empty"
+data_disk_size_gb                   = 512
+data_disk_lun                       = 0
+data_disk_write_accelerator_enabled = false
+data_disk_managed_disk_type         = "StandardSSD_LRS"
 
 # SQL Database
 sql_server_name     = "dtm-dev-db-01"

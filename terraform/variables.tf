@@ -128,6 +128,47 @@ variable "vm_os_disk_storage_account_type" {
   }
 }
 
+variable "data_disk_name" {
+  description = "The name of the additional data disk."
+  type        = string
+}
+
+variable "data_disk_caching" {
+  description = "Caching option for the data disk. Valid values: 'None', 'ReadOnly', or 'ReadWrite'."
+  type        = string
+  default     = "None"  # You can change this default as needed.
+}
+
+variable "data_disk_create_option" {
+  description = "Specifies how the data disk should be created. Valid values: 'Attach', 'FromImage', or 'Empty'."
+  type        = string
+  default     = "Empty"
+}
+
+variable "data_disk_size_gb" {
+  description = "Specifies the size of the additional data disk in gigabytes."
+  type        = number
+  default     = 128  # Adjust this as needed.
+}
+
+variable "data_disk_lun" {
+  description = "Specifies the Logical Unit Number (LUN) for the data disk. Must be unique among all disks on the VM."
+  type        = number
+}
+
+variable "data_disk_write_accelerator_enabled" {
+  description = "Specifies if write accelerator is enabled on the disk. (Only applicable on Premium_LRS with no caching and M-Series VMs)"
+  type        = bool
+  default     = false
+}
+
+variable "data_disk_managed_disk_type" {
+  description = "Specifies the type of managed disk to create. Valid values include: 'Standard_LRS', 'StandardSSD_LRS', 'Premium_LRS', or 'UltraSSD_LRS'."
+  type        = string
+  default     = "StandardSSD_LRS"
+}
+
+
 /*
 variable "zone" {
   description = "Specifies the availability zones of the default node pool"

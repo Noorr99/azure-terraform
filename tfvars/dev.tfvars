@@ -3,7 +3,7 @@ resource_group_name = "rg-compliance-dev-001"
 location            = "qatarcentral"
 tags = {
   createdWith = "Terraform"
-  Environment = "prod"
+  Environment = "dev"
   Workload    = "DTM"
   Region      = "Qatar Central"
 }

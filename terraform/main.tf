@@ -84,18 +84,13 @@ module "virtual_machine" {
 //  count               = var.vm_count
 //  count               = length(var.vm_names)
 //  for_each = var.vm_names
-/*
-  for_each = {
-    for combo in local.cross_vm_names_zones_indexed :
-    # For uniqueness: combine the base_name + index
-    "${combo.base_name}-${combo.index_str}" => combo
-  }
-*/
+
 
 for_each = {
   for combo in local.cross_vm_names_zones_indexed :
   "${combo.base_name}-${combo.index_str}" => combo
 }
+
   source              = "./modules/virtual_machine"
 
   name                = each.value.base_name

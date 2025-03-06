@@ -97,7 +97,9 @@ variable "availability_set_id" {
   description = "The ID of the Availability Set in which VMs will be placed."
 }
 */
-
+variable "index_str" {
+  type = string
+}
 
 variable "secure_boot_enabled" {
   type    = bool

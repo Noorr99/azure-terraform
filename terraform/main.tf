@@ -153,6 +153,9 @@ resource "azurerm_virtual_machine_data_disk_attachment" "data_disk_attachment" {
 ##########################
 # Internal Load Balancer #
 ##########################
+////////////////////////////////////////////////////////////////////////
+// Load Balancer Resources
+////////////////////////////////////////////////////////////////////////
 
 resource "azurerm_lb" "lb" {
   name                = var.lb_name
@@ -162,18 +165,21 @@ resource "azurerm_lb" "lb" {
 
   frontend_ip_configuration {
     name                          = var.lb_frontend_name
-    subnet_id                     = module.vnet.subnet_ids[var.vm_subnet_name ]
+    # Replace with the appropriate subnet resource reference.
+    subnet_id                     = azurerm_subnet.vm_subnet.id
     private_ip_address_allocation = var.lb_private_ip_allocation
   }
 }
 
 resource "azurerm_lb_backend_address_pool" "backend_pool" {
-  name            = var.lb_backend_pool_name
-  loadbalancer_id = azurerm_lb.lb.id
+  name                = var.lb_backend_pool_name
+  resource_group_name = var.resource_group_name
+  loadbalancer_id     = azurerm_lb.lb.id
 }
 
-resource "azurerm_lb_probe" "lb_probe" {
+resource "azurerm_lb_probe" "probe" {
   name                = var.lb_probe_name
+  resource_group_name = var.resource_group_name
   loadbalancer_id     = azurerm_lb.lb.id
   protocol            = var.lb_probe_protocol
   port                = var.lb_probe_port
@@ -182,24 +188,28 @@ resource "azurerm_lb_probe" "lb_probe" {
 }
 
 resource "azurerm_lb_rule" "lb_rule" {
-  count = var.lb_rule_count
+  count               = var.lb_rule_count
+  name                = "${var.lb_rule_name_prefix != "" ? var.lb_rule_name_prefix : "lb-rule-"}${count.index}"
+  resource_group_name = var.resource_group_name
+  loadbalancer_id     = azurerm_lb.lb.id
 
-  name                           = var.lb_rule_name_prefix != "" ? "${var.lb_rule_name_prefix}-${count.index + 1}" : "lb-rule-${count.index + 1}"
-  loadbalancer_id                = azurerm_lb.lb.id
-  protocol                       = var.lb_rule_protocol
-  frontend_port                  = var.lb_rule_start_port + count.index
-  backend_port                   = var.lb_rule_start_port + count.index
+  protocol = var.lb_rule_protocol
+  frontend_port = var.lb_rule_start_port + count.index
+  backend_port  = var.lb_rule_start_port + count.index
+
   frontend_ip_configuration_name = var.lb_frontend_name
-  backend_address_pool_ids       = [azurerm_lb_backend_address_pool.backend_pool.id]
-  probe_id                       = azurerm_lb_probe.lb_probe.id
+  probe_id                       = azurerm_lb_probe.probe.id
+
+  enable_floating_ip             = false
+  idle_timeout_in_minutes        = 4
 }
 
 resource "azurerm_network_interface_backend_address_pool_association" "nic_lb_assoc" {
   count = var.vm_count
 
-  network_interface_id     = module.virtual_machine[count.index].network_interface_ids[0]
-  ip_configuration_name    = var.lb_ip_configuration_name
-  backend_address_pool_ids = [azurerm_lb_backend_address_pool.backend_pool.id]
+  # Assuming your virtual machine module outputs a singular network interface ID.
+  network_interface_id    = module.virtual_machine[count.index].network_interface_id
+  backend_address_pool_id = azurerm_lb_backend_address_pool.backend_pool.id
 }
 
 

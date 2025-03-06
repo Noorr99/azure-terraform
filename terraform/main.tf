@@ -112,7 +112,7 @@ for_each = {
 */
   source              = "./modules/virtual_machine"
 
-  name                = vm_name
+  name                = var.vm_name
 //  zone                = each.value.zone
 //  index_str           = each.value.index_str
   size                = var.vm_size

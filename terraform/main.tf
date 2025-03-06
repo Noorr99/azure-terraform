@@ -98,11 +98,15 @@ locals {
   ]
 }
 */
+##############################
+# Virtual Machines and Disks #
+##############################
 
 module "virtual_machine" {
-  source              = "./modules/virtual_machine"
+  source = "./modules/virtual_machine"
+  count  = 2
 
-  name                = var.vm_name
+  name                = "${var.vm_name}-${count.index + 1}"  # e.g., my-vm-1, my-vm-2
   size                = var.vm_size
   location            = var.location
   public_ip           = var.vm_public_ip
@@ -118,7 +122,7 @@ module "virtual_machine" {
   os_disk_size_gb             = var.os_disk_size_gb
 
   # Additional Data Disk Variables
-  data_disk_name                      = var.data_disk_name
+  data_disk_name                      = "${var.data_disk_name}-${count.index + 1}"
   data_disk_caching                   = var.data_disk_caching
   data_disk_create_option             = var.data_disk_create_option
   data_disk_size_gb                   = var.data_disk_size_gb
@@ -127,26 +131,82 @@ module "virtual_machine" {
   data_disk_managed_disk_type         = var.data_disk_managed_disk_type
 }
 
-# Create the managed disk resource for the additional data disk.
 resource "azurerm_managed_disk" "data_disk" {
-  name                 = var.data_disk_name
-  location             = var.location
-  resource_group_name  = var.resource_group_name
+  count              = 2
+  name               = "${var.data_disk_name}-${count.index + 1}"
+  location           = var.location
+  resource_group_name = var.resource_group_name
   storage_account_type = var.data_disk_managed_disk_type
-  create_option        = var.data_disk_create_option  # Typically "Empty"
-  disk_size_gb         = var.data_disk_size_gb
-  tags                 = var.tags
+  create_option      = var.data_disk_create_option  # Typically "Empty"
+  disk_size_gb       = var.data_disk_size_gb
+  tags               = var.tags
 }
 
-# Attach the managed disk to the VM using the VM ID output from the module.
 resource "azurerm_virtual_machine_data_disk_attachment" "data_disk_attachment" {
-  managed_disk_id          = azurerm_managed_disk.data_disk.id
-  virtual_machine_id       = module.virtual_machine.vm_id
-  lun                      = var.data_disk_lun
-  caching                  = var.data_disk_caching
+  count                = 2
+  managed_disk_id      = azurerm_managed_disk.data_disk[count.index].id
+  virtual_machine_id   = module.virtual_machine[count.index].vm_id
+  lun                  = var.data_disk_lun
+  caching              = var.data_disk_caching
   write_accelerator_enabled = var.data_disk_write_accelerator_enabled
 }
+##########################
+# Internal Load Balancer #
+##########################
 
+resource "azurerm_lb" "lb" {
+  name                = "lb-prod-dtm-01"
+  location            = var.location
+  resource_group_name = var.resource_group_name
+  sku                 = "Standard"
+
+  frontend_ip_configuration {
+    name                           = "lb-frontend"
+    subnet_id                      = var.lb_subnet_id    # ID of the subnet where the LB will be deployed
+    private_ip_address_allocation  = "Dynamic"         # Use "Static" if you want to set a fixed IP
+  }
+}
+
+# Backend Address Pool for the VMs
+resource "azurerm_lb_backend_address_pool" "backend_pool" {
+  name                = "lb-backend-pool"
+  loadbalancer_id     = azurerm_lb.lb.id
+  resource_group_name = var.resource_group_name
+}
+
+# Health Probe (using TCP on port 80)
+resource "azurerm_lb_probe" "lb_probe" {
+  name                = "lb-probe"
+  resource_group_name = var.resource_group_name
+  loadbalancer_id     = azurerm_lb.lb.id
+  protocol            = "Tcp"
+  port                = 80
+  interval_in_seconds = 5
+  number_of_probes    = 2
+}
+
+# Create 5 Load Balancing Rules (for ports 80-84)
+resource "azurerm_lb_rule" "lb_rule" {
+  count = 5
+
+  name                           = "lb-rule-${count.index + 1}"
+  resource_group_name            = var.resource_group_name
+  loadbalancer_id                = azurerm_lb.lb.id
+  protocol                       = "Tcp"
+  frontend_port                  = 80 + count.index  # This creates ports 80, 81, 82, 83, and 84.
+  backend_port                   = 80 + count.index
+  frontend_ip_configuration_name = azurerm_lb.lb.frontend_ip_configuration[0].name
+  backend_address_pool_id        = azurerm_lb_backend_address_pool.backend_pool.id
+  probe_id                       = azurerm_lb_probe.lb_probe.id
+}
+
+# Associate each VM's NIC with the Load Balancer backend pool.
+resource "azurerm_network_interface_backend_address_pool_association" "nic_lb_assoc" {
+  count                   = var.vm_count  # Or use "2" if you’re fixed on two VMs
+  network_interface_id    = module.virtual_machine[count.index].nic_id
+  ip_configuration_name   = "ipconfig1"   # Update if your NIC config name differs
+  backend_address_pool_id = azurerm_lb_backend_address_pool.backend_pool.id
+}
 
 ////////////////////////////////////////////////////////////////////////
 // 6. SQL Database + Private Endpoint + DNS

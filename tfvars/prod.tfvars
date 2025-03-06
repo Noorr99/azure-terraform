@@ -1,23 +1,26 @@
 # Resource Group & Location
-resource_group_name = "rg-sr-prod"
+resource_group_name = "rg-compliance-prod-001"
 location            = "qatarcentral"
 tags = {
   createdWith = "Terraform"
   Environment = "prod"
-  Workload    = "Shared Resources"
+  Workload    = "DTM"
   Region      = "Qatar Central"
 }
 
 # Virtual Network
-aks_vnet_name          = "vnet-sr-prod-001"
-aks_vnet_address_space = ["172.40.2.0/25"]
+dtm_vnet_name          = "vnet-dtm-prod"
+dtm_vnet_address_space = ["172.40.0.128/26"]
 
 # Subnets
-vm_subnet_name           = "snet-vm-qatar-001"
-vm_subnet_address_prefix = ["172.40.2.96/27"]
+vm_subnet_name           = "snet-dtm-prod-fe"
+vm_subnet_address_prefix = ["172.40.0.128/28"]
 
-pe_subnet_name           = "snet-pe-qatar-001"
-pe_subnet_address_prefix = ["172.40.2.64/27"]
+pe_subnet_name           = "snet-dtm-prod-pe"
+pe_subnet_address_prefix = ["172.40.0.160/28"]
+
+data_subnet_name           = "snet-dtm-prod-data"
+data_subnet_address_prefix = ["172.40.0.144/28"]
 
 # Virtual Machine
 //availability_set_name = "sr-prod-qat-as-01"
@@ -28,17 +31,20 @@ vm_names = {
   "vm3" = "sr-prod-pbi-gw-01"
 }
 */
+
+
+/*
 vm_names = {
-    "vm0" = "vm-sr-shir"   # was "sr-shir-01", shortened
-    "vm1" = "vm-sr-info"   # was "sr-infa-01", shortened
-    "vm3" = "vm-sr-pbi"    # was "sr-pbi-01", shortened
+    "vm0" = "vm-dtm-prod-fe-01"   # was "sr-shir-01", shortened
 }
+*/
+vm_name = "vm-dtm-prod-01"
 //vm_count                     = 3
-vm_size                      = "Standard_D8s_v3"  #old value Standard_DS1_v2 D8s v3
+vm_size                      = "Standard_D4s_v5"  #old value Standard_DS1_v2 D8s v3
 vm_public_ip                 = false
 admin_username               = "azadmin"
 # admin_password is not set here so that it is provided at runtime.
-zone                         = ["2", "3"]
+//zone                         = ["2", "3"]
 vm_os_disk_image             = {
   publisher = "MicrosoftWindowsServer"
   offer     = "WindowsServer"
@@ -46,72 +52,36 @@ vm_os_disk_image             = {
   version   = "latest"
 }
 domain_name_label            = "windowsnpcvmtrial"
-vm_os_disk_storage_account_type = "StandardSSD_ZRS"
+vm_os_disk_storage_account_type = "StandardSSD_LRS"
+os_disk_size_gb = 128
 
-# Key Vault
-key_vault_name = "kv-sr-prod-01"
-# tenant_id is not set here so that it is provided at runtime.
-key_vault_sku  = "standard"
-key_vault_enabled_for_deployment          = false
-key_vault_enabled_for_disk_encryption     = false
-key_vault_enabled_for_template_deployment = false
-key_vault_enable_rbac_authorization       = false
-key_vault_purge_protection_enabled        = false
-key_vault_soft_delete_retention_days      = 30
-key_vault_bypass           = "AzureServices"
-key_vault_default_action   = "Allow"
-key_vault_ip_rules         = []
-public_network_access_enabled = false
+# New Data Disk Variables
+data_disk_name                      = "additional-datadisk-01"
+data_disk_caching                   = "None"
+data_disk_create_option             = "Empty"
+data_disk_size_gb                   = 512
+data_disk_lun                       = 0
+data_disk_write_accelerator_enabled = false
+data_disk_managed_disk_type         = "StandardSSD_LRS"
 
-# ACR
-acr_name                   = "crsrprod01"
-acr_admin_enabled          = false
-acr_sku                    = "Premium"
-acr_georeplication_locations = []
-zone_redundancy_enabled      = true
-# Databricks Workspace
-workspace_name                              = "dbw-sr-prod-01"
-databricks_vnet_resource_group_name           = "rg-sr-prod-001"
-databricks_private_subnet_name                = "snet-dbw-prod-qatar-001"
-databricks_public_subnet_name                 = "snet-dbw-prod-qatar-002"
-public_subnet_address_prefixes                = ["172.40.2.32/27"]
-private_subnet_address_prefixes               = ["172.40.2.0/27"]
-databricks_security_group_prefix              = "nsg-databricks"
-managed_resource_group_name                   = "rg-sr-prod-managed-dbw"
-sku_dbw                                       = "premium"
+# SQL Database
+sql_server_name     = "dtm-prod-db-01"
+sql_admin_username  = "sqladmin"
+# sql_admin_password must be provided at runtime.
+sql_database_name   = "sql-db-prod"
+sql_database_dtu    = "500"
+sql_database_tier   = "Premium"
+sql_database_size_gb = 250
+long_term_retention_backup = 7
+geo_backup_enabled  = false
+storage_account_type = "Zone"
+sku_name            = "P4"
+zone_redundant      = false
 
-# Datalake Storage
-datalake_storage_account_name   = "dlssrprod01"
-datalake_account_tier             = "Premium"
-datalake_account_replication_type = "ZRS"
-datalake_account_kind             = "BlockBlobStorage"
-datalake_is_hns_enabled           = true
-datalake_filesystem_name          = "dlsfssrprod"
-datalake_filesystem_properties    = {
-  hello = "aGVsbG8="
-}
-datalake_storage_account_pe = "dls-sr-prod-01" 
-acr_name_pe                   = "cr-sr-prod-01"
-/*
-soft_delete_retention_days        = 7
-enable_versioning                 = true
-enable_change_feed                = true
-*/
-#########################################
-# Ubuntu Virtual Machine (New Variables)
-#########################################
-ubuntu_vm_name = "vm-sr-devops-01"
-ubuntu_vm_count = 1
-ubuntu_vm_size  = "Standard_D4s_v3"
-ubuntu_vm_public_ip = false
-ubuntu_admin_username = "ubuntuadmin"
-# ubuntu_admin_password is not set here so that it is provided at runtime.
-# Optionally, you can override the default OS image by providing a different map here.
-# ubuntu_vm_os_disk_image = {
-#   publisher = "Canonical"
-#   offer     = "UbuntuServer"
-#   sku       = "20.04-LTS"
-#   version   = "latest"
-# }
-ubuntu_domain_name_label = "ubuntunpcvmtrial"
-ubuntu_vm_os_disk_storage_account_type = "StandardSSD_LRS"
+# Cognitive Service configuration for Azure AI Language (using TextAnalytics)
+cognitive_service_name                    = "lang-prod-dtm-001"   // Updated name to indicate TextAnalytics
+cognitive_service_kind                    = "TextAnalytics"       // Allowed value for Language capabilities
+cognitive_service_sku                     = "S"
+cognitive_public_network_access_enabled   = false
+cognitive_custom_subdomain_name           = "langcustomsubdomainprod"   // Must be unique in your region
+cognitive_service_identity_type         = "SystemAssigned"

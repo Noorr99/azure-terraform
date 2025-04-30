@@ -12,7 +12,7 @@ terraform {
     # Backend configuration details (adjust as needed)
     resource_group_name  = "RG-QCH-JB-001"
     storage_account_name = "stnihstate001"
-    container_name       = "tfstatecensus"
+    container_name       = "tfstatecensusuat"
     key                  = "terraform.tfstate"
     subscription_id      = "751b8a58-5878-4c86-93dc-13c41b3a90cf"
   }
